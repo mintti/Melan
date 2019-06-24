@@ -2,16 +2,96 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Button = UnityEngine.UI.Button;
 
 public class WorldController : MonoBehaviour
 {
     public GameObject world;
     public Button _bt;
+    //1-1. 던전 선택 시, 가운데로 이동 : 변수 선언
+    public RectTransform map;
+    private Coroutine  coroutine; //코루틴 정지를 위해 미리 선언
+    private float xVelocity = 2.0f; //속도, 상세 설명 해당 사용처에 적어둠.
+    private float yVelocity = 2.0f;
+    private bool isOnMove1_1 = false;
+
+    //1-2. 던전 선택 후, 출전 클릭 시 : 변수 선언
+
+
+    //1-3.던전 선택 후, 출전 시, 용병 List관련. : 변수 선언
+    public GameObject knightList;
+    public GameObject knightPrefab;
+
+    public UnitData unit;
+    
+    
+    #region 1-1. 던전 선택 시, 가운데로 이동 : 코드
+    //Dungeon 오브젝트 클릭 시, 해당 obj가 인자가 됨. (한정적이라 일일이 지정해주는 걸루함)
+    public void ScreenMoveToDungeon(RectTransform tr)
+    {
+        Vector2 targetPos = new Vector2(tr.localPosition .x * -1, tr.localPosition.y * -1);
+        if(isOnMove1_1) //코루틴 충돌 방지
+        {
+            StopCoroutine(coroutine);
+        }
+        coroutine = StartCoroutine(move1_1(targetPos));
+        isOnMove1_1 = true;
+    }
+
+    //해당 위치로 map을 이동해줌. float라 무한 루틴 걸릴 수도 있어서 오차 ±1해줌.
+    public IEnumerator move1_1(Vector2 target)
+    {
+        while(true)
+        {
+            //map이 타겟에 도달시 코루틴 해제. (시간 대비로 x, y 값 계산해서 이동하는 거라 비례되니 x만 비교해도됨.)
+            if(target.x < map.anchoredPosition.x +1 && target.x > map.anchoredPosition.x -1)
+            {
+                StopCoroutine(coroutine);
+                isOnMove1_1 = false;        
+            }
+
+            //SmoothDamp(현재 위치 값, 타겟 위치, 현재 속도 : 매번 호출함으로써 수정됨, 타겟에 도착하는 대략적인 시간)
+            float newPosX = Mathf.SmoothDamp(map.anchoredPosition.x, target.x, ref xVelocity, 0.2f);
+            float newPosY = Mathf.SmoothDamp(map.anchoredPosition.y, target.y, ref yVelocity, 0.2f);
+            map.anchoredPosition = new Vector2(newPosX, newPosY);
+
+           yield return new WaitForSeconds(0.01f);
+        }
+         
+        
+    }
+    #endregion
+
+
+    #region 1-2. 던전 선택 후, 출전 클릭 시 : 코드
     
 
+    #endregion
+
+    //1-3. 던전 선택 후, 출전 용병 List : 코드  
+    public void MakeKnightList()
+    {
+        foreach(Transform t in knightList.transform)
+        {
+            Destroy(t.gameObject);
+        }
+
+        foreach(Knight k in unit.knights)
+        {
+            GameObject obj = Instantiate(knightPrefab);
+            obj.transform.SetParent(knightList.transform); //부모-자식 지정.
+            obj.GetComponent<KnightPrefab>().SetData(k);
+        }
+    }
+
+
+
+    //게임 시작 시, 화면 초기화.
     public void Click()
     {
         _bt.onClick.Invoke();
     }
+
+
+
+
 }
