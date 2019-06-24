@@ -21,7 +21,6 @@ public class DungeonInfoGuide : MonoBehaviour
     private void Start()
     {
         guideText = guideObj.GetComponentInChildren<Text>();
-        this.gameObject.SetActive(false);
     }
 
     #region 던전 오브젝트와 충돌관련 이벤트.
