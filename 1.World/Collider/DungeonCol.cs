@@ -9,6 +9,7 @@ public class DungeonCol : MonoBehaviour
     public GameObject DungeonExplan;
     public GameObject targetArrow;
 
+    public Dungeon d{get;set;} //worldController에서 호출됨.
     public string[] ment{get;set;} = new string[2];
 
     private void Start()
@@ -27,8 +28,9 @@ public class DungeonCol : MonoBehaviour
 
             //해당 던전 정보를 guide에 전달.
             Dungeon _d = col.GetComponent<Dungeon>();
+            d = _d;
             guide.gameObject.SetActive(true); 
-            guide.SetData(_d);
+            guide.SetData(d);
 
             //던전 출전 가능 여부, 확인.
             DungeonExplan.SetActive(true);
