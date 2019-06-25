@@ -12,10 +12,10 @@ public class AdminController : MonoBehaviour
     
 
 
-    //KightList생성 
-    public void MakeKinghtList()
+    //KightList생성
+    public void MakeKinghtList(Transform list)
     {
-        foreach(Transform t in knightList.transform)
+        foreach(Transform t in list)
         {
             Destroy(t.gameObject);
         }
@@ -23,7 +23,7 @@ public class AdminController : MonoBehaviour
         foreach(Knight k in unit.knights)
         {
             GameObject obj = Instantiate(knightPrefab);
-            obj.transform.SetParent(knightList.transform); //부모-자식 지정.
+            obj.transform.SetParent(list); //부모-자식 지정.
             obj.GetComponent<KnightPrefab>().SetData(k);
         }
     }

@@ -21,6 +21,5 @@ public class GameController : MonoBehaviour
     private void StartSetting()
     {
         world.Click();
-        admin.MakeKinghtList();
     }
 }
