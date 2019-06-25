@@ -14,7 +14,11 @@ public class WorldController : MonoBehaviour
     private float yVelocity = 2.0f;
     private bool isOnMove1_1 = false;
 
+
     //1-2. 던전 선택 후, 출전 클릭 시 : 변수 선언
+    public GameObject selectKnigh;
+    public DungeonCol col;
+    private Dungeon d; //col에서 호출된 d.
 
 
     //1-3.던전 선택 후, 출전 시, 용병 List관련. : 변수 선언
@@ -63,14 +67,18 @@ public class WorldController : MonoBehaviour
 
 
     #region 1-2. 던전 선택 후, 출전 클릭 시 : 코드
-    
+    public void SelectDungeon()
+    {
+        selectKnigh.SetActive(true);
+        d = col.d;
+    }
 
     #endregion
 
-    //1-3. 던전 선택 후, 출전 용병 List : 코드  
-    public void MakeKnightList()
+    #region 1-3. 던전 선택 후, 출전 용병 List : 코드  
+    public void MakeKnightList(Transform list)
     {
-        foreach(Transform t in knightList.transform)
+        foreach(Transform t in list)
         {
             Destroy(t.gameObject);
         }
@@ -78,11 +86,11 @@ public class WorldController : MonoBehaviour
         foreach(Knight k in unit.knights)
         {
             GameObject obj = Instantiate(knightPrefab);
-            obj.transform.SetParent(knightList.transform); //부모-자식 지정.
-            obj.GetComponent<KnightPrefab>().SetData(k);
+            obj.transform.SetParent(list); //부모-자식 지정.
+            obj.GetComponent<WorldKnightPrefab>().SetData(k);
         }
     }
-
+    #endregion
 
 
     //게임 시작 시, 화면 초기화.
