@@ -18,9 +18,10 @@ public class KnightPrefab : MonoBehaviour
     public void SetData(Knight _k)
     {
         k = _k;
-
         skin.sprite = k.skin;
         name.text = string.Format("{0}", k.name);
         stress.text = k.stress + "%";      
     }
+
+    
 }
