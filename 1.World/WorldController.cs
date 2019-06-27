@@ -7,25 +7,27 @@ public class WorldController : MonoBehaviour
 {
     public GameObject world;
     public Button _bt;
+    public UnitData unit;
+
     //1-1. 던전 선택 시, 가운데로 이동 : 변수 선언
     public RectTransform map;
     private Coroutine  coroutine; //코루틴 정지를 위해 미리 선언
     private float xVelocity = 2.0f; //속도, 상세 설명 해당 사용처에 적어둠.
     private float yVelocity = 2.0f;
-    private bool isOnMove1_1 = false;
-
+    
+    private bool corou_RN = false; //코루틴 충돌방지.
 
     //1-2. 던전 선택 후, 출전 클릭 시 : 변수 선언
-    public GameObject selectKnigh;
+    public GameObject selectKnighObj;
     public DungeonCol col;
     private Dungeon d; //col에서 호출된 d.
-
 
     //1-3.던전 선택 후, 출전 시, 용병 List관련. : 변수 선언
     public GameObject knightList;
     public GameObject knightPrefab;
 
-    public UnitData unit;
+    public Transform selectView;
+
     
     
     #region 1-1. 던전 선택 시, 가운데로 이동 : 코드
@@ -33,24 +35,25 @@ public class WorldController : MonoBehaviour
     public void ScreenMoveToDungeon(RectTransform tr)
     {
         Vector2 targetPos = new Vector2(tr.localPosition .x * -1, tr.localPosition.y * -1);
-        if(isOnMove1_1) //코루틴 충돌 방지
+        if(corou_RN) //코루틴 충돌 방지
         {
             StopCoroutine(coroutine);
         }
         coroutine = StartCoroutine(move1_1(targetPos));
-        isOnMove1_1 = true;
+        corou_RN = true;
     }
 
     //해당 위치로 map을 이동해줌. float라 무한 루틴 걸릴 수도 있어서 오차 ±1해줌.
     public IEnumerator move1_1(Vector2 target)
     {
+        corou_RN = true;
         while(true)
         {
             //map이 타겟에 도달시 코루틴 해제. (시간 대비로 x, y 값 계산해서 이동하는 거라 비례되니 x만 비교해도됨.)
             if(target.x < map.anchoredPosition.x +1 && target.x > map.anchoredPosition.x -1)
             {
                 StopCoroutine(coroutine);
-                isOnMove1_1 = false;        
+                corou_RN = false;        
             }
 
             //SmoothDamp(현재 위치 값, 타겟 위치, 현재 속도 : 매번 호출함으로써 수정됨, 타겟에 도착하는 대략적인 시간)
@@ -61,7 +64,7 @@ public class WorldController : MonoBehaviour
            yield return new WaitForSeconds(0.01f);
         }
          
-        
+        corou_RN = false;
     }
     #endregion
 
@@ -69,27 +72,80 @@ public class WorldController : MonoBehaviour
     #region 1-2. 던전 선택 후, 출전 클릭 시 : 코드
     public void SelectDungeon()
     {
-        selectKnigh.SetActive(true);
+        selectKnighObj.SetActive(true);
         d = col.d;
     }
 
     #endregion
 
-    #region 1-3. 던전 선택 후, 출전 용병 List : 코드  
+    #region 1-3. 던전 선택 후, 출전 용병 List 생성 : 코드  
     public void MakeKnightList(Transform list)
     {
-        foreach(Transform t in list)
-        {
-            Destroy(t.gameObject);
-        }
+        CodeBox.ClearList(list);
 
         foreach(Knight k in unit.knights)
         {
-            GameObject obj = Instantiate(knightPrefab);
-            obj.transform.SetParent(list); //부모-자식 지정.
+            GameObject obj = CodeBox.AddChildInParent(list, knightPrefab);
             obj.GetComponent<WorldKnightPrefab>().SetData(k);
         }
+
+        //용병 선택 창 초기화.
+        CodeBox.ClearList(selectView);
     }
+
+    //파티 List & 오브젝트(Select View)에 요소 추가
+    public void AddKnightInParty(Knight k)
+    {
+        WorldKnightPrefab obj = CodeBox.AddChildInParent(selectView, knightPrefab).GetComponent<WorldKnightPrefab>();
+
+        //셀렉트 뷰 내부에 있기 때문에 데이터 호출 후, 기능 제한.
+        obj.KngihtInSelectView(k);
+       
+    }
+    //파티 List & 오브젝트(Select View)에서 삭제
+    public void RemoveKnightInParty(Knight k)
+    {
+        foreach(Transform t in knightList.transform)
+        {
+            WorldKnightPrefab obj = t.GetComponent<WorldKnightPrefab>();
+            if(k.num == obj.k.num)
+            {
+                obj.IsType(0);
+                break;
+            }
+                
+        }
+        foreach(Transform t in selectView)
+        {
+            Knight k_ = t.GetComponent<WorldKnightPrefab>().k;
+            if(k.num == k_.num)
+            {
+                Destroy(t.gameObject);
+                break;
+            }
+        }
+    }
+    #endregion
+
+    #region 1-4. 출전! (xml추가 필)
+    public void ParticipateInDungeon()
+    {
+        int size = selectView.childCount;
+        int[] arr = new int[size];
+
+        for(int i = 0 ; i < size; i++)
+        {
+            Transform t = selectView.GetChild(i);
+            Knight k = t.GetComponent<WorldKnightPrefab>().k;
+
+            arr[i] = k.num;
+        }
+
+        unit.AddTeam(arr);
+
+        selectKnighObj.SetActive(false);
+    }
+
     #endregion
 
 
