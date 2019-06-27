@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 #region Unit, Knight Class Info
 
@@ -26,7 +27,7 @@ public class Knight
     public bool[,] tolerance;
     
     //Unit – team 탐색을 통해 지정.
-    public int teaming;
+    public bool teaming = false;
     
 
     //xml로드 값
@@ -41,13 +42,14 @@ public class Knight
 }
 #endregion
 
+
 public class UnitData : MonoBehaviour
 {
     public SkinData skins;
 
     public List<Knight> knights = new List<Knight>(); //기사리스트
     public List<int> heroList = new List<int>(); //영웅 리스트
-    public int[,] team; //팀
+    private List<int[]> team = new List<int[]>();//팀
     
     
 
@@ -56,20 +58,20 @@ public class UnitData : MonoBehaviour
         Knight testKight = new Knight(1, "테스트용사", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
-                         skins.closet[1]);
+                         skins.closet[0]);
                          
         knights.Add(testKight);
         //테스트 용사2
-        testKight = new Knight(2, "테스트용사2", 1, 1, 0, new int[]{1,1,1,1,1},
+        testKight = new Knight(2, "테스트마법", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
                          skins.closet[1]);
         knights.Add(testKight);
         //테스트 용사3
-        testKight = new Knight(3, "테스트용사3", 1, 1, 0, new int[]{1,1,1,1,1},
+        testKight = new Knight(3, "테스트도적", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
-                         skins.closet[1]);
+                         skins.closet[2]);
         knights.Add(testKight);
     }
 
@@ -95,5 +97,22 @@ public class UnitData : MonoBehaviour
 
     }
     #endregion
+
+    public void AddTeam(int[] list)
+    {
+        for(int i = 0 ; i < list.Length ; i++)
+        {
+            //-1을 하는 이유는 knight는 1부터 저장된다.
+            knights[list[i]-1].teaming = true;
+            
+        }
+
+        team.Add(list);
+    }
+
+    public void RemoveTeam(int num)
+    {
+
+    }
 
 }
