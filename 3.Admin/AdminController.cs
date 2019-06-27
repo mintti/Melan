@@ -15,15 +15,11 @@ public class AdminController : MonoBehaviour
     //KightList생성
     public void MakeKinghtList(Transform list)
     {
-        foreach(Transform t in list)
-        {
-            Destroy(t.gameObject);
-        }
+        CodeBox.ClearList(list);
 
         foreach(Knight k in unit.knights)
         {
-            GameObject obj = Instantiate(knightPrefab);
-            obj.transform.SetParent(list); //부모-자식 지정.
+            GameObject obj = CodeBox.AddChildInParent(list, knightPrefab);
             obj.GetComponent<KnightPrefab>().SetData(k);
         }
     }
