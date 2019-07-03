@@ -28,6 +28,11 @@ public class WorldController : MonoBehaviour
 
     public Transform selectView;
 
+    //UI - World선택시 위치 0 0으로 초기화
+    public void ResetPos()
+    {
+        map.anchoredPosition = new Vector2(0,0);
+    }
     
     
     #region 1-1. 던전 선택 시, 가운데로 이동 : 코드
@@ -37,10 +42,19 @@ public class WorldController : MonoBehaviour
         Vector2 targetPos = new Vector2(tr.localPosition .x * -1, tr.localPosition.y * -1);
         if(corou_RN) //코루틴 충돌 방지
         {
-            StopCoroutine(coroutine);
+            StopMoveCorou();
         }
         coroutine = StartCoroutine(move1_1(targetPos));
         corou_RN = true;
+    }
+    //코루틴 실행 상태에서 타 스크린 클릭시 코루틴 정지
+    public void StopMoveCorou()
+    {
+        if(corou_RN) //코루틴 충돌 방지
+        {
+            StopCoroutine(coroutine);
+            corou_RN = false;
+        }
     }
 
     //해당 위치로 map을 이동해줌. float라 무한 루틴 걸릴 수도 있어서 오차 ±1해줌.
@@ -52,8 +66,7 @@ public class WorldController : MonoBehaviour
             //map이 타겟에 도달시 코루틴 해제. (시간 대비로 x, y 값 계산해서 이동하는 거라 비례되니 x만 비교해도됨.)
             if(target.x < map.anchoredPosition.x +1 && target.x > map.anchoredPosition.x -1)
             {
-                StopCoroutine(coroutine);
-                corou_RN = false;        
+                StopMoveCorou();
             }
 
             //SmoothDamp(현재 위치 값, 타겟 위치, 현재 속도 : 매번 호출함으로써 수정됨, 타겟에 도착하는 대략적인 시간)
@@ -72,8 +85,9 @@ public class WorldController : MonoBehaviour
     #region 1-2. 던전 선택 후, 출전 클릭 시 : 코드
     public void SelectDungeon()
     {
-        selectKnighObj.SetActive(true);
         d = col.d;
+        if(d.isAdmit())  selectKnighObj.SetActive(true);
+        
     }
 
     #endregion
@@ -131,7 +145,7 @@ public class WorldController : MonoBehaviour
     public void ParticipateInDungeon()
     {
         int size = selectView.childCount;
-        int[] arr = new int[size];
+        int[] arr = new int[size + 1];
 
         for(int i = 0 ; i < size; i++)
         {
@@ -141,7 +155,9 @@ public class WorldController : MonoBehaviour
             arr[i] = k.num;
         }
 
-        unit.AddTeam(arr);
+        //배열의 마지막에 Dungeon정보 저장.
+        arr[arr.Length- 1] = d.num;
+        unit.AddParty(arr);
 
         selectKnighObj.SetActive(false);
     }
