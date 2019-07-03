@@ -39,7 +39,7 @@ public class DungeonInfoGuide : MonoBehaviour
         foreach(int i in d.monsters)
         {
             GameObject obj = Instantiate(QmarkImg);
-            obj.transform.SetParent(monsterList.transform);
+            obj.transform.SetParent(monsterList.transform, false);
 
             //추후 클리어시 Qmark의 img(0번째 자식)의 sprite가 변경되게 해야함.
             /* 
@@ -51,7 +51,7 @@ public class DungeonInfoGuide : MonoBehaviour
         foreach(int i in d.dangers)
         {
             GameObject obj = Instantiate(QmarkImg);
-            obj.transform.SetParent(dangerList.transform);
+            obj.transform.SetParent(dangerList.transform, false);
         }
     
     }
