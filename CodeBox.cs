@@ -17,7 +17,7 @@ public class CodeBox : MonoBehaviour
     public static GameObject AddChildInParent(Transform parent, GameObject child)
     {
         GameObject obj = Instantiate(child);
-        obj.transform.SetParent(parent); //부모-자식 지정.
+        obj.transform.SetParent(parent, false); //부모-자식 지정.
 
         return obj;
     }
