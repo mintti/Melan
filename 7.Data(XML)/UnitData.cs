@@ -39,6 +39,30 @@ public class Knight
         usedSkill = _usedSkill; skillPoint = _skillPoint; favor = _favor; day = _day; stress = _stress;
         skin = _skin;
     }
+
+    public void Test_Stat(int _hp, int _power)
+    {
+        hp = _hp;
+        _power = _power;
+    }
+}
+
+
+public class Party
+{
+    public int dungoenNum;
+    public int[] kngihtNum;
+    public int[] hp;
+    public int[] stress;
+    public int day{get;set;}
+
+    public Party(int _dNum, int[] _kNum, int[] _hp, int[] _stress)
+    {  
+        dungoenNum = _dNum;
+        kngihtNum = _kNum;
+        hp = _hp;
+        stress = _stress;
+    }
 }
 #endregion
 
@@ -49,29 +73,32 @@ public class UnitData : MonoBehaviour
 
     public List<Knight> knights = new List<Knight>(); //기사리스트
     public List<int> heroList = new List<int>(); //영웅 리스트
-    private List<int[]> team = new List<int[]>();//팀
+    public List<Party> partys = new List<Party>();
     
     
 
     public void Test_InsertData()
     {
-        Knight testKight = new Knight(1, "테스트용사", 1, 1, 0, new int[]{1,1,1,1,1},
+        Knight testKight = new Knight(0, "테스트용사", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
                          skins.closet[0]);
-                         
+        testKight.Test_Stat(20, 10);
         knights.Add(testKight);
+
         //테스트 용사2
-        testKight = new Knight(2, "테스트마법", 1, 1, 0, new int[]{1,1,1,1,1},
+        testKight = new Knight(1, "테스트마법", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
                          skins.closet[1]);
+        testKight.Test_Stat(10, 12);
         knights.Add(testKight);
         //테스트 용사3
-        testKight = new Knight(3, "테스트도적", 1, 1, 0, new int[]{1,1,1,1,1},
+        testKight = new Knight(2, "테스트도적", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
                          skins.closet[2]);
+        testKight.Test_Stat(10, 8);
         knights.Add(testKight);
     }
 
@@ -98,18 +125,27 @@ public class UnitData : MonoBehaviour
     }
     #endregion
 
-    public void AddTeam(int[] list)
+    public void AddParty(int[] list) //list[0~n : Knight, n +1 : dungeon]
     {
-        for(int i = 0 ; i < list.Length ; i++)
+        int size = list.Length -1;
+
+        int dNum = list[size-1];
+        int[] Karr = new int[size];
+        int[] HParr = new int[size];
+        int[] Sarr = new int[size];
+
+        for(int i = 0 ; i < size; i++)
         {
-            //-1을 하는 이유는 knight는 1부터 저장된다.
-            knights[list[i]-1].teaming = true;
-            
+            knights[list[i]].teaming = true;
+            Karr[i] = list[i];
+            HParr[i] = knights[list[i]].hp;
+            Sarr[i] = knights[list[i]].stress;
         }
 
-        team.Add(list);
-    }
+        partys.Add(new Party(dNum, Karr, HParr, Sarr));
 
+    }
+    
     public void RemoveTeam(int num)
     {
 
