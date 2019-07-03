@@ -9,6 +9,7 @@ public class DataController : MonoBehaviour
     public SkillData skill;
     public DungeonData dungeon;
     public EventData event_;
+    public MonsterData monster;
 
     public TextData text;
 
@@ -24,7 +25,7 @@ public class DataController : MonoBehaviour
         skill.Test_InsertData();
         dungeon.Test_ConnectData();
         event_.Test_InsertData();
-
+        monster.Test_InsertData();
 
         text.setTextData();
     }
