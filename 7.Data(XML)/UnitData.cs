@@ -50,7 +50,7 @@ public class Knight
 
 public class Party
 {
-    public int dungoenNum;
+    public int dungeonNum;
     public int[] kngihtNum;
     public int[] hp;
     public int[] stress;
@@ -58,7 +58,7 @@ public class Party
 
     public Party(int _dNum, int[] _kNum, int[] _hp, int[] _stress)
     {  
-        dungoenNum = _dNum;
+        dungeonNum = _dNum;
         kngihtNum = _kNum;
         hp = _hp;
         stress = _stress;
@@ -129,7 +129,7 @@ public class UnitData : MonoBehaviour
     {
         int size = list.Length -1;
 
-        int dNum = list[size-1];
+        int dNum = list[size];
         int[] Karr = new int[size];
         int[] HParr = new int[size];
         int[] Sarr = new int[size];
@@ -143,7 +143,12 @@ public class UnitData : MonoBehaviour
         }
 
         partys.Add(new Party(dNum, Karr, HParr, Sarr));
+    }
 
+    //해당 인덱스 찾기
+    public int GetPartyIndex(int d)
+    {
+        return partys.FindIndex( i => i.dungeonNum == d);
     }
     
     public void RemoveTeam(int num)
