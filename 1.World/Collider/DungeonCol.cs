@@ -5,16 +5,23 @@ using UnityEngine.UI;
 
 public class DungeonCol : MonoBehaviour
 {
+    public UnitData unit;
     public DungeonInfoGuide guide;
     public GameObject DungeonExplan;
     public GameObject targetArrow;
 
     public Dungeon d{get;set;} //worldController에서 호출됨.
-    public string[] ment{get;set;} = new string[2];
+    public string[] ment{get;set;} = new string[3];
 
     private void Start()
     {
 
+    }
+
+    public void UpdateMent()
+    {
+        Text explan = DungeonExplan.transform.GetComponentInChildren<Text>();
+        explan.text = ment[2];
     }
 
     #region  Trigger영역
@@ -35,7 +42,7 @@ public class DungeonCol : MonoBehaviour
             //던전 출전 가능 여부, 확인.
             DungeonExplan.SetActive(true);
             Text explan = DungeonExplan.transform.GetComponentInChildren<Text>();
-            explan.text = ment[_d.isAdmit() ? 1 : 0];
+            explan.text = ment[unit.GetPartyIndex(d.num) == -1 ? (_d.isAdmit() ? 0 : 1) : 2];
 
         }
     }

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class WorldController : MonoBehaviour
 {
+    
+
     public GameObject world;
     public Button _bt;
     public UnitData unit;
@@ -27,6 +29,12 @@ public class WorldController : MonoBehaviour
     public GameObject knightPrefab;
 
     public Transform selectView;
+
+
+    //출전 시 이벤트 
+    public EventManager event_;
+
+
 
     //UI - World선택시 위치 0 0으로 초기화
     public void ResetPos()
@@ -86,7 +94,10 @@ public class WorldController : MonoBehaviour
     public void SelectDungeon()
     {
         d = col.d;
-        if(d.isAdmit())  selectKnighObj.SetActive(true);
+        if(d.isAdmit() && unit.GetPartyIndex(d.num) == -1)
+        {
+            selectKnighObj.SetActive(true);
+        }
         
     }
 
@@ -144,9 +155,11 @@ public class WorldController : MonoBehaviour
     #region 1-4. 출전! (xml추가 필)
     public void ParticipateInDungeon()
     {
+        //size는 출전 창에서 선택 창에 존재하는 자식 오브젝트 수로 카운트.
         int size = selectView.childCount;
-        int[] arr = new int[size + 1];
+        int[] arr = new int[size + 1]; //[0~size -1 : 기사 num, size : 던전 num ]
 
+        //셀렉뷰에 존재하는 기사의 num을 추출해 arr에 삽입
         for(int i = 0 ; i < size; i++)
         {
             Transform t = selectView.GetChild(i);
@@ -157,8 +170,12 @@ public class WorldController : MonoBehaviour
 
         //배열의 마지막에 Dungeon정보 저장.
         arr[arr.Length- 1] = d.num;
+        
+        //UnitData - Partys 리스트에 추가 / EvnetManger - AddBattle()해서 상세 데이터 입력. 
         unit.AddParty(arr);
-
+        
+        event_.AddBattle(unit.GetPartyIndex(d.num));
+        //작업 종료.
         selectKnighObj.SetActive(false);
     }
 
