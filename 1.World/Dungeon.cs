@@ -16,6 +16,7 @@ public class Dungeon : MonoBehaviour
     public GameObject next;
 
     public bool isClear;
+    
 
 
     public bool isAdmit()

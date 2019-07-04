@@ -18,11 +18,6 @@ public class EventData : MonoBehaviour
     }
 
 
-    private void Start() {
-        
-    }
-
-
     public void Test_InsertData()
     {
         todo = new Del(D_battle);
@@ -33,4 +28,11 @@ public class EventData : MonoBehaviour
     {
         todo();
     }
+
+
+
+    #region 
+    
+
+    #endregion
 }
