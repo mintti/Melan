@@ -24,7 +24,7 @@ public class DataController : MonoBehaviour
         unit.Test_InsertData();
         skill.Test_InsertData();
         dungeon.Test_ConnectData();
-        event_.Test_InsertData();
+       // event_.Test_InsertData();
         monster.Test_InsertData();
 
         text.setTextData();
@@ -32,7 +32,7 @@ public class DataController : MonoBehaviour
 
     void Test_OutPutData()
     {
-        event_.Test_OutputData();
+        //event_.Test_OutputData();
     }
 
 }

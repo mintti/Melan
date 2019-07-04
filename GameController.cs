@@ -8,6 +8,9 @@ public class GameController : MonoBehaviour
     public DataController data;
     public WorldController world;
     public AdminController admin;
+    public EventManager event_;
+
+    public EventData eventData;
 
     public static GameObject gameInstance = null;
     public static GameObject unitInstance = null;
@@ -17,6 +20,7 @@ public class GameController : MonoBehaviour
         if(gameInstance!=null)
         {
             Destroy(gameInstance);
+            Destroy(unitInstance);
         }
 
         StartSetting();
