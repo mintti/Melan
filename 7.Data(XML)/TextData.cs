@@ -8,10 +8,24 @@ public class TextData : MonoBehaviour
     public DungeonCol DungeonCol;
 
    
-   public void setTextData()
-   {
-       DungeonCol.ment[0] = "출전 가능. 이곳을 눌러 준비해주세요.";
-       DungeonCol.ment[1] = "출전 불가능. 이전 던전 클리어 필요.";
-       DungeonCol.ment[2] = "출전 불가능. 토벌간 파티 존재.";
+    public void setTextData()
+    {
+       DungeonCol.ment[0] = string.Format("출전 가능. 이곳을 눌러 준비해주세요.");
+       DungeonCol.ment[1] = string.Format("출전 불가능. 이전 던전 클리어 필요.");
+       DungeonCol.ment[2] = string.Format("출전 불가능. 토벌간 파티 존재.");
+
+
+       World_Work_Prefab();
+    }
+
+
+    public static string[] workList_Prefab_ment;
+    public static Sprite[] workList_Prefab_Image = new Sprite[3];
+    public static void World_Work_Prefab()
+    {
+       string[] workList_Prefab_ment = new string[3];
+       workList_Prefab_ment[0] = string.Format("출전 중 몬스터 발견!");
+       workList_Prefab_ment[0] = string.Format("테스트 멘트2");
+       workList_Prefab_ment[0] = string.Format("테스트 멘트3");
    }
 }
