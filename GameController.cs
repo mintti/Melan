@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     public EventManager event_;
 
     public EventData eventData;
-
+    public PlayerData player;
     public static GameObject gameInstance = null;
     public static GameObject unitInstance = null;
 
@@ -52,6 +52,19 @@ public class GameController : MonoBehaviour
     public void ClickCastle()
     {
         bt.interactable  = event_.todayWork.Count == 0 ?  true : false;
+    }
+
+     public void NextDay()
+    {
+        //이벤트 재생성
+        event_.ChangeWork();
+        //버블 텍스트 변경.
+        event_.SetText();
+
+        //Day추가.        
+        player.NextDay();
+        player.UpdateText();
+
     }
 
 }

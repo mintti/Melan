@@ -24,7 +24,6 @@ public class PlayerData : MonoBehaviour
     public void NextDay()
     {
         day++;
-        UpdateText();
     }
 
     public void UpdateText()
