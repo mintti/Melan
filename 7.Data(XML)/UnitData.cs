@@ -146,9 +146,9 @@ public class UnitData : MonoBehaviour
     }
 
     //해당 인덱스 찾기
-    public int GetPartyIndex(int d)
+    public int GetPartyIndex(int n)
     {
-        return partys.FindIndex( i => i.dungeonNum == d);
+        return partys.FindIndex( i => i.dungeonNum == n);
     }
     
     public void RemoveTeam(int num)
