@@ -9,18 +9,23 @@ public class DungeonData : MonoBehaviour
     public Transform Aragaya;
     public Transform Benuxu;
 
-    public List<Dungeon> dungeons = new List<Dungeon>();
+    public Dungeon[] dungeons;
 
     public void Test_ConnectData()
     {
+        int cnt = Aragaya.childCount + Benuxu.childCount;
+        Array.Resize(ref dungeons, cnt+1);
+
+        cnt = 1;
+
         foreach(Transform tr in Aragaya)
         {
-            dungeons.Add(tr.GetComponent<Dungeon>());
+            dungeons[cnt++] = tr.GetComponent<Dungeon>();
         }
 
         foreach(Transform tr in Benuxu)
         {
-            dungeons.Add(tr.GetComponent<Dungeon>());
+            dungeons[cnt++] = tr.GetComponent<Dungeon>();
         }
     }
 
