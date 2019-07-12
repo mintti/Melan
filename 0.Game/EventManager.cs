@@ -83,19 +83,26 @@ public class EventManager : MonoBehaviour
 
     public static BattleLog log; //Battle에 저장될 work인자.
     public GameObject isCheck;
+    private Transform tr_Work = null; //더블클릭인가? 
     //2. List에서 인자 클릭시 이벤트 실행.
-    public void SelectWork(Work w)
+    public void SelectWork(Transform tr)
     {
         //type에 알맞는 img로 WorkList - Left(obj)변경
+        Work w = tr.GetComponent<WorkPrefab>().w;
         left.sprite = imgList[w.type];
-        if(log.w != w) //첫클릭 인경우.
+        if(tr_Work != tr) //첫클릭 인경우.
         {
-            log.w = w;
+            tr_Work = tr;
         }
-        else
+        else //더블클릭한 경우
         {
+            isCheck.SetActive(true);
+        }
+    }
 
-        }
+    public void SelectWork_Check()
+    {
+        
     }
     
 
