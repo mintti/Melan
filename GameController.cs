@@ -13,17 +13,23 @@ public class GameController : MonoBehaviour
 
     public EventData eventData;
     public PlayerData player;
+
+
+
+    /* 
     public static GameObject gameInstance = null;
     public static GameObject unitInstance = null;
-
+    */
+    
     void Start()
     {
+        /*
         if(gameInstance!=null)
         {
             Destroy(gameInstance);
             Destroy(unitInstance);
         }
-
+        */
         StartSetting();
     }
 
@@ -35,8 +41,14 @@ public class GameController : MonoBehaviour
 
     private void StartSetting()
     {
+        //데이타 로드
+        
+        data.Test_InsertData();
+        data.LoadXml();
+        //
         world.Click();
         event_.SetText();
+
     }
 
     public void Test_LoadScene()
@@ -64,6 +76,9 @@ public class GameController : MonoBehaviour
         //Day추가.        
         player.NextDay();
         player.UpdateText();
+
+        //해당 데이터 저장
+        //data.SaveOverlapXml();
 
     }
 
