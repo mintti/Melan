@@ -14,10 +14,11 @@ public class PlayerData : MonoBehaviour
     public Text dayText;
 
 
-    public void Test_InsertData()
+    public void SetData(int _day, int _gold)
     {
-        gold = 100; 
-        day = 1;
+        gold = _gold;
+        day = _day;
+
         UpdateText(); 
     }
 
@@ -31,7 +32,5 @@ public class PlayerData : MonoBehaviour
         dayText.text = string.Format("+{0}", day);
         goldText.text = string.Format("{0}", gold);
     }
-
-
     
 }
