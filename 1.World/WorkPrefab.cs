@@ -24,6 +24,6 @@ public class WorkPrefab : MonoBehaviour
 
     public void Click()
     {
-        parent.SelectWork(w);
+        parent.SelectWork(transform);
     }
 }
