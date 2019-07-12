@@ -37,4 +37,19 @@ public class CodeBox : MonoBehaviour
    }   
 
 
+    //string -> int[] 로 반환. ex) "51245" -> int[]{5, 1, 2, 4, 5}
+    public static int[] StringAsIntArr(string s)
+    {
+        int n = System.Convert.ToInt32(s);
+        int size = s.Length;
+        int[] arr = new int[size];
+
+        for(int i = 1; n>0; n/=10)
+        {
+            arr[size - i++] = n%10;
+        }
+
+        return arr;
+    }
+
 }
