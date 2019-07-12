@@ -12,6 +12,10 @@ public class Dungeon : MonoBehaviour
     public int[] dangers;
     public int[] events;
     
+    //보상
+    public int gold;
+    public int exper; 
+
     public Dungeon before;
     public GameObject next;
 
