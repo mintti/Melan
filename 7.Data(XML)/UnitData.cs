@@ -19,6 +19,9 @@ public class Knight
     public int favor;
     public int day;
     public int stress;
+    public int[] skinArr;
+
+    //추후 Array로 바꾸기.
     public Sprite skin; //Unit.skins.closet[skinNum]으로 호출됨.
 
     //[XML]로드 이후, 스킬 탐색 함수를 통해 값이 지정된다.
@@ -29,15 +32,16 @@ public class Knight
     //Unit – team 탐색을 통해 지정.
     public bool teaming = false;
     
+   
 
     //xml로드 값
     public Knight(int _num, string _name, int _job, int _level, int _exper, int[] _skill,
                   bool[] _usedSkill, int _skillPoint, int _favor, int _day, int _stress,
-                  Sprite _skin)
+                  int[] _skinArr)
     {
         num = _num; name = _name; job = _job; level = _level; exper = _exper; skill = _skill;
         usedSkill = _usedSkill; skillPoint = _skillPoint; favor = _favor; day = _day; stress = _stress;
-        skin = _skin;
+        skinArr = _skinArr;
     }
 
     public void Test_Stat(int _hp, int _power)
@@ -75,33 +79,56 @@ public class UnitData : MonoBehaviour
     public List<int> heroList = new List<int>(); //영웅 리스트
     public List<Party> partys = new List<Party>();
     
-    
+
+    //Knight - SkinArr 탐색 후 Skin에 매칭시킴.
+    public void SetSkin(int num)
+    {
+        int i = knights.FindIndex(o => o.num == num);
+
+        knights[i].skin = skins.closet[knights[i].skinArr[0]];
+        //추후 array탐색형식으로 변경.
+        /*
+        for(int j = 0; j < 1; j++)
+        {
+
+        }
+         */
+    }
+
 
     public void Test_InsertData()
     {
         Knight testKight = new Knight(0, "테스트용사", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
-                         skins.closet[0]);
+                         new int[]{0});
         testKight.Test_Stat(20, 10);
         knights.Add(testKight);
+        SetSkin(0);
 
         //테스트 용사2
         testKight = new Knight(1, "테스트마법", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
-                         skins.closet[1]);
+                         new int[]{1});
         testKight.Test_Stat(10, 12);
         knights.Add(testKight);
+        SetSkin(1);
+        
         //테스트 용사3
         testKight = new Knight(2, "테스트도적", 1, 1, 0, new int[]{1,1,1,1,1},
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
-                         skins.closet[2]);
+                         new int[]{2});
         testKight.Test_Stat(10, 8);
         knights.Add(testKight);
+        SetSkin(2);
     }
 
+    public void SetData(Knight k)
+    {
+        
+    }
     #region 데이터세팅.추후 설정.
     //데이터 load 함수. 로직참고.
     void AdminDataLoad(){
