@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public WorldController world;
     public AdminController admin;
     public EventManager event_;
+    public ObjectController obj;
 
     public EventData eventData;
     public PlayerData player;
@@ -40,21 +41,39 @@ public class GameController : MonoBehaviour
     }
 
     private void StartSetting()
-    {
-        //데이타 로드
+    { 
         
+        data.LoadResource();
+        DataController.InstanceUpdata();
         data.Test_InsertData();
-        data.LoadXml();
+        data.LoadXml("SecondData");
+        /*
+        //데이타 로드
+        if(DataController.Instance == null)
+        {
+            data.Test_InsertData();
+            data.LoadXml("SecondData");
+            Debug.Log("첫 로드");
+        }
+        else
+        {
+            data  = DataController.Instance;
+            eventData = EventData.Instance;
+            player = PlayerData.Instance;
+            Debug.Log("기존 데이터 로드");
+
+            obj.DungeonSearch();
+        }
         //
         world.Click();
         event_.SetText();
-
+     */
     }
 
     public void Test_LoadScene()
     {
-        DontDestroyOnLoad(this);
-        DontDestroyOnLoad(data);
+        //DontDestroyOnLoad(this);
+        DataController.InstanceUpdata();
         SceneManager.LoadScene("2.Battle");
     }
 
@@ -63,7 +82,7 @@ public class GameController : MonoBehaviour
     public Button bt;
     public void ClickCastle()
     {
-        bt.interactable  = event_.todayWork.Count == 0 ?  true : false;
+        bt.interactable  = EventData.Instance.todayWork.Count == 0 ?  true : false;
     }
 
      public void NextDay()
