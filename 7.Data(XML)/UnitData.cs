@@ -30,7 +30,7 @@ public class Knight
     public bool[,] tolerance;
     
     //Unit – team 탐색을 통해 지정.
-    public bool teaming = false;
+    public bool teaming;
     
    
 
@@ -47,11 +47,11 @@ public class Knight
     public void Test_Stat(int _hp, int _power)
     {
         hp = _hp;
-        _power = _power;
+        power = _power;
     }
 }
 
-
+[System.Serializable]
 public class Party
 {
     public int dungeonNum;
@@ -60,12 +60,14 @@ public class Party
     public int[] stress;
     public int day{get;set;}
 
-    public Party(int _dNum, int[] _kNum, int[] _hp, int[] _stress)
+    public Party(int _dNum, int[] _kNum, int[] _hp, int[] _stress, int day)
     {  
         dungeonNum = _dNum;
         kngihtNum = _kNum;
         hp = _hp;
         stress = _stress;
+
+        DataController.InstanceUpdata();
     }
 }
 #endregion
@@ -78,7 +80,6 @@ public class UnitData : MonoBehaviour
     public List<Knight> knights = new List<Knight>(); //기사리스트
     public List<int> heroList = new List<int>(); //영웅 리스트
     public List<Party> partys = new List<Party>();
-    
 
     //Knight - SkinArr 탐색 후 Skin에 매칭시킴.
     public void SetSkin(int num)
@@ -156,11 +157,11 @@ public class UnitData : MonoBehaviour
     {
         int size = list.Length -1;
 
-        int dNum = list[size];
+        int dNum = list[size - 1];
         int[] Karr = new int[size];
         int[] HParr = new int[size];
         int[] Sarr = new int[size];
-
+        
         for(int i = 0 ; i < size; i++)
         {
             knights[list[i]].teaming = true;
@@ -169,7 +170,7 @@ public class UnitData : MonoBehaviour
             Sarr[i] = knights[list[i]].stress;
         }
 
-        partys.Add(new Party(dNum, Karr, HParr, Sarr));
+        partys.Add(new Party(dNum, Karr, HParr, Sarr, list[size]));
     }
 
     //해당 인덱스 찾기

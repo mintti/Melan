@@ -5,32 +5,6 @@ using UnityEngine.UI;
 using System;
 
 
-public class Work
-{
-    public int type;
-    public int who;
-    public int[] what;
-
-    /*************************************
-    * type = 0 : 전투    int party.num    int[] monster
-    *        1 : 
-    * 
-    * 
-    * 
-     ************************************/
-
-     public Work(int _type, int _who, int[] _what)
-     {
-         type = _type;
-         who = _who;
-         what = _what;
-     }
-     public void What(int[] arr)
-     {
-        Array.Resize(ref what, arr.Length);
-        what = arr;
-     }
-}
 
 public class BattleLog
 {
@@ -42,15 +16,17 @@ public class EventManager : MonoBehaviour
 {
     public DungeonData dungeon;
     public UnitData unit;
+    public EventData data;
 
+    private void Start()
+    {
+        data = EventData.Instance;
+    }
 
-    public List<Work> todayWork = new List<Work>();
-    public List<Work> nextWork = new List<Work>();
-    
     #region NextWork 추가 함수
     public void AddBattle(int who)
     {
-        nextWork.Add(new Work(0, who, null)); 
+        EventData.Instance.nextWork.Add(new Work(0, who, null)); 
     }
 
     #endregion
@@ -62,7 +38,7 @@ public class EventManager : MonoBehaviour
     // * World - Bubble 버튼 text.
     public void SetText()
     {
-        workText.text = string.Format("{0}", todayWork.Count);
+        workText.text = string.Format("{0}", EventData.Instance.todayWork.Count);
     }
     
     //1. Bubble버튼 클릭 시 List 출력
@@ -70,7 +46,7 @@ public class EventManager : MonoBehaviour
     {
         CodeBox.ClearList(list);
 
-        foreach(Work w in todayWork)
+        foreach(Work w in EventData.Instance.todayWork)
         {
             GameObject obj = CodeBox.AddChildInParent(list, workPrefab);
             obj.GetComponent<WorkPrefab>().SetData(w);
@@ -105,13 +81,12 @@ public class EventManager : MonoBehaviour
         
     }
     
-
     // * Game - NextDay() 시,
     //   nextWork -> todayWork 로 변경
 
     public void ChangeWork()
     {
-        foreach(Work w in nextWork)
+        foreach(Work w in EventData.Instance.nextWork)
         {
             switch(w.type)
             {
@@ -135,7 +110,7 @@ public class EventManager : MonoBehaviour
                     w.What(arr);
                     
                     //투데이에 추가해줌.
-                    todayWork.Add(w);
+                    EventData.Instance.todayWork.Add(w);
                     break;
                 default:
                     Debug.Log("오류");
@@ -143,7 +118,8 @@ public class EventManager : MonoBehaviour
             }
         }
         //nextWork 초기화
-        nextWork.Clear();
+        EventData.Instance.nextWork.Clear();
     }
+    
     #endregion
 }
