@@ -2,35 +2,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
+public class Work
+{
+    public int type;
+    public int who;
+    public int[] what;
 
-delegate void Del();
+    /*************************************
+    * type = 0 : 전투    int party.num    int[] monster
+    *        1 : 
+    * 
+    * 
+    * 
+     ************************************/
+
+     public Work(int _type, int _who, int[] _what)
+     {
+         type = _type;
+         who = _who;
+         what = _what;
+     }
+     public void What(int[] arr)
+     {
+        Array.Resize(ref what, arr.Length);
+        what = arr;
+     }
+}
+
 
 public class EventData : MonoBehaviour
 {
-
-         /*델리게이트 테스트
-    Del todo;
-
-    public static void D_battle()
+    private static EventData _instance;
+    public static EventData Instance
     {
-        Debug.Log("전투");
-    }
-    public static void D_day()
-    {
-        Debug.Log("정규 행사");
-    }
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = FindObjectOfType(typeof(EventData)) as EventData;
 
-
-    public void Test_InsertData()
-    {
-        todo = new Del(D_battle);
-        todo += D_day;
+                if(_instance == null)
+                {
+                    Debug.LogError("There's no active EventData object");
+                }
+            }
+            return _instance;
+        }
     }
 
-    public void Test_OutputData()
-    {
-        todo();
-    }
-    */
+    public List<Work> todayWork = new List<Work>();
+    public List<Work> nextWork = new List<Work>();
+    
 }

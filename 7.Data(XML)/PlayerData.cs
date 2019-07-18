@@ -5,22 +5,45 @@ using UnityEngine.UI;
 
 public class PlayerData : MonoBehaviour
 {
+     private static PlayerData _instance;
+    public static PlayerData Instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = FindObjectOfType(typeof(PlayerData)) as PlayerData;
+
+                if(_instance == null)
+                {
+                    Debug.LogError("There's no active PlayerData object");
+                }
+            }
+            return _instance;
+        }
+    }
+
+
     #region PlayerData
-    public int gold;
-    public int day;
+    private int gold = 0;
+    private int day = 0;
+
+    public int Gold{
+        get{ return gold; }
+        set{ gold = value;
+            UpdateText(); }
+    }
+    public int Day{
+        get{ return day;}
+        set{ day = value; 
+            UpdateText(); }
+    }
     #endregion
     
     public Text goldText;
     public Text dayText;
 
 
-    public void SetData(int _day, int _gold)
-    {
-        gold = _gold;
-        day = _day;
-
-        UpdateText(); 
-    }
 
     public void NextDay()
     {
