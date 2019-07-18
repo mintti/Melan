@@ -11,11 +11,11 @@ public class DungeonCol : MonoBehaviour
     public GameObject targetArrow;
 
     public Dungeon d{get;set;} //worldController에서 호출됨.
-    public string[] ment{get;set;} = new string[3];
+    private string[] ment{get;set;} = new string[3];
 
     private void Start()
     {
-
+        ment = TextData.Instance.dungoenCol_Ment;
     }
 
     public void UpdateMent()
@@ -34,7 +34,7 @@ public class DungeonCol : MonoBehaviour
             obj.transform.SetParent(col.transform, false);
 
             //해당 던전 정보를 guide에 전달.
-            Dungeon _d = col.GetComponent<Dungeon>();
+            Dungeon _d = col.GetComponent<DungeonObj>().d;
             d = _d;
             guide.gameObject.SetActive(true); 
             guide.SetData(d);
