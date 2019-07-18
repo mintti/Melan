@@ -33,6 +33,7 @@ public class WorldKnightPrefab : MonoBehaviour
 
     public void SetData(Knight _k)
     {
+        
         k = _k;
         skin.sprite = k.skin;
 
@@ -41,6 +42,7 @@ public class WorldKnightPrefab : MonoBehaviour
         {
             IsType(1);
         }
+
     }
 
     //Obj Button 클릭시 호출됨.

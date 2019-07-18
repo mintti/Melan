@@ -18,7 +18,7 @@ public class WorkPrefab : MonoBehaviour
     {
         w = _w;
 
-        text.text = TextData.workList_Prefab_ment[w.type];
+        text.text = TextData.Instance.workList_Prefab_ment[w.type];
         //icon.sprite = TextData.workList_Prefab_Image[w.type];
     }
 
