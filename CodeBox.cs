@@ -52,4 +52,16 @@ public class CodeBox : MonoBehaviour
         return arr;
     }
 
+    public static int[] StringSplit(string s)
+    {
+        string[] sArr = s.Split(',');
+        int[] Arr = new int[sArr.Length];
+
+        for(int i = 0; i< sArr.Length; i++)
+        {
+            Arr[i] = System.Convert.ToInt32(sArr[i]);
+        }
+
+        return Arr;
+    }
 }
