@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class CodeBox : MonoBehaviour
 {
+
     //Object 자식 제거 함수
     public static void ClearList(Transform list)
     {
@@ -63,5 +65,15 @@ public class CodeBox : MonoBehaviour
         }
 
         return Arr;
+    }
+
+    public static void PrintError(string msg)
+    {
+        GameObject msgObj = Resources.Load("Prefabs/msgObj") as GameObject;
+        msgObj.transform.GetComponentInChildren<Text>().text = msg;
+        Instantiate(msgObj, new Vector3(0, 0, 0), Quaternion.identity);
+
+        GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+        msgObj.transform.SetParent(canvas.transform, false);
     }
 }
