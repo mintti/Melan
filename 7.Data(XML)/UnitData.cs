@@ -51,10 +51,35 @@ public class Knight
     }
 }
 
+public enum AliveType
+{
+    생존,
+    죽음
+}
+public class KnightState
+{
+    public Knight k;
+    public AliveType type;
+    public int hp;
+    public int stress;
+    public List<SkillImpact> impact;//상태이상여부.
+
+    public KnightState(Knight _k)
+    {
+        k = _k;
+        type = AliveType.생존;
+        hp = k.hp;
+        stress = k.stress;
+        
+        //state = 추후..?
+    }
+}
 [System.Serializable]
 public class Party
 {
     public int dungeonNum;
+    public KnightState[] knights;
+
     public int[] kngihtNum;
     public int[] hp;
     public int[] stress;
