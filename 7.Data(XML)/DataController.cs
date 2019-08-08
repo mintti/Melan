@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Xml;
 using System.IO;
 
+
 public class DataController : MonoBehaviour
 {
 
@@ -35,10 +36,10 @@ public class DataController : MonoBehaviour
     {
         if(_instance != null)
         {
+           
             Destroy(this.gameObject);
             return;
         }
-
         _instance = this;
         DontDestroyOnLoad(this);
     
@@ -53,6 +54,8 @@ public class DataController : MonoBehaviour
     public SkinData skin;
 
     public TextData text;
+
+    public Battle Bdata;//이멘트 보내기 전투 데이타.
 
     public void Test_InsertData()
     {

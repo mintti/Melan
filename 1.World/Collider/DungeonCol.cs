@@ -35,6 +35,7 @@ public class DungeonCol : MonoBehaviour
 
             //해당 던전 정보를 guide에 전달.
             Dungeon _d = col.GetComponent<DungeonObj>().d;
+            
             d = _d;
             guide.gameObject.SetActive(true); 
             guide.SetData(d);
@@ -55,7 +56,7 @@ public class DungeonCol : MonoBehaviour
             Destroy(col.transform.GetChild(0).gameObject);
 
             //지목된 던전과 guide의 타겟인 던전이 일치?
-            Dungeon _d = col.GetComponent<Dungeon>();
+            Dungeon _d = col.GetComponent<DungeonObj>().d;
             if(_d == guide.d)
             {
                 guide.gameObject.SetActive(false);    

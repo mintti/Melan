@@ -6,6 +6,25 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    private static GameController _instance;
+    public static GameController Instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = FindObjectOfType(typeof(GameController)) as GameController;
+
+                if(_instance == null)
+                {
+                    Debug.LogError("There's no active GameController object");
+                }
+            }
+            return _instance;
+        }
+    }
+
+
     public DataController data;
     public WorldController world;
     public AdminController admin;
@@ -15,13 +34,6 @@ public class GameController : MonoBehaviour
     public EventData eventData;
     public PlayerData player;
 
-
-
-    /* 
-    public static GameObject gameInstance = null;
-    public static GameObject unitInstance = null;
-    */
-    
     void Start()
     {
         /*
@@ -44,10 +56,15 @@ public class GameController : MonoBehaviour
     { 
         
         data.LoadResource();
-        DataController.InstanceUpdata();
-        data.Test_InsertData();
-        data.LoadXml("SecondData");
+        //DataController.InstanceUpdata();
         /*
+        data.Test_InsertData(); //샘플데이터
+        data.LoadXml("SecondData"); //Player데이타 로드
+        
+        PlayerDataUpdate();
+        obj.DungeonSearch(); //던전 탐색
+         */
+        
         //데이타 로드
         if(DataController.Instance == null)
         {
@@ -64,10 +81,18 @@ public class GameController : MonoBehaviour
 
             obj.DungeonSearch();
         }
+        
         //
         world.Click();
         event_.SetText();
-     */
+     
+    }
+
+    //UI에서 Player 정보가담긴 Text를 업데이트.
+    public void PlayerDataUpdate()
+    {
+        obj.DayTextUpdate();
+        obj.GoldTextUpdate();
     }
 
     public void Test_LoadScene()
@@ -94,8 +119,7 @@ public class GameController : MonoBehaviour
 
         //Day추가.        
         player.NextDay();
-        player.UpdateText();
-
+        
         //해당 데이터 저장
         //data.SaveOverlapXml();
 

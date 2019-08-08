@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Dungeon : MonoBehaviour
+public class Dungeon
 {
     public int num{get;set;}
     public string name{get;set;}
@@ -85,10 +85,6 @@ public class DungeonData : MonoBehaviour
 
     }
 
-    public void Start()
-    {
-        TestValue();
-    }
 
     public void TestValue()
     {

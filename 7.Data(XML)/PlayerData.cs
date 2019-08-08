@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerData : MonoBehaviour
 {
-     private static PlayerData _instance;
+    private static PlayerData _instance;
     public static PlayerData Instance
     {
         get
@@ -30,30 +30,22 @@ public class PlayerData : MonoBehaviour
 
     public int Gold{
         get{ return gold; }
-        set{ gold = value;
-            UpdateText(); }
+        set{
+            gold = value;
+            GameController.Instance.PlayerDataUpdate();
+            }
     }
     public int Day{
         get{ return day;}
-        set{ day = value; 
-            UpdateText(); }
+        set{
+            day = value; 
+            GameController.Instance.PlayerDataUpdate();
+            }
     }
     #endregion
-    
-    public Text goldText;
-    public Text dayText;
-
-
 
     public void NextDay()
     {
-        day++;
+        Day++;
     }
-
-    public void UpdateText()
-    {
-        dayText.text = string.Format("+{0}", day);
-        goldText.text = string.Format("{0}", gold);
-    }
-    
 }
