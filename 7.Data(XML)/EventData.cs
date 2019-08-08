@@ -30,7 +30,19 @@ public class Work
         what = arr;
      }
 }
+public class Battle
+{
+    public Party p;
+    public Dungeon d;
+    public Monster[] m;
 
+    public Battle(Party _p, Dungeon _d, Monster[] _m)
+    {
+        p = _p;
+        d = _d;
+        m = _m;
+    }
+}
 
 public class EventData : MonoBehaviour
 {
