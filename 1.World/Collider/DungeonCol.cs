@@ -53,7 +53,7 @@ public class DungeonCol : MonoBehaviour
         if(col.tag == "Dungeon")
         {   
             //화살표 제거
-            Destroy(col.transform.GetChild(0).gameObject);
+            Destroy(col.transform.GetChild(1).gameObject);
 
             //지목된 던전과 guide의 타겟인 던전이 일치?
             Dungeon _d = col.GetComponent<DungeonObj>().d;

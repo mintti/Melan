@@ -44,6 +44,9 @@ public class DataController : MonoBehaviour
         DontDestroyOnLoad(this);
     
     }
+    private void Start() {
+        Test_InsertData();
+    }
 
     public UnitData unit;
     public SkillData skill;
