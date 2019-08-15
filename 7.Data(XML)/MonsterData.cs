@@ -12,6 +12,10 @@ public class Monster
     public int[] skill;
     public Sprite img;
 
+    public int hp;
+    public int power;
+    public int speed;
+
     public Monster(int _num, string _name, int[] _skill)
     {
         num = _num;

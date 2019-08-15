@@ -39,7 +39,7 @@ public class BattleController : MonoBehaviour
     }
 
     public Battle Bdata;
-    public State state{
+    public BattleState state{
         get{
             return state;
         }
@@ -63,7 +63,7 @@ public class BattleController : MonoBehaviour
                 Lose();
                 break;
             case BattleState.도망 :
-                scape();
+                Escape();
                 break;
             default :
                 CodeBox.PrintError("Battle - BattleController - SwitchState() 에서 예외가 생겼음.");
@@ -75,10 +75,7 @@ public class BattleController : MonoBehaviour
         phase   : 몬스터 몇 번째 페이즈?
         turn    : n페이즈의 n번째 '턴'
         who     : n번째 턴 중 '누구의 차례?'    */
-    public int phase{get;
-        set{ phase = value;
-            MonsterSetting();}
-    }
+    public int phase{get;set;}
     public int turn{get;set;}
     public int who;
 
@@ -112,12 +109,14 @@ public class BattleController : MonoBehaviour
         //      -  모든 기사와 몬스터의 요소를 Thing(ArrayList)에 집어넣음
         Bdata = DataController.Instance.Bdata;
         Party p = Bdata.p;
+        /* 구현해야할 부분.
         foreach(Knight k in p.knights)
         {
             if(k.type)
         }
-            thing.Add(k);
         
+            thing.Add(k);
+         */
         foreach(Monster m in Bdata.m)
             monsterList.Add(m);
 
@@ -144,11 +143,13 @@ public class BattleController : MonoBehaviour
                 return;
             }
             
+            /*
             //2-1-1 show와 thing 에 추가
             showMonster.Add(monsterList[0]);
             thing.Add(monsterList[0]);
             //2-1-2 호출된 몬스터는 리스트에서 삭제
-            monsterList.Remove(monsterList[0]);    
+            monsterList.Remove(monsterList[0]);
+             */    
         }
         
 
@@ -165,15 +166,26 @@ public class BattleController : MonoBehaviour
     {
         //3-1-1 생존한 존재 중에서 순서를 지정하여 배열에 넣어줌.
         //      speed에 따라 시퀀스 배열에 순서를 삽입정렬해줌. (작은 수를 앞으로)
-        sequence = new int[thing.Count];
         sequence[0] = 0;
         
+        /* 수정파트
         for(int i = 1; i < thing.Count; i++)
-        {
-            for(int j = 0 ; j < sequence.Length; j ++)
-            if(thing[i] < thing[sequence[j]])
-        }
+        {//i는 thing의 피봇..
+            for(int j = 0; j < sequence.Count; j++)
+            {
+                //3-1-1-1 만약 sequence리스트 순회 중 보다 작은 수면 앞에 삽입 후 순회탈출
+                if(thing[i].speed < thing[sequence[j]].speed)
+                {
+                    sequence.Insert(j, i);//j번재에 i삽입.
+                    break;
+                }
 
+                //3-1-1-2 최종 순회까지 작은수가 없으면 그냥 맨뒤
+                if(j == sequence.Count-1)
+                    sequence.Add(i);
+            }
+        }
+*/
         //3-1-2 턴 카운트 시작(1부터)하며 전투 시작.
         turn++;
         who = 0; //pivot이라 0부터 시작.
@@ -184,6 +196,7 @@ public class BattleController : MonoBehaviour
     //3-2 [전투] 상태임.
     public void Battle()
     {
+        /*
         //3-2-1 기사 혹은 몬스터의 공격
         if(thing[who].type)
 
@@ -206,6 +219,7 @@ public class BattleController : MonoBehaviour
         //다음 턴으로 넘어가며 함수 재호출.
 
         state = BattleState.전투; //재호출하는 부분임.
+         */
     }
     
 
@@ -215,7 +229,7 @@ public class BattleController : MonoBehaviour
         //4-1. 몬스터의 정보에서 보상을 가져와 파티 정보에 누적시킴.
         
         //4-2. 해당 몬스터 죽음 처리. thing들에서 제외시킴
-        showMonster.Remove(m);
+        //showMonster.Remove(m);
         thing.Remove(m);
         //4-2. 몬스터가 남아있는 경우 [전투], 끝난경우 [로드]로감.
         if(showMonster.Count == 0)
@@ -226,10 +240,10 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    //5. [죽음] 상태
+    //5. [죽음] 상태, 해당 기사의 정보를 직접 로드함.
     public void DieKnight(KnightState ks)
     {
-        ks.state = KnightType.죽음;
+
     }
 
     //6. [승리] 상태, [로드] 상태에서 판별 후 호출됨.
