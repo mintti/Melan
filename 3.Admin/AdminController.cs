@@ -8,10 +8,13 @@ public class AdminController : MonoBehaviour
     public GameObject knightList; //아래의 Prefab이 생성될 위치.
     public GameObject knightPrefab; //admin - knight 객체.
 
-    public UnitData unit;
+    private UnitData unit;
     
 
-
+    private void Start()
+    {
+        unit = DataController.Instance.unit;
+    }
     //KightList생성
     public void MakeKinghtList(Transform list)
     {

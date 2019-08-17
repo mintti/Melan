@@ -36,56 +36,21 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        /*
-        if(gameInstance!=null)
-        {
-            Destroy(gameInstance);
-            Destroy(unitInstance);
-        }
-        */
-        StartSetting();
+       //Data 연결
+        data = DataController.Instance;
+        eventData = EventData.Instance;
+        player = data.player;
+
+        //초기 데이터
+        obj.DungeonSearch();
+        world.Click(); //초기 화면
+        PlayerDataUpdate();
     }
 
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-    private void StartSetting()
-    { 
-        
-        data.LoadResource();
-        //DataController.InstanceUpdata();
-        /*
-        data.Test_InsertData(); //샘플데이터
-        data.LoadXml("SecondData"); //Player데이타 로드
-        
-        PlayerDataUpdate();
-        obj.DungeonSearch(); //던전 탐색
-         */
-        
-        //데이타 로드
-        if(DataController.Instance == null)
-        {
-            data.Test_InsertData();
-            data.LoadXml("SecondData");
-            Debug.Log("첫 로드");
-        }
-        else
-        {
-            data  = DataController.Instance;
-            eventData = EventData.Instance;
-            player = PlayerData.Instance;
-            Debug.Log("기존 데이터 로드");
-
-            obj.DungeonSearch();
-        }
-        
-        //
-        world.Click();
-        event_.SetText();
-     
     }
 
     //UI에서 Player 정보가담긴 Text를 업데이트.

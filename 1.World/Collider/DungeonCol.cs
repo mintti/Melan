@@ -15,6 +15,7 @@ public class DungeonCol : MonoBehaviour
 
     private void Start()
     {
+        unit = DataController.Instance.unit;
         ment = TextData.Instance.dungoenCol_Ment;
     }
 

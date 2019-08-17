@@ -12,6 +12,7 @@ public class DataController : MonoBehaviour
 
     public static DataController Instance
     {
+        
         get
         {
             if(_instance == null)
@@ -28,26 +29,30 @@ public class DataController : MonoBehaviour
     }
     public static void InstanceUpdata()
     {
-        _instance = null;
+        _instance = FindObjectOfType(typeof(DataController)) as DataController;
     }
     
-
+    
     private void Awake()
     {
+        //첫 시작이 아닌경우 본인 삭제.
         if(_instance != null)
         {
-           
+            Debug.Log("DataController - Awake() : _instance not null. this scenes script Destroy");
             Destroy(this.gameObject);
             return;
         }
+        
+        //첫 시작인 경우 데이터 삽입.
+        LoadResource();
+        Test_InsertData();
+        LoadXml("SecondData");
+
+
         _instance = this;
         DontDestroyOnLoad(this);
-    
+        Debug.Log("DataController - Awake() : _instance is null. insert script");
     }
-    private void Start() {
-        Test_InsertData();
-    }
-
     public UnitData unit;
     public SkillData skill;
     public DungeonData dungeon;

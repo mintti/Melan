@@ -9,7 +9,7 @@ public class WorldController : MonoBehaviour
 
     public GameObject world;
     public Button _bt;
-    public UnitData unit;
+    private UnitData unit;
 
     //1-1. 던전 선택 시, 가운데로 이동 : 변수 선언
     public RectTransform map;
@@ -34,6 +34,11 @@ public class WorldController : MonoBehaviour
     //출전 시 이벤트 
     public EventManager event_;
 
+    //초기 유닛데이타 컨넥팅
+    private void Start()
+    {
+        unit = DataController.Instance.unit;
+    }
 
 
     //UI - World선택시 위치 0 0으로 초기화

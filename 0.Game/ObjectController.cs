@@ -11,6 +11,9 @@ public class ObjectController : MonoBehaviour
     public Text gold;
     public Text day;
 
+    private void Start() {
+         DungeonSearch();
+    }
     public void GoldTextUpdate()
     {
         gold.text =  System.Convert.ToString(PlayerData.Instance.Gold);
@@ -23,7 +26,12 @@ public class ObjectController : MonoBehaviour
     //던전 관련 
     public Transform dungeonObj;
 
-    public void DungeonSearch() //Game에서 호출됨.
+
+    /*  던전 컨넥트..
+        던전 연결 기준은 그 리스트에서 순서대로 1....N이다.
+        고로 순서에 알맞도록 잘 배치해주어야한다.
+                    */
+    public void DungeonSearch()
     {
         DungeonData data = DungeonData.Instance;
 

@@ -14,13 +14,16 @@ public class BattleLog
 
 public class EventManager : MonoBehaviour
 {
-    public DungeonData dungeon;
-    public UnitData unit;
-    public EventData data;
+    private DungeonData dungeon;
+    private UnitData unit;
+    private EventData data;
 
     private void Start()
     {
         data = EventData.Instance;
+        unit = DataController.Instance.unit;
+        dungeon = DataController.Instance.dungeon;
+        SetText();
     }
 
     #region NextWork 추가 함수
