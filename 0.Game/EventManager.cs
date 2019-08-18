@@ -47,7 +47,7 @@ public class EventManager : MonoBehaviour
             GameObject obj = CodeBox.AddChildInParent(list, workPrefab);
             obj.GetComponent<WorkPrefab>().SetData(w);
             obj.GetComponent<WorkPrefab>().parent = this;
-        }
+        }ㄴ
     }
 
     public Sprite[] imgList;
