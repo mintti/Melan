@@ -5,13 +5,6 @@ using UnityEngine.UI;
 using System;
 
 
-
-public class BattleLog
-{
-    Work w;
-    Party p;
-}
-
 public class EventManager : MonoBehaviour
 {
     private DungeonData dungeon;
@@ -59,8 +52,7 @@ public class EventManager : MonoBehaviour
 
     public Sprite[] imgList;
     public Image left; //Work.type에 따른 이미지 변경.
-
-    public static BattleLog log; //Battle에 저장될 work인자.
+    
     public GameObject isCheck;
     private Transform tr_Work = null; //더블클릭인가? 
     //2. List에서 인자 클릭시 이벤트 실행.

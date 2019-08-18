@@ -38,8 +38,8 @@ public class BattleController : MonoBehaviour
         도망
     }
 
-    public Battle Bdata;
-    public BattleState state{
+    private Battle Bdata;
+    private BattleState state{
         get{
             return state;
         }
@@ -75,17 +75,17 @@ public class BattleController : MonoBehaviour
         phase   : 몬스터 몇 번째 페이즈?
         turn    : n페이즈의 n번째 '턴'
         who     : n번째 턴 중 '누구의 차례?'    */
-    public int phase{get;set;}
-    public int turn{get;set;}
-    public int who;
+    private int phase{get;set;}
+    private int turn{get;set;}
+    private int who;
 
 
     //몬스터 데이타
-    public GameObject[,] monsterPl; //배치된 몬스터의 위치 및 데이타
+    private GameObject[,] monsterPl; //배치된 몬스터의 위치 및 데이타
     
-    public Decoration deco;
+    private Decoration deco;
     
-    public GameObject [] player = new GameObject[4];
+    private GameObject [] player = new GameObject[4];
 
     //던전 전투 데이타
     Dungeon dungeon;
@@ -99,6 +99,8 @@ public class BattleController : MonoBehaviour
         honor = 0;
         exper = 0;
     }
+
+    
     //1. 테이타 로드.
     public List<Monster> monsterList = new List<Monster>();
     public ArrayList thing = new ArrayList();
@@ -107,10 +109,10 @@ public class BattleController : MonoBehaviour
         //1-1 . 데이타 로드.
         //      -  몬스터 위치 지정은 그냥 순서대로 4명 씩 Load함. 
         //      -  모든 기사와 몬스터의 요소를 Thing(ArrayList)에 집어넣음
-        Bdata = DataController.Instance.Bdata;
-        Party p = Bdata.p;
+        Bdata = EventData.Instance.Bdata;
+        
         /* 구현해야할 부분.
-        foreach(Knight k in p.knights)
+        foreach(Knight k in Bdata.p.knights)
         {
             if(k.type)
         }

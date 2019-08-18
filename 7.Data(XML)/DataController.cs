@@ -27,11 +27,7 @@ public class DataController : MonoBehaviour
             return _instance;
         }
     }
-    public static void InstanceUpdata()
-    {
-        _instance = FindObjectOfType(typeof(DataController)) as DataController;
-    }
-    
+
     
     private void Awake()
     {
@@ -63,7 +59,7 @@ public class DataController : MonoBehaviour
 
     public TextData text;
 
-    public Battle Bdata;//이멘트 보내기 전투 데이타.
+    
 
     public void Test_InsertData()
     {

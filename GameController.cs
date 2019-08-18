@@ -62,8 +62,6 @@ public class GameController : MonoBehaviour
 
     public void Test_LoadScene()
     {
-        //DontDestroyOnLoad(this);
-        DataController.InstanceUpdata();
         SceneManager.LoadScene("2.Battle");
     }
 

@@ -50,30 +50,10 @@ public class Knight
         power = _power;
     }
 }
+#endregion
 
-public enum AliveType
-{
-    생존,
-    죽음
-}
-public class KnightState
-{
-    public Knight k;
-    public AliveType type;
-    public int hp;
-    public int stress;
-    public List<SkillImpact> impact;//상태이상여부.
+#region Party Class Info
 
-    public KnightState(Knight _k)
-    {
-        k = _k;
-        type = AliveType.생존;
-        hp = k.hp;
-        stress = k.stress;
-        
-        //state = 추후..?
-    }
-}
 [System.Serializable]
 public class Party
 {
@@ -91,8 +71,31 @@ public class Party
         kngihtNum = _kNum;
         hp = _hp;
         stress = _stress;
+    }
+}
+//생존여부
+public enum AliveType
+{
+    생존,
+    죽음
+}
+//전투 시 Knight정보
+public class KnightState
+{
+    public Knight k;
+    public AliveType type;
+    public int hp;
+    public int stress;
+    public List<SkillImpact> impact;//상태이상여부.
 
-        DataController.InstanceUpdata();
+    public KnightState(Knight _k)
+    {
+        k = _k;
+        type = AliveType.생존;
+        hp = k.hp;
+        stress = k.stress;
+        
+        //state = 추후..?
     }
 }
 #endregion
