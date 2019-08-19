@@ -72,6 +72,12 @@ public class Party
         hp = _hp;
         stress = _stress;
     }
+
+    //Day갱신.
+    public void NextDay()
+    {
+        day--;
+    }
 }
 //생존여부
 public enum AliveType

@@ -11,10 +11,11 @@ public class WorkPrefab : MonoBehaviour
     public EventManager parent{get;set;}
     private string[] ment = new string[3];
     
+    
+
     public void SetData<T>(T e)
     {
-
-        switch(typeof(e).Name)
+        switch(typeof(T).Name)
         {
             case "Battle" :
                 text.text = TextData.Instance.workList_Prefab_ment[0];

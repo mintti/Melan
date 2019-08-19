@@ -176,10 +176,9 @@ public class WorldController : MonoBehaviour
         //배열의 마지막에 Dungeon정보 저장.
         arr[arr.Length - 2] = d.num;
         arr[arr.Length - 1] = d.day;
-        //UnitData - Partys 리스트에 추가 / EvnetManger - AddBattle()해서 상세 데이터 입력. 
+        //UnitData - Partys 리스트에 추가
         unit.AddParty(arr);
         
-        event_.AddBattle(unit.GetPartyIndex(d.num));
         //작업 종료.
         selectKnighObj.SetActive(false);
     }

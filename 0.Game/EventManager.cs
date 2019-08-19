@@ -20,14 +20,16 @@ public class EventManager : MonoBehaviour
     }
 
     #region NextWork 추가 함수
-    public void AddBattle(int who)
+    //이벤트 생성 함수.
+    public void NextDay()
     {
-        EventData.Instance.nextWork.Add(new Work(0, who, null)); 
-    }
+        //1. 파티 기반 전투 및 이벤트 생성
 
+        //2. 업무 기반
+    }
     #endregion
 
-    #region World Work List관련
+    #region World Work List관련 + 이벤트의 실행
     public Text workText;
     public GameObject workPrefab;
     
@@ -42,7 +44,7 @@ public class EventManager : MonoBehaviour
     {
         CodeBox.ClearList(list);
 
-        foreach(Work w in EventData.Instance.todayWork)
+        foreach(T w in EventData.Instance.todayWork)
         {
             GameObject obj = CodeBox.AddChildInParent(list, workPrefab);
             obj.GetComponent<WorkPrefab>().SetData(w);
@@ -76,12 +78,18 @@ public class EventManager : MonoBehaviour
         
     }
     
-    // * Game - NextDay() 시,
-    //   nextWork -> todayWork 로 변경
+    // * Party 기반으로 이벤트 생성
 
+    public void CreatePartyEvent()
+    {
+
+    }
+    /* Game - NextDay() 시,
+       nextWork -> todayWork 로 변경
+       190819_이 부분은 업무 관련 이벤트 변경..?      */
     public void ChangeWork()
     {
-        foreach(Work w in EventData.Instance.nextWork)
+        foreach(T w in EventData.Instance.nextWork)
         {
             switch(w.type)
             {
@@ -115,6 +123,5 @@ public class EventManager : MonoBehaviour
         //nextWork 초기화
         EventData.Instance.nextWork.Clear();
     }
-    
     #endregion
 }
