@@ -119,7 +119,13 @@ public class BattleController : MonoBehaviour
         
             thing.Add(k);
          */
-        foreach(Monster m in Bdata.m)
+        //1-1-2 Bdata(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
+        Monster[] monsterArr = new Monster[Bdata.m.Length];
+        for(int i = 0 ; i < Bdata.m.Length; i ++)
+        {
+            monsterArr[i] = DataController.Instance.monster.monsters[i];
+        }
+        foreach(Monster m in monsterArr)
             monsterList.Add(m);
 
         //1-2 . 던전에 따른 세팅 (데코part)

@@ -4,21 +4,33 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+//이벤트 0. 메인(연결자)
+public class Work
+{    
+    /* 
+        0 : 전투
 
 
+     */
+    public int type;
+    public int index;
 
+    public Work(int _t, int _i)
+    {
+        type = _t;
+        index = _i;
+    }
+}
 
 //이벤트 1. 전투
 public class Battle
 {
     public Party p;
-    public Dungeon d;
-    public Monster[] m;
+    public int[] m; //Monster
 
-    public Battle(Party _p, Dungeon _d, Monster[] _m)
+    public Battle(Party _p, int[] _m)
     {
         p = _p;
-        d = _d;
         m = _m;
     }
 }
@@ -45,8 +57,15 @@ public class EventData : MonoBehaviour
         }
     }
     
-    public ArrayList todayWork = new ArrayList();
-    public ArrayList nextWork = new ArrayList();
+    public List<Work> todayWork = new List<Work>();
+    public List<Work> nextWork = new List<Work>();
     
+    public List<Battle> battles = new List<Battle>();
     public Battle Bdata;//이멘트 보내기 전투 데이타.
+
+    public void Reset()
+    {
+        todayWork.Clear();
+        battles.Clear();
+    }
 }

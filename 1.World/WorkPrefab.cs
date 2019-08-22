@@ -11,18 +11,19 @@ public class WorkPrefab : MonoBehaviour
     public EventManager parent{get;set;}
     private string[] ment = new string[3];
     
-    
+    public Work w;
 
-    public void SetData<T>(T e)
+    public void SetData(Work _w)
     {
-        switch(typeof(T).Name)
+        w = _w;
+        switch(w.type)
         {
-            case "Battle" :
+            case 0 :
                 text.text = TextData.Instance.workList_Prefab_ment[0];
                 //icon.sprite = TextData.workList_Prefab_Image[w.type];
                 break;
             default :
-                Debug.Log("입력받은 class에 해당하는 유형이 없음.");
+                Debug.Log("입력받은 work에 해당하는 WorkType유형이 없음.");
                 break;
         }
     }

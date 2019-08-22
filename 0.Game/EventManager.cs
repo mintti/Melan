@@ -44,7 +44,7 @@ public class EventManager : MonoBehaviour
     {
         CodeBox.ClearList(list);
 
-        foreach(T w in EventData.Instance.todayWork)
+        foreach(Work w in EventData.Instance.todayWork)
         {
             GameObject obj = CodeBox.AddChildInParent(list, workPrefab);
             obj.GetComponent<WorkPrefab>().SetData(w);
@@ -78,50 +78,69 @@ public class EventManager : MonoBehaviour
         
     }
     
-    // * Party 기반으로 이벤트 생성
+    /* Game - NextDay() 시,
+    TodayWork 업무 생성 함수
+    */
+    public void CreateWork()
+    {
+        //초기화
+        EventData.Instance.Reset();
 
+        //업무 생성
+        CreatePartyEvent();
+        ChangeWork();
+    }
+
+    // * Party 기반으로 이벤트 생성
     public void CreatePartyEvent()
     {
-
+        foreach (Party p in unit.partys)
+        {
+            if(p.day != 0)
+            {
+                //확률 계산 후 배틀 이외 이벤트의 경우 아래에서 수행 후 탈출
+                if(false)
+                    return;
+            }
+            //N. Battle 생성
+            Dungeon d = dungeon.dungeons[p.dungeonNum];
+            
+            // 1~4명 / 1~8명... 1~16명, 최대 페이즈 4
+            int cnt = d.level <= 5 ? 5 : d.level <= 10 ? 9 : d.level <= 15 ? 13 : 17 ; 
+            cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, cnt), cnt); // (1 ~ cnt) ~ 4 사이의 값                    
+                    
+            // * 랜덤 몬스터 카운트
+            //   추후 퍼센테이지 따서 확률로 몬스터 지정하기.
+            int mLen = d.monsters.Length; 
+            int[] arr = new int[cnt];
+            for(int i = 0; i< cnt; i++)
+            {
+                arr[i] = d.monsters[UnityEngine.Random.Range(0, mLen)];
+            }
+            //Battle 생성 및 인자 전달.
+            Battle b = new Battle(p, arr);
+            EventData.Instance.battles.Add(b);
+            
+            int index = EventData.Instance.battles.IndexOf(b);
+            //투데이에 추가해줌.
+            EventData.Instance.todayWork.Add(new Work(0, index));
+        }
     }
-    /* Game - NextDay() 시,
-       nextWork -> todayWork 로 변경
+
+    
+    /* 
        190819_이 부분은 업무 관련 이벤트 변경..?      */
     public void ChangeWork()
     {
-        foreach(T w in EventData.Instance.nextWork)
+        foreach(Work w in EventData.Instance.nextWork)
         {
             switch(w.type)
             {
-                //0. 몬스터와의 전투 시 이벤트.
-                case 0: //0 : 전투    int party.num    int[] monster
-                    Dungeon d = dungeon.dungeons[unit.partys[w.who].dungeonNum];
-                    
-                    // 1~4명 / 1~8명... 1~16명, 최대 페이즈 4
-                    int cnt = d.level <= 5 ? 5 : d.level <= 10 ? 9 : d.level <= 15 ? 13 : 17 ; 
-                    cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, cnt), cnt); // (1 ~ cnt) ~ 4 사이의 값                    
-                    
-                    // * 랜덤 몬스터 카운트
-                    //   추후 퍼센테이지 따서 확률로 몬스터 지정하기.
-                    int mLen = d.monsters.Length; 
-                    int[] arr = new int[cnt];
-                    for(int i = 0; i< cnt; i++)
-                    {
-                        arr[i] = d.monsters[UnityEngine.Random.Range(0, mLen)];
-                    }
-                    //Work - What()로 인자 전달.
-                    w.What(arr);
-                    
-                    //투데이에 추가해줌.
-                    EventData.Instance.todayWork.Add(w);
-                    break;
                 default:
                     Debug.Log("오류");
                     break;
             }
         }
-        //nextWork 초기화
-        EventData.Instance.nextWork.Clear();
     }
     #endregion
 }
