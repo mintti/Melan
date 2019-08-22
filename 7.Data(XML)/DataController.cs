@@ -144,12 +144,15 @@ public class DataController : MonoBehaviour
         }
 
         //3. Party
+        /*
+            Party - LoadParty(int _d, KnightState[] _knights, int _day)
+         */
         nodes = xmlDoc.SelectNodes("PlayerData/KnightInfo/Party");
         foreach (XmlNode _node in nodes)
         {
             int num = System.Convert.ToInt32(_node.SelectSingleNode("DungeonNum").InnerText);
             //각 기사의 정보 로드.
-            XmlNodeList nodes_k = xmlDoc.SelectNodes("PlayerData/KnightInfo/Party/Knight");
+            XmlNodeList nodes_k = xmlDoc.SelectNodes("PlayerData/KnightInfo/Party/KnightState");
             int size = nodes_k.Count;
             int [] Narr = new int[size];
             int [] Harr = new int[size];
@@ -161,8 +164,8 @@ public class DataController : MonoBehaviour
                 Harr[i] = System.Convert.ToInt32(__node.SelectSingleNode("Hp").InnerText);
                 Sarr[i++] = System.Convert.ToInt32(__node.SelectSingleNode("Stress").InnerText);
             }
-            unit.partys.Add(new Party(num, Narr, Harr, Sarr, 
-                 System.Convert.ToInt32(_node.SelectSingleNode("Day").InnerText)));
+                unit.partys.Add(new Party(num, Narr, Harr, Sarr, 
+                System.Convert.ToInt32(_node.SelectSingleNode("Day").InnerText)));
             ;
         }
     }
