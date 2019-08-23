@@ -25,6 +25,7 @@ public class DungeonInfoGuide : MonoBehaviour
 
     #region 던전 오브젝트와 충돌관련 이벤트.
     //던전 설명 팝업창. Set데이터.
+    //DungeonCol에서 OnTriggerEnter2D()에서 로드됨.
     public void SetData(Dungeon _d)
     {
         d = _d;

@@ -27,6 +27,40 @@ public class MonsterState
 }
 public class BattleController : MonoBehaviour
 {   
+    #region 싱글톤 (Awake여깃음)
+
+    private static BattleController _instance;
+    public static BattleController Instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = FindObjectOfType(typeof(BattleController)) as BattleController;
+
+                if(_instance == null)
+                {
+                    Debug.LogError("There's no active BattleController object");
+                }
+            }
+            return _instance;
+        }
+    }
+
+    private void Awake() {
+        _instance = this;
+    }
+
+
+    #endregion
+
+    #region UI 관련
+    public GameObject[] knight = new GameObject[4];
+
+
+    #endregion
+
+    #region 진행 관련 함수 및 변수들
     public enum BattleState
     {
         로드,// : 몬스터의 정보를 로드함. 
@@ -38,8 +72,8 @@ public class BattleController : MonoBehaviour
         도망
     }
 
-    public Battle Bdata;
-    public BattleState state{
+    private Battle Bdata;
+    private BattleState state{
         get{
             return state;
         }
@@ -75,17 +109,17 @@ public class BattleController : MonoBehaviour
         phase   : 몬스터 몇 번째 페이즈?
         turn    : n페이즈의 n번째 '턴'
         who     : n번째 턴 중 '누구의 차례?'    */
-    public int phase{get;set;}
-    public int turn{get;set;}
-    public int who;
+    private int phase{get;set;}
+    private int turn{get;set;}
+    private int who;
 
 
     //몬스터 데이타
-    public GameObject[,] monsterPl; //배치된 몬스터의 위치 및 데이타
+    private GameObject[,] monsterPl; //배치된 몬스터의 위치 및 데이타
     
-    public Decoration deco;
+    private Decoration deco;
     
-    public GameObject [] player = new GameObject[4];
+    private GameObject [] player = new GameObject[4];
 
     //던전 전투 데이타
     Dungeon dungeon;
@@ -98,7 +132,11 @@ public class BattleController : MonoBehaviour
         gold = 0;
         honor = 0;
         exper = 0;
+
+        LoadBattleData();
     }
+
+    
     //1. 테이타 로드.
     public List<Monster> monsterList = new List<Monster>();
     public ArrayList thing = new ArrayList();
@@ -107,17 +145,25 @@ public class BattleController : MonoBehaviour
         //1-1 . 데이타 로드.
         //      -  몬스터 위치 지정은 그냥 순서대로 4명 씩 Load함. 
         //      -  모든 기사와 몬스터의 요소를 Thing(ArrayList)에 집어넣음
-        Bdata = DataController.Instance.Bdata;
-        Party p = Bdata.p;
-        /* 구현해야할 부분.
-        foreach(Knight k in p.knights)
+        Bdata = EventData.Instance.Bdata;
+        
+        
+        foreach(KnightState k in Bdata.p.knights)
         {
-            if(k.type)
+
+            if(k.type == AliveType.생존)
+                thing.Add(k);
         }
         
-            thing.Add(k);
-         */
-        foreach(Monster m in Bdata.m)
+            
+        
+        //1-1-2 Bdata(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
+        Monster[] monsterArr = new Monster[Bdata.m.Length];
+        for(int i = 0 ; i < Bdata.m.Length; i ++)
+        {
+            monsterArr[i] = DataController.Instance.monster.monsters[i];
+        }
+        foreach(Monster m in monsterArr)
             monsterList.Add(m);
 
         //1-2 . 던전에 따른 세팅 (데코part)
@@ -261,5 +307,7 @@ public class BattleController : MonoBehaviour
     {
 
     }
+    #endregion
+
     
 }

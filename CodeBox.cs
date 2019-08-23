@@ -76,4 +76,10 @@ public class CodeBox : MonoBehaviour
         GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
         msgObj.transform.SetParent(canvas.transform, false);
     }
+
+    public static Dungeon DungoenReturn(int dNum)
+    {
+        Dungeon d = DataController.Instance.dungeon.dungeons[dNum];
+        return d;
+    }
 }

@@ -84,15 +84,6 @@ public class DungeonData : MonoBehaviour
         dungeons = new Dungeon[size];
 
     }
-
-
-    public void TestValue()
-    {
-        for(int i = 0 ; i < dungeons.Length; i++)
-        {
-            Debug.Log(dungeons[i].name);
-        }
-    }
     
     
 }

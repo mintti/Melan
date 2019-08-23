@@ -62,8 +62,12 @@ public class GameController : MonoBehaviour
 
     public void Test_LoadScene()
     {
-        //DontDestroyOnLoad(this);
-        DataController.InstanceUpdata();
+        SceneManager.LoadScene("2.Battle");
+    }
+
+    public void LoadBattleScene()
+    {
+        eventData.SetBattleData(event_.selectWork);
         SceneManager.LoadScene("2.Battle");
     }
 
@@ -78,7 +82,7 @@ public class GameController : MonoBehaviour
      public void NextDay()
     {
         //이벤트 재생성
-        event_.ChangeWork();
+        event_.CreateWork();
         //버블 텍스트 변경.
         event_.SetText();
 

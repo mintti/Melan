@@ -50,12 +50,56 @@ public class Knight
         power = _power;
     }
 }
+#endregion
 
+#region Party Class Info
+
+[System.Serializable]
+public class Party
+{
+    public int dungeonNum;
+    public KnightState[] knights;
+
+    public int day{get;set;}
+
+    public Party(int _d, int[] _kNum)
+    {  
+        dungeonNum = _d;
+        
+        int size = _kNum.Length;
+        knights = new KnightState[size];
+        for(int i = 0; i< size; i++)
+        {
+            Knight k = DataController.Instance.unit.knights[_kNum[i]];
+            knights[i] = new KnightState(k);
+        }
+        day = CodeBox.DungoenReturn(dungeonNum).day;
+    }
+
+    //Xml 불러오기
+    public void LoadParty(int _d, KnightState[] _knights, int _day)
+    {
+        dungeonNum = _d;
+
+        knights = new KnightState[_knights.Length];
+        knights = _knights;
+
+        day = _day;
+    }
+
+    //Day갱신.
+    public void NextDay()
+    {
+        day--;
+    }
+}
+//생존여부
 public enum AliveType
 {
     생존,
     죽음
 }
+//전투 시 Knight정보
 public class KnightState
 {
     public Knight k;
@@ -72,27 +116,6 @@ public class KnightState
         stress = k.stress;
         
         //state = 추후..?
-    }
-}
-[System.Serializable]
-public class Party
-{
-    public int dungeonNum;
-    public KnightState[] knights;
-
-    public int[] kngihtNum;
-    public int[] hp;
-    public int[] stress;
-    public int day{get;set;}
-
-    public Party(int _dNum, int[] _kNum, int[] _hp, int[] _stress, int day)
-    {  
-        dungeonNum = _dNum;
-        kngihtNum = _kNum;
-        hp = _hp;
-        stress = _stress;
-
-        DataController.InstanceUpdata();
     }
 }
 #endregion
@@ -181,21 +204,15 @@ public class UnitData : MonoBehaviour
     public void AddParty(int[] list) //list[0~n : Knight, n +1 : dungeon]
     {
         int size = list.Length -1;
-
-        int dNum = list[size - 1];
         int[] Karr = new int[size];
-        int[] HParr = new int[size];
-        int[] Sarr = new int[size];
         
         for(int i = 0 ; i < size; i++)
         {
             knights[list[i]].teaming = true;
             Karr[i] = list[i];
-            HParr[i] = knights[list[i]].hp;
-            Sarr[i] = knights[list[i]].stress;
         }
-
-        partys.Add(new Party(dNum, Karr, HParr, Sarr, list[size]));
+        
+        partys.Add(new Party(list[size], Karr));
     }
 
     //해당 인덱스 찾기
