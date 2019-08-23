@@ -11,7 +11,7 @@ public class WorkPrefab : MonoBehaviour
     public EventManager parent{get;set;}
     private string[] ment = new string[3];
     
-    public Work w;
+    public Work w{get;set;}
 
     public void SetData(Work _w)
     {
@@ -27,6 +27,8 @@ public class WorkPrefab : MonoBehaviour
                 break;
         }
     }
+
+    
 
     public void Click()
     {

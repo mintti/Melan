@@ -27,6 +27,40 @@ public class MonsterState
 }
 public class BattleController : MonoBehaviour
 {   
+    #region 싱글톤 (Awake여깃음)
+
+    private static BattleController _instance;
+    public static BattleController Instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = FindObjectOfType(typeof(BattleController)) as BattleController;
+
+                if(_instance == null)
+                {
+                    Debug.LogError("There's no active BattleController object");
+                }
+            }
+            return _instance;
+        }
+    }
+
+    private void Awake() {
+        _instance = this;
+    }
+
+
+    #endregion
+
+    #region UI 관련
+    public GameObject[] knight = new GameObject[4];
+
+
+    #endregion
+
+    #region 진행 관련 함수 및 변수들
     public enum BattleState
     {
         로드,// : 몬스터의 정보를 로드함. 
@@ -98,6 +132,8 @@ public class BattleController : MonoBehaviour
         gold = 0;
         honor = 0;
         exper = 0;
+
+        LoadBattleData();
     }
 
     
@@ -111,14 +147,16 @@ public class BattleController : MonoBehaviour
         //      -  모든 기사와 몬스터의 요소를 Thing(ArrayList)에 집어넣음
         Bdata = EventData.Instance.Bdata;
         
-        /* 구현해야할 부분.
-        foreach(Knight k in Bdata.p.knights)
+        
+        foreach(KnightState k in Bdata.p.knights)
         {
-            if(k.type)
+
+            if(k.type == AliveType.생존)
+                thing.Add(k);
         }
         
-            thing.Add(k);
-         */
+            
+        
         //1-1-2 Bdata(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
         Monster[] monsterArr = new Monster[Bdata.m.Length];
         for(int i = 0 ; i < Bdata.m.Length; i ++)
@@ -269,5 +307,7 @@ public class BattleController : MonoBehaviour
     {
 
     }
+    #endregion
+
     
 }

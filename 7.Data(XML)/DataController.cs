@@ -147,6 +147,7 @@ public class DataController : MonoBehaviour
         /*
             Party - LoadParty(int _d, KnightState[] _knights, int _day)
          */
+        /*
         nodes = xmlDoc.SelectNodes("PlayerData/KnightInfo/Party");
         foreach (XmlNode _node in nodes)
         {
@@ -168,6 +169,7 @@ public class DataController : MonoBehaviour
                 System.Convert.ToInt32(_node.SelectSingleNode("Day").InnerText)));
             ;
         }
+         */
     }
 
     bool[] IntAsBool(int[] _arr)

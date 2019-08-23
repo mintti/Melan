@@ -68,4 +68,10 @@ public class EventData : MonoBehaviour
         todayWork.Clear();
         battles.Clear();
     }
+
+    public void SetBattleData(Work w)
+    {
+        int n = w.index;
+        Bdata = battles[n];
+    }
 }

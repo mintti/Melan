@@ -162,7 +162,7 @@ public class WorldController : MonoBehaviour
     {
         //size는 출전 창에서 선택 창에 존재하는 자식 오브젝트 수로 카운트.
         int size = selectView.childCount;
-        int[] arr = new int[size + 2]; //[0~size -1 : 기사 num, size : 던전 num ]
+        int[] arr = new int[size + 1]; //[0~size -1 : 기사 num, size : 던전 num ]
 
         //셀렉뷰에 존재하는 기사의 num을 추출해 arr에 삽입
         for(int i = 0 ; i < size; i++)
@@ -174,8 +174,7 @@ public class WorldController : MonoBehaviour
         }
 
         //배열의 마지막에 Dungeon정보 저장.
-        arr[arr.Length - 2] = d.num;
-        arr[arr.Length - 1] = d.day;
+        arr[arr.Length - 1] = d.num;
         //UnitData - Partys 리스트에 추가
         unit.AddParty(arr);
         

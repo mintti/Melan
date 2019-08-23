@@ -56,26 +56,30 @@ public class EventManager : MonoBehaviour
     public Image left; //Work.type에 따른 이미지 변경.
     
     public GameObject isCheck;
-    private Transform tr_Work = null; //더블클릭인가? 
+    private Transform tr_Work = null; //더블클릭인가?
+    public Work selectWork{get;set;}
     //2. List에서 인자 클릭시 이벤트 실행.
     public void SelectWork(Transform tr)
     {
         //type에 알맞는 img로 WorkList - Left(obj)변경
-        Work w = tr.GetComponent<WorkPrefab>().w;
-        left.sprite = imgList[w.type];
+        selectWork = tr.GetComponent<WorkPrefab>().w;
+        
+        left.sprite = imgList[selectWork.type];
+        
         if(tr_Work != tr) //첫클릭 인경우.
         {
             tr_Work = tr;
         }
         else //더블클릭한 경우
         {
-            isCheck.SetActive(true);
+            if(selectWork.type == 0) //전투인가?
+            {
+                isCheck.SetActive(true);
+            }
+            
         }
-    }
-
-    public void SelectWork_Check()
-    {
         
+
     }
     
     /* Game - NextDay() 시,
