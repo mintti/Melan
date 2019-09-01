@@ -114,6 +114,7 @@ public class BattleController : MonoBehaviour
     private int who;
 
 
+
     //몬스터 데이타
     private GameObject[,] monsterPl; //배치된 몬스터의 위치 및 데이타
     
