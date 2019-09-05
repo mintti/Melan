@@ -60,7 +60,8 @@ public class Knight
 public class Party
 {
     public int dungeonNum;
-    public KnightState[] knights;
+    public int[] k;
+    public KnightState[] knightStates;
 
     public int day{get;set;}
 
@@ -69,22 +70,27 @@ public class Party
         dungeonNum = _d;
         
         int size = _kNum.Length;
-        knights = new KnightState[size];
+        this.k = new int[size];
+        knightStates = new KnightState[size];
         for(int i = 0; i< size; i++)
         {
             Knight k = DataController.Instance.unit.knights[_kNum[i]];
-            knights[i] = new KnightState(k);
+            this.k[i] = _kNum[i];
+            knightStates[i] = new KnightState(k);
         }
         day = CodeBox.DungoenReturn(dungeonNum).day;
     }
 
     //Xml 불러오기
-    public void LoadParty(int _d, KnightState[] _knights, int _day)
+    public void LoadParty(int _d, int[] _k, KnightState[] _ks, int _day)
     {
         dungeonNum = _d;
+        int size = _k.Length;
 
-        knights = new KnightState[_knights.Length];
-        knights = _knights;
+        k = new int[size];
+        k = _k;
+        knightStates = new KnightState[size];
+        knightStates = knightStates;
 
         day = _day;
     }

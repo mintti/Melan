@@ -17,6 +17,12 @@ public class MonsterState
 }
 public class BattleController : MonoBehaviour
 {   
+    #region 데코 부분
+
+    public BattleKnightPrefab[] kp = new BattleKnightPrefab[4];
+    public BattleMonsterPrefab[] mp = new BattleMonsterPrefab[4];
+
+    #endregion
     #region 싱글톤 (Awake여깃음)
 
     private static BattleController _instance;
@@ -64,11 +70,8 @@ public class BattleController : MonoBehaviour
 
     private Battle Bdata;
     private BattleState state{
-        get{
-            return state;
-        }
-        set{
-            state = value;
+        get{return state;}
+        set{ state = value;
             switch(state){
             case BattleState.로드 :
                 phase++;
@@ -139,12 +142,26 @@ public class BattleController : MonoBehaviour
         Bdata = EventData.Instance.Bdata;
         
         
-        foreach(KnightState k in Bdata.p.knights)
+        for(int i = 0; i < Bdata.p.k.Length; i++)
+        {
+            KnightState k = Bdata.p.knightStates[i];
+            if(k.s.hp > 0)
+            {
+                 thing.Add(k);
+                 Debug.Log(string.Format("thing에 " + DataController.Instance.unit.knights[Bdata.p.k[i]].name));
+            }
+        }
+        /*
+        foreach(KnightState k in Bdata.p.knightStates)
         {
             if(k.s.hp > 0)
-                thing.Add(k);
+            {
+                 thing.Add(k);
+                 Debug.Log(ToString("thing에 " + DataController.Instance.unit.knights[Bdata.p.k[0]].name));
+            }
+               
         }
-        
+         */
             
         
         //1-1-2 Bdata(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
