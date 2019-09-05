@@ -6,22 +6,12 @@ using UnityEngine;
 public class MonsterState
 {
     public Monster m{get;set;}
+    public State s;
     
-    public int hp;
-    public int power;
-    public int speed;
-    public AliveType type{get;set;}
-    public List<SkillImpact> impact;
-
     public MonsterState(Monster _m)
     {
         m = _m;
-
-        hp = m.hp;
-        power = m.power;
-        speed = m.speed;
-        
-        type = AliveType.생존;
+        s = new State(m.hp, m.power, m.speed, m.stress, m.uni);
     }
     
 }
@@ -151,8 +141,7 @@ public class BattleController : MonoBehaviour
         
         foreach(KnightState k in Bdata.p.knights)
         {
-
-            if(k.type == AliveType.생존)
+            if(k.s.hp > 0)
                 thing.Add(k);
         }
         

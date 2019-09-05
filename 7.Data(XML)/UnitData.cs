@@ -21,12 +21,14 @@ public class Knight
     public int stress;
     public int[] skinArr;
 
+    public List<int> uni;
     //추후 Array로 바꾸기.
     public Sprite skin; //Unit.skins.closet[skinNum]으로 호출됨.
 
     //[XML]로드 이후, 스킬 탐색 함수를 통해 값이 지정된다.
     public int hp;
     public int power;
+    public int speed;
     public bool[,] tolerance;
     
     //Unit – team 탐색을 통해 지정.
@@ -93,29 +95,17 @@ public class Party
         day--;
     }
 }
-//생존여부
-public enum AliveType
-{
-    생존,
-    죽음
-}
+
 //전투 시 Knight정보
 public class KnightState
 {
     public Knight k;
-    public AliveType type;
-    public int hp;
-    public int stress;
-    public List<SkillImpact> impact;//상태이상여부.
+    public State s;
 
     public KnightState(Knight _k)
     {
         k = _k;
-        type = AliveType.생존;
-        hp = k.hp;
-        stress = k.stress;
-        
-        //state = 추후..?
+        s = new State(k.hp, k.power, k.speed, k.stress, k.uni);
     }
 }
 #endregion

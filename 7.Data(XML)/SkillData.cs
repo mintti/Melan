@@ -12,15 +12,6 @@ public enum eType
     미정
 }
 
-public enum SkillImpact
-{
-    NONE,
-    출혈,
-    스트레스,
-    스턴,
-    허약,
-    약점
-}
 
 [System.Serializable]
 public class Skill
@@ -35,12 +26,11 @@ public class Skill
 
     public int targetCnt{get;set;} //공격 적의 수
     public float multiple{get;set;} //power x multiple
-    public SkillImpact impact{get;set;}
     public int pro{get;set;} //임팩트 확률
     
     
     public Skill(string _name, string _explan, eType _type,
-        int _targetCnt, float _multiple, SkillImpact _impact, int _pro)
+        int _targetCnt, float _multiple, int _pro)
     {
         name = _name;
         explan = _explan;

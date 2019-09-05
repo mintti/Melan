@@ -15,12 +15,17 @@ public class Monster
     public int hp;
     public int power;
     public int speed;
+    public int stress;
+
+    public List<int> uni = new List<int>();
 
     public Monster(int _num, string _name, int[] _skill)
     {
         num = _num;
         name = _name;
         skill = _skill;
+
+        stress = 0;
     }
 }
 
