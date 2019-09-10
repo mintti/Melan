@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BattleMonsterPrefab : MonoBehaviour
 {
-    private MonsterState ms;
+    public MonsterState ms;
     public State s;
     public Image img;
 

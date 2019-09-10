@@ -94,10 +94,10 @@ public class BattleController : MonoBehaviour
         who     : n번째 턴 중 '누구의 차례?'    */
     private int phase;
     public int Phase
-    {   get{return phase;}  set{phase = value; phaseText.text = string.Format("PHASE " + phase); turn = 0;}}
+    {   get{return phase;}  set{phase = value; phaseText.text = string.Format("PHASE " + (phase < 10 ? "0" : "") + phase); turn = 0;}}
     private int turn;
     public int Turn
-    {   get{return turn;}  set{turn =value;turnText.text = string.Format("TURN " +turn);}}
+    {   get{return turn;}  set{turn =value;turnText.text = string.Format("TURN " + (turn < 10 ? "0" : "") + turn);}}
     private int who;
 
 
@@ -236,7 +236,7 @@ public class BattleController : MonoBehaviour
         Debug.Log("시퀀스 사이즈 : " + sequence.Count);
         for(int i = 0; i < sequence.Count; i++)
         {
-            Debug.Log(thing[sequence[i]].Speed);
+            GetPrefabState(sequence[i]);
         }
         //3-1-2 턴 카운트 시작(1부터)하며 전투 시작.
         Turn++;
@@ -325,5 +325,18 @@ public class BattleController : MonoBehaviour
     }
     #endregion
 
-    
+    private void GetPrefabState(int _n)
+    {
+        int num = thingTarget[_n];
+        string name;
+        if(num < 4)
+        {
+            name = kps[num].ks.k.name;
+        }
+        else
+        {
+            name = mps[num-4].ms.m.name;
+        }
+        Debug.Log(name);
+    }
 }
