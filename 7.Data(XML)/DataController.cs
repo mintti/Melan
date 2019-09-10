@@ -52,7 +52,6 @@ public class DataController : MonoBehaviour
     public UnitData unit;
     public SkillData skill;
     public DungeonData dungeon;
-    public MonsterData monster;
     public PlayerData player;
 
     public SkinData skin;
@@ -66,7 +65,7 @@ public class DataController : MonoBehaviour
         //데이타 삽입
         unit.Test_InsertData();
         skill.Test_InsertData();
-        monster.Test_InsertData();
+        MonsterData.Instance.InsertData();
             
         text.setTextData();
     }

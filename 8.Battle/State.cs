@@ -7,7 +7,8 @@ public enum AliveType
     생존,
     죽음
 }
-public class State : MonoBehaviour
+[System.Serializable]
+public class State
 {
     delegate void Del();
 
@@ -18,7 +19,7 @@ public class State : MonoBehaviour
     private int speed;
     public int Speed{get{int value = System.Convert.ToInt32(speed* speedMultiple); return value;} set{speed = value;}}
     public int stress;
-    public List<int> uni = new List<int>();
+    public List<int> uni;
     //배수 변수
     private float powerMultiple;
     private float speedMultiple;
@@ -29,6 +30,9 @@ public class State : MonoBehaviour
         uni = u;
 
         impact = new Del(선언);
+
+        powerMultiple = 1;
+        speedMultiple = 1;
     }
 
     #region 상태이상 효과 관련

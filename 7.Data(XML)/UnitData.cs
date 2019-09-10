@@ -46,10 +46,11 @@ public class Knight
         skinArr = _skinArr;
     }
 
-    public void Test_Stat(int _hp, int _power)
+    public void Test_Stat(int _hp, int _power, int _speed)
     {
         hp = _hp;
         power = _power;
+        speed = _speed;
     }
 }
 #endregion
@@ -147,7 +148,7 @@ public class UnitData : MonoBehaviour
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
                          new int[]{0});
-        testKight.Test_Stat(20, 10);
+        testKight.Test_Stat(20, 10, 15);
         knights.Add(testKight);
         SetSkin(0);
 
@@ -156,7 +157,7 @@ public class UnitData : MonoBehaviour
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
                          new int[]{1});
-        testKight.Test_Stat(10, 12);
+        testKight.Test_Stat(10, 20, 5);
         knights.Add(testKight);
         SetSkin(1);
         
@@ -165,7 +166,7 @@ public class UnitData : MonoBehaviour
                          new bool[]{true, true, true, true, false},
                          5, 2, 1, 0,
                          new int[]{2});
-        testKight.Test_Stat(10, 8);
+        testKight.Test_Stat(10, 5, 20);
         knights.Add(testKight);
         SetSkin(2);
     }

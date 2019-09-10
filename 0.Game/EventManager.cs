@@ -111,7 +111,7 @@ public class EventManager : MonoBehaviour
             
             // 1~4명 / 1~8명... 1~16명, 최대 페이즈 4
             int cnt = d.level <= 5 ? 5 : d.level <= 10 ? 9 : d.level <= 15 ? 13 : 17 ; 
-            cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, cnt), cnt); // (1 ~ cnt) ~ 4 사이의 값                    
+            cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, cnt-1), cnt); // (1 ~ cnt) ~ 4 사이의 값                    
                     
             // * 랜덤 몬스터 카운트
             //   추후 퍼센테이지 따서 확률로 몬스터 지정하기.

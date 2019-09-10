@@ -9,7 +9,7 @@ public class Monster
 {
     public int num;
     public string name;
-    public int[] skill;
+    public int[] skills;
     public Sprite img;
 
     public int hp;
@@ -19,30 +19,75 @@ public class Monster
 
     public List<int> uni = new List<int>();
 
-    public Monster(int _num, string _name, int[] _skill)
+    public Monster(int _num, string _name, int[] _skills,
+                   int _hp, int _power, int _speed, List<int> _uni)
     {
         num = _num;
         name = _name;
-        skill = _skill;
+        skills = _skills;
 
         stress = 0;
+
+        hp = _hp;
+        power = _power;
+        speed = _speed;
+        uni = _uni;
     }
 }
 
+//전투시 몬스터의 상태를 저장하는 클래스
+public class MonsterState
+{
+    public Monster m{get;set;}
+    public State s;
+    
+    public MonsterState(Monster _m)
+    {
+        m = _m;
+        s = new State(m.hp, m.power, m.speed, m.stress, m.uni);
+    }
+    
+}
+
+
 public class MonsterData : MonoBehaviour
 {
+    #region 싱글톤
+    private static MonsterData _instance = null;
+
+    public static MonsterData Instance
+    {
+        
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = FindObjectOfType(typeof(MonsterData)) as MonsterData;
+
+                if(_instance == null)
+                {
+                    Debug.LogError("There's no active MonsterData object");
+                }
+            }
+            return _instance;
+        }
+    }
+    #endregion
+
     public int size;
     public Monster[] monsters;
 
-    public void Test_InsertData()
-    {   
-        //몬스터 배열 정의
-        monsters = new Monster[size];
+
+    public void InsertData()
+    {
+         monsters = new Monster[size];
 
         //데이터 삽입
-        monsters[0] = new Monster(0, "슬라임", new int[]{0,1});
+        #region 몬스터 리스트
+        monsters[0] = new Monster(0, "슬라임", new int[]{0,1}, 10, 6, 5, new List<int>());
+        monsters[1] = new Monster(1, "발발이", new int[]{0,1}, 10, 10, 10, new List<int>());
 
-        
+        #endregion
         //이미지로드
         for(int i = 0 ; i < size; i ++)
         {
@@ -50,7 +95,6 @@ public class MonsterData : MonoBehaviour
             Sprite sprite =  Resources.Load <Sprite>(path);
             monsters[i].img = sprite;
         }
-
     }
 
 }

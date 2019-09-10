@@ -60,10 +60,6 @@ public class GameController : MonoBehaviour
         obj.GoldTextUpdate();
     }
 
-    public void Test_LoadScene()
-    {
-        SceneManager.LoadScene("2.Battle");
-    }
 
     public void LoadBattleScene()
     {

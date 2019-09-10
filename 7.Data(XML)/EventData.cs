@@ -23,6 +23,7 @@ public class Work
 }
 
 //이벤트 1. 전투
+[System.Serializable]
 public class Battle
 {
     public Party p;
