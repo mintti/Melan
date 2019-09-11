@@ -142,7 +142,7 @@ public class BattleController : MonoBehaviour
         for(int i = 0; i < Bdata.p.k.Length; i++)
         {
             KnightState ks = Bdata.p.knightStates[i];
-            if(ks.s.hp > 0)
+            if(ks.s.Hp > 0)
             {
                 thing.Add(ks.s);
                 kps[i].SetData(ks);

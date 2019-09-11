@@ -13,12 +13,14 @@ public class State
     delegate void Del();
 
     //기본 변수
-    public int hp;
+    private int hp;
+    public int Hp{get{return hp;} set{hp = value;}}
     private int power;
     public int Power{get{int value = System.Convert.ToInt32(power* powerMultiple); return value;} set{power = value;}}
     private int speed;
     public int Speed{get{int value = System.Convert.ToInt32(speed* speedMultiple); return value;} set{speed = value;}}
-    public int stress;
+    private int stress;
+    public int Stress{get{return stress;} set{stress = value;}}
     public List<int> uni;
     //배수 변수
     private float powerMultiple;
@@ -26,7 +28,7 @@ public class State
 
     public State(int h, int p, int s, int st, List<int> u)
     {
-        hp = h; Power = p; Speed = s; stress = st;
+        Hp = h; Power = p; Speed = s; Stress = st;
         uni = u;
 
         impact = new Del(선언);
