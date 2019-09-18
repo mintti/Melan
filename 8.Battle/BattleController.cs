@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using System;
 
 public class BattleController : MonoBehaviour
 {   
@@ -131,7 +131,7 @@ public class BattleController : MonoBehaviour
     public List<State> thing = new List<State>();
     
     public List<int> thingTarget = new List<int>();
-    public void LoadBattleData()
+    private void LoadBattleData()
     {
         //1-1 . 데이타 로드.
         //      -  몬스터 위치 지정은 그냥 순서대로 4명 씩 Load함. 
@@ -170,7 +170,7 @@ public class BattleController : MonoBehaviour
     //2. 몬스터 정보 로드(Phase가 변경될때 프로퍼티에서 호출됨.)
     // [(몬스터)로드] 상태에 해당함. 표시되는 몬스터를 로드..
     //turn이 변경될 때 마다 SettingTurn() 호출.
-    public void MonsterSetting()
+    private void MonsterSetting()
     {
         Debug.Log(" MonsterSetting() 실행");
         //2-1 표시될 몬스터를 showMonster에서 호출함
@@ -205,7 +205,7 @@ public class BattleController : MonoBehaviour
     //3-1. Speed 순서에 따라 순서 지정
     List<int> sequence = new List<int>(); //순서를 저장하는 배열.
     bool isSpeed; //Speed변경이 감지 되면 true; 
-    public void SettingTurn()
+    private void SettingTurn()
     {
         Debug.Log(" SettingTurn() 실행");
         //3-1-1 생존한 존재 중에서 순서를 지정하여 배열에 넣어줌.
@@ -233,6 +233,7 @@ public class BattleController : MonoBehaviour
                     sequence.Add(i);
             }
         }
+        //(테스트) 순서확인
         Debug.Log("시퀀스 사이즈 : " + sequence.Count);
         for(int i = 0; i < sequence.Count; i++)
         {
@@ -245,17 +246,29 @@ public class BattleController : MonoBehaviour
         isSpeed = false; // 감지 매턴 순서 지정 후 false해줌.
     }
 
+    public Transform skillObjList;
     //3-2 [전투] 상태임.
-    public void Battle()
+    private void Battle()
     {
+        
         Debug.Log("  Battle() 실행");
-        /*
+        
         //3-2-1 기사 혹은 몬스터의 공격
-        if(thing[who].type)
+        //      해당 턴이 기사일 경우, (사용자에게 입력받는) 해당 기사의 Skill셋으로 변경해줌.
+        if(thing[who].LifeType == LifeType.K)
+        {
+            int index = 0;
+            foreach (Transform skillObj in skillObjList)
+            {
+                int num = thingTarget[sequence[who]];
+                Knight k = kps[num].ks.k;
+                //skillObj.GetComponont<BattleSkillPrefab>().SetData(k.usedSkill[index++]);
+            }
+        }
 
         //3-2-2 마지막 사람 종료시
         //      who는 sequence의 pivot임.
-        if(who == sequence.Length)
+        if(who == sequence.Count)
         {
             //스피드 변경이 감지되면 순서 다시 정해줌.
             //아닐경우 해당 순서로 다시 진행.
@@ -269,15 +282,20 @@ public class BattleController : MonoBehaviour
             }
             return;
         }
-        //다음 턴으로 넘어가며 함수 재호출.
+        
+        //Skill을 이용함으로써 전투를 재 호출해준다. 
+    }
 
-        State = BattleState.전투; //재호출하는 부분임.
-         */
+    //턴을 넘긴 상태.
+    public void NextTurn()
+    {
+        who++;
+        state = BattleState.전투;
     }
     
 
     //4. [처치] 상태
-    public void KillMonster()
+    private void KillMonster()
     {
         //4-1. 몬스터의 정보에서 보상을 가져와 파티 정보에 누적시킴.
         
@@ -303,23 +321,23 @@ public class BattleController : MonoBehaviour
     }
 
     //5. [죽음] 상태, 해당 기사의 정보를 직접 로드함.
-    public void DieKnight(KnightState ks)
+    private void DieKnight(KnightState ks)
     {
 
     }
 
     //6. [승리] 상태, [로드] 상태에서 판별 후 호출됨.
-    public void Win()
+    private void Win()
     {
 
     }
     //7. [패배] 상태
-    public void Lose()
+    private void Lose()
     {
 
     }
     //8. [도망] 상태
-    public void Escape()
+    private void Escape()
     {
 
     }
@@ -328,6 +346,7 @@ public class BattleController : MonoBehaviour
     private void GetPrefabState(int _n)
     {
         int num = thingTarget[_n];
+        Knight k;
         string name;
         if(num < 4)
         {
@@ -339,4 +358,5 @@ public class BattleController : MonoBehaviour
         }
         Debug.Log(name);
     }
+
 }

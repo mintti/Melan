@@ -44,7 +44,7 @@ public class MonsterState
     public MonsterState(Monster _m)
     {
         m = _m;
-        s = new State(m.hp, m.power, m.speed, m.stress, m.uni);
+        s = new State(m.hp, m.power, m.speed, m.stress, m.uni, LifeType.M);
     }
     
 }

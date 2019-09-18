@@ -64,7 +64,6 @@ public class DataController : MonoBehaviour
     {
         //데이타 삽입
         unit.Test_InsertData();
-        skill.Test_InsertData();
         MonsterData.Instance.InsertData();
             
         text.setTextData();
@@ -129,8 +128,7 @@ public class DataController : MonoBehaviour
                 System.Convert.ToInt32(_node.SelectSingleNode("Job").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Level").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Exper").InnerText),
-                CodeBox.StringSplit(_node.SelectSingleNode("Skill").InnerText),
-                IntAsBool(CodeBox.StringSplit(_node.SelectSingleNode("UseSkill").InnerText)),
+                CodeBox.StringSplit(_node.SelectSingleNode("UseSkill").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Point").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Favor").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Day").InnerText),

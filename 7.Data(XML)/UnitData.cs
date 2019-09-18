@@ -13,8 +13,8 @@ public class Knight
     public int job;
     public int level;
     public int exper; //경험치
-    public int[] skill; //사용자가 찍은 스킬.
-    public bool[] usedSkill; //사용하는 스킬
+    
+    public int[] usedSkill; //사용하는 스킬
     public int skillPoint; //남은 스킬 포인트.
     public int favor;
     public int day;
@@ -37,11 +37,11 @@ public class Knight
    
 
     //xml로드 값
-    public Knight(int _num, string _name, int _job, int _level, int _exper, int[] _skill,
-                  bool[] _usedSkill, int _skillPoint, int _favor, int _day, int _stress,
+    public Knight(int _num, string _name, int _job, int _level, int _exper,
+                  int[] _usedSkill, int _skillPoint, int _favor, int _day, int _stress,
                   int[] _skinArr)
     {
-        num = _num; name = _name; job = _job; level = _level; exper = _exper; skill = _skill;
+        num = _num; name = _name; job = _job; level = _level; exper = _exper;
         usedSkill = _usedSkill; skillPoint = _skillPoint; favor = _favor; day = _day; stress = _stress;
         skinArr = _skinArr;
     }
@@ -112,7 +112,7 @@ public class KnightState
     public KnightState(Knight _k)
     {
         k = _k;
-        s = new State(k.hp, k.power, k.speed, k.stress, k.uni);
+        s = new State(k.hp, k.power, k.speed, k.stress, k.uni, LifeType.K);
     }
 }
 #endregion
@@ -144,8 +144,8 @@ public class UnitData : MonoBehaviour
 
     public void Test_InsertData()
     {
-        Knight testKight = new Knight(0, "테스트용사", 1, 1, 0, new int[]{1,1,1,1,1},
-                         new bool[]{true, true, true, true, false},
+        Knight testKight = new Knight(0, "테스트용사", 1, 1, 0,
+                         new int[]{0,1,2,3},
                          5, 2, 1, 0,
                          new int[]{0});
         testKight.Test_Stat(20, 10, 15);
@@ -153,8 +153,8 @@ public class UnitData : MonoBehaviour
         SetSkin(0);
 
         //테스트 용사2
-        testKight = new Knight(1, "테스트마법", 1, 1, 0, new int[]{1,1,1,1,1},
-                         new bool[]{true, true, true, true, false},
+        testKight = new Knight(1, "테스트마법", 1, 1, 0,
+                         new int[]{0,1,2,3},
                          5, 2, 1, 0,
                          new int[]{1});
         testKight.Test_Stat(10, 20, 5);
@@ -162,8 +162,8 @@ public class UnitData : MonoBehaviour
         SetSkin(1);
         
         //테스트 용사3
-        testKight = new Knight(2, "테스트도적", 1, 1, 0, new int[]{1,1,1,1,1},
-                         new bool[]{true, true, true, true, false},
+        testKight = new Knight(2, "테스트도적", 1, 1, 0,
+                         new int[]{0,1,2,3},
                          5, 2, 1, 0,
                          new int[]{2});
         testKight.Test_Stat(10, 5, 20);
