@@ -144,7 +144,7 @@ public class UnitData : MonoBehaviour
 
     public void Test_InsertData()
     {
-        Knight testKight = new Knight(0, "테스트용사", 1, 1, 0,
+        Knight testKight = new Knight(0, "테스트용사", 0, 1, 0,
                          new int[]{0,1,2,3},
                          5, 2, 1, 0,
                          new int[]{0});
@@ -162,7 +162,7 @@ public class UnitData : MonoBehaviour
         SetSkin(1);
         
         //테스트 용사3
-        testKight = new Knight(2, "테스트도적", 1, 1, 0,
+        testKight = new Knight(2, "테스트도적", 2, 1, 0,
                          new int[]{0,1,2,3},
                          5, 2, 1, 0,
                          new int[]{2});
