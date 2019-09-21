@@ -17,7 +17,12 @@ public class BattleElement
     private int cnt;
     public int Cnt{get{return cnt;} set{cnt = value;}}
 
-    public BattleElement(ElementType t)
+    public BattleElement()
+    {
+        cnt = 0;
+    }
+    
+    public void AddElement(ElementType t)
     {
         if(type == t)
         {
@@ -93,7 +98,7 @@ public class State
     private int stress;
     public int Stress{get{return stress;} set{stress = value;}}
     public List<int> uni;
-    public BattleElement element;
+    public BattleElement element = new BattleElement();
     //배수 변수
     private float powerMultiple;
     private float speedMultiple;
@@ -183,23 +188,30 @@ public class State
 
 
     //공격 받음
-    public void AdDam(int v)
+    public void AdDam(float v)
     {
-        Hp -= v;
+        Hp -= System.Convert.ToInt32(v);
     }
-    public void ApDam(int v)
+    public void ApDam(float v)
     {
-        Hp -= v;
+        Hp -= System.Convert.ToInt32(v);
     }
 
-    public void Heal(int v)
+    public void Heal(float v)
     {
-        Hp += v;
+        Hp += System.Convert.ToInt32(v);
+    }
+
+    //즉사
+
+    public void DeathDam()
+    {
+        Hp = 0;
     }
     //유형 1. 속성 공격
-    public void EleDam(ElementType eleT, int v)
+    public void EleDam(ElementType eleT, float v)
     {
-        Hp -= v;
+        Hp -= System.Convert.ToInt32(v);
     }
 
 
