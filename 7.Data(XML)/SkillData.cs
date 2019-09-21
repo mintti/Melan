@@ -29,8 +29,8 @@ public class Skill
     public string explan;
     public Target target;
     public eType type;
-    public int cost;
-    public int needP;
+    public int cost; //행동력
+    public int needP; //ele
 
     public Skill(int _num, string _name, string _explan, Target _target,
                 int _cost, int _needP)
@@ -73,6 +73,24 @@ public class SkillData : MonoBehaviour
 
     }
 
+
+    public Skill GetSkill(int job, int num)
+    {
+        Skill skill;
+
+        switch(job)
+        {
+            case 0 : 
+                return warrior.skills[num];
+            case 1 :
+                return wizard.skills[num];
+            case 2 : 
+                return thief.skills[num];
+            default :
+                CodeBox.PrintError( string.Format("SkillData - GetSkill() 존재하지 않음, job - {0}, num - {1}", job, num));
+                return null;
+        }
+    }
 }
 //skills[0] = new Skill(0,,,,,,,,);
 public class Wizard
@@ -100,7 +118,7 @@ public class Wizard
                 targetS.EleDam(playerS.element.type, playerS.Power * 2);
                 break;
             case 2: //2. 힐링
-                targetS.Heal(System.Convert.ToInt32(playerS.Power * 0.5f));
+                targetS.Heal(playerS.Power * 0.5f);
                 break;
             case 3: //3. 바인
                 targetS.cc.Bine++;
@@ -128,13 +146,18 @@ public class Thief
     {
         switch(n)
         {
-            case 0 :
+            case 0 ://단검투척
+                targetS.AdDam(playerS.Power * 0.5f);
                 break;
-            case 1 :
+            case 1 ://약점찾기
+                
                 break;
-            case 2 :
+            case 2 ://암살
+                if(targetS.superCc.WeakPoint == true)
+                    targetS.DeathDam();
                 break;
-            case 3 :
+            case 3 ://탈출
+                
                 break;
             default :
                 break;
@@ -158,13 +181,23 @@ public class Warrior
     {
         switch(n)
         {
-            case 0 :
+            case 0 ://베기
+            targetS.AdDam(playerS.Power);
                 break;
-            case 1 :
+            case 3 ://강화
                 break;
-            case 2 :
+            default :
                 break;
-            case 3 :
+        }
+    }
+    public void MultiSkill(int n, State playerS, State[] targetS)
+    {
+        switch(n)
+        {
+            case 1 : //다중베기
+                foreach (State s in targetS)  s.AdDam(playerS.Power * 0.3f);
+                break;
+             case 2 ://허약
                 break;
             default :
                 break;
