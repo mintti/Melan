@@ -131,13 +131,14 @@ public class BattleController : MonoBehaviour
     public List<State> thing = new List<State>();
     
     public List<int> thingTarget = new List<int>();
+    public int knightCount;
     private void LoadBattleData()
     {
         //1-1 . 데이타 로드.
         //      -  몬스터 위치 지정은 그냥 순서대로 4명 씩 Load함. 
         //      -  모든 기사와 몬스터의 요소를 Thing(ArrayList)에 집어넣음
         Bdata = EventData.Instance.Bdata;
-        
+        knightCount = Bdata.p.k.Length;
         
         for(int i = 0; i < Bdata.p.k.Length; i++)
         {
@@ -234,11 +235,14 @@ public class BattleController : MonoBehaviour
             }
         }
         //(테스트) 순서확인
+        /*
         Debug.Log("시퀀스 사이즈 : " + sequence.Count);
         for(int i = 0; i < sequence.Count; i++)
         {
             GetPrefabState(sequence[i]);
         }
+         */
+        
         //3-1-2 턴 카운트 시작(1부터)하며 전투 시작.
         Turn++;
         who = 0; //pivot이라 0부터 시작.
@@ -247,26 +251,22 @@ public class BattleController : MonoBehaviour
     }
 
     public Transform skillObjList;
+
+    private int behavior;
+    public int Behavior{get{return behavior;} 
+        set{
+            behavior = value;
+            if( behavior == 0)
+            {
+                NextTurn();
+            }
+            behaviorText.text = string.Format("행동력 : {0}" , Behavior);
+    }}
+    public Text behaviorText;
     //3-2 [전투] 상태임.
     private void Battle()
     {
-        
-        Debug.Log("  Battle() 실행");
-        
-        //3-2-1 기사 혹은 몬스터의 공격
-        //      해당 턴이 기사일 경우, (사용자에게 입력받는) 해당 기사의 Skill셋으로 변경해줌.
-        if(thing[who].LifeType == LifeType.K)
-        {
-            int index = 0;
-            foreach (Transform skillObj in skillObjList)
-            {
-                int num = thingTarget[sequence[who]];
-                Knight k = kps[num].ks.k;
-                //skillObj.GetComponont<BattleSkillPrefab>().SetData(k.usedSkill[index++]);
-            }
-        }
-
-        //3-2-2 마지막 사람 종료시
+        //3-2-0 마지막 사람 종료시
         //      who는 sequence의 pivot임.
         if(who == sequence.Count)
         {
@@ -282,15 +282,84 @@ public class BattleController : MonoBehaviour
             }
             return;
         }
+
+        //전투 실행.(Player 행동결정)
+
+        Behavior = 3;
+        Debug.Log("  Battle() 실행");
         
-        //Skill을 이용함으로써 전투를 재 호출해준다. 
+        //알맞는 thing을 위해 몬스터의 경우, 부족한 기사 수만큼 피봇 수를 빼줌. 
+        int n = sequence[who];
+        if(n >= 4) n  -= (4 - knightCount);
+        //3-2-1 기사 혹은 몬스터의 공격
+        //      해당 턴이 기사일 경우, (사용자에게 입력받는) 해당 기사의 Skill셋으로 변경해줌.
+        if(thing[n].LifeType == LifeType.K)
+        {
+            int num = thingTarget[sequence[who]];
+            KnightState ks = kps[num].ks;
+            
+            //상태CC 세팅
+            SettingUI(ks.s);
+
+            //스킬을 세팅해줌
+            int index = 0;
+            Knight k = ks.k;
+            foreach (Transform skillObj in skillObjList)
+            {
+                skillObj.GetComponent<BattleSkillPrefab>().SetData(SkillData.Instance.GetSkill(k.job, k.usedSkill[index++]));
+            }
+            //스킬 유효성 검사를 통해 skillObjList갱신해줌.
+        }
+        else//일단 임시(테스트용)
+        {
+            NextTurn();
+        }
+
+    }
+    //스킬 유효성 검사
+    private void IsSkill()
+    {
+
+    }
+    //스킬 선택(사용)
+    private void SelectSkill()
+    {
+
+    }
+    #region PlayerUI 세팅
+
+    public void SettingUI(State s)
+    {
+        SetKnightCC(s);
     }
 
+    
+    /* 상단 우측) CC상태바 생성 UI */
+    public Transform KnightCCObj;
+    public GameObject CCPrefab;
+    public void SetKnightCC(State s)
+    {
+        CodeBox.ClearList(KnightCCObj);
+
+        SetKnightCC_2("속성", s.element.Cnt);
+        SetKnightCC_2("출혈", s.afterDil.blo);
+        SetKnightCC_2("독", s.afterDil.pois);
+        SetKnightCC_2("기절", s.cc.Stun);
+    }
+    void SetKnightCC_2(string s, int n)
+    {
+        if(n <= 0)
+            return;
+        GameObject obj = CodeBox.AddChildInParent(KnightCCObj, CCPrefab);
+        obj.GetComponent<CCIconPrefab>().SetData(s, n);
+    }
+
+    #endregion
     //턴을 넘긴 상태.
     public void NextTurn()
     {
         who++;
-        state = BattleState.전투;
+        State = BattleState.전투;
     }
     
 
