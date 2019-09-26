@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class Dungeon
 {
@@ -84,5 +83,6 @@ public class DungeonData : MonoBehaviour
         dungeons = new Dungeon[size];
 
     }
+
     
 }

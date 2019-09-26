@@ -90,4 +90,39 @@ public class GameController : MonoBehaviour
 
     }
 
+
+    #region 생성 관련
+    public int[] DungeonMake()
+    {
+        int[] array = new int[8];
+    /*          lv       dungeonArr[]
+    0~3   : 1          2  0  -
+    4~9   : 2          5  3  1
+    10~13 : 3          7  6  4
+    14~15 : 4
+    */
+        List<int> list = new List<int>(){ 0,1, 2,3, 4, 5,6, 7, 8,9,10, 11, 12,13, 14,15};
+        
+        int index = 0;
+        for(int i = 0 ; i < 2; i ++)
+        {
+            array[index++] = list[Random.Range(0, 3-i)];
+        }
+        
+        for(int i = 0 ; i < 3; i ++)
+        {
+            array[index++] = list[Random.Range(2, 7-i)];
+        }
+        
+        for(int i = 0 ; i < 2; i ++)
+        {
+            array[index++] = list[Random.Range(5, 8-i)];
+        }
+        
+        array[index] = list[Random.Range(7, 8)];
+        
+    
+        return array;
+    }
+    #endregion
 }
