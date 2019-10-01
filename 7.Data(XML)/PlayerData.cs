@@ -44,6 +44,9 @@ public class PlayerData : MonoBehaviour
     }
     #endregion
 
+    private int stress;
+    public int Stress{get{return stress;} set{stress = value;}}
+
     public void NextDay()
     {
         Day++;

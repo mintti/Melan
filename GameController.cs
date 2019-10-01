@@ -29,7 +29,6 @@ public class GameController : MonoBehaviour
     public WorldController world;
     public AdminController admin;
     public EventManager event_;
-    public ObjectController obj;
 
     public EventData eventData;
     public PlayerData player;
@@ -42,9 +41,9 @@ public class GameController : MonoBehaviour
         player = data.player;
 
         //초기 데이터
-        obj.DungeonSearch();
         world.Click(); //초기 화면
         PlayerDataUpdate();
+        SetWorldDungoenPrefabs();
     }
 
     // Update is called once per frame
@@ -53,14 +52,28 @@ public class GameController : MonoBehaviour
         
     }
 
+    #region  Player Data
+    public Text gold;
+    public Text day;
+
+    public void GoldTextUpdate()
+    {
+        gold.text =  System.Convert.ToString(PlayerData.Instance.Gold);
+    }
+    public void DayTextUpdate()
+    {
+        day.text =  string.Format("+{0}", System.Convert.ToString(PlayerData.Instance.Day));
+        }
     //UI에서 Player 정보가담긴 Text를 업데이트.
     public void PlayerDataUpdate()
     {
-        obj.DayTextUpdate();
-        obj.GoldTextUpdate();
+        GoldTextUpdate();
+        DayTextUpdate();
     }
+    
 
-
+    #endregion
+    
     public void LoadBattleScene()
     {
         eventData.SetBattleData(event_.selectWork);
@@ -91,38 +104,21 @@ public class GameController : MonoBehaviour
     }
 
 
-    #region 생성 관련
-    public int[] DungeonMake()
+    #region  던전 화면 세팅
+    public Transform dungeonList;
+    private WorldDungeonPrefab[] world_Dungoen_Prefabs = new WorldDungeonPrefab[8];
+    
+    public void SetWorldDungoenPrefabs()
     {
-        int[] array = new int[8];
-    /*          lv       dungeonArr[]
-    0~3   : 1          2  0  -
-    4~9   : 2          5  3  1
-    10~13 : 3          7  6  4
-    14~15 : 4
-    */
-        List<int> list = new List<int>(){ 0,1, 2,3, 4, 5,6, 7, 8,9,10, 11, 12,13, 14,15};
+        world_Dungoen_Prefabs = dungeonList.GetComponentsInChildren<WorldDungeonPrefab>();
         
         int index = 0;
-        for(int i = 0 ; i < 2; i ++)
+        foreach (WorldDungeonPrefab prefab in world_Dungoen_Prefabs)
         {
-            array[index++] = list[Random.Range(0, 3-i)];
-        }
+            prefab.SetData(DungeonData.Instance.dungeon_Progress[index++]);
+        }    
         
-        for(int i = 0 ; i < 3; i ++)
-        {
-            array[index++] = list[Random.Range(2, 7-i)];
-        }
-        
-        for(int i = 0 ; i < 2; i ++)
-        {
-            array[index++] = list[Random.Range(5, 8-i)];
-        }
-        
-        array[index] = list[Random.Range(7, 8)];
-        
-    
-        return array;
     }
+
     #endregion
 }

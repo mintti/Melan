@@ -18,6 +18,7 @@ public class Knight
     public int skillPoint; //남은 스킬 포인트.
     public int favor;
     public int day;
+    public int hp;
     public int stress;
     public int[] skinArr;
 
@@ -26,7 +27,7 @@ public class Knight
     public Sprite skin; //Unit.skins.closet[skinNum]으로 호출됨.
 
     //[XML]로드 이후, 스킬 탐색 함수를 통해 값이 지정된다.
-    public int hp;
+    public int maxHp;
     public int power;
     public int speed;
     public bool[,] tolerance;
@@ -38,11 +39,11 @@ public class Knight
 
     //xml로드 값
     public Knight(int _num, string _name, int _job, int _level, int _exper,
-                  int[] _usedSkill, int _skillPoint, int _favor, int _day, int _stress,
+                  int[] _usedSkill, int _skillPoint, int _favor, int _day, int _hp, int _stress,
                   int[] _skinArr)
     {
         num = _num; name = _name; job = _job; level = _level; exper = _exper;
-        usedSkill = _usedSkill; skillPoint = _skillPoint; favor = _favor; day = _day; stress = _stress;
+        usedSkill = _usedSkill; skillPoint = _skillPoint; favor = _favor; day = _day; hp = _hp; stress = _stress;
         skinArr = _skinArr;
     }
 
@@ -66,6 +67,10 @@ public class Party
 
     public int day{get;set;}
 
+    public Party()
+    {
+        
+    }
     public Party(int _d, int[] _kNum)
     {  
         dungeonNum = _d;
@@ -91,7 +96,7 @@ public class Party
         k = new int[size];
         k = _k;
         knightStates = new KnightState[size];
-        knightStates = knightStates;
+        knightStates = _ks;
 
         day = _day;
     }
@@ -126,6 +131,18 @@ public class UnitData : MonoBehaviour
     public List<int> heroList = new List<int>(); //영웅 리스트
     public List<Party> partys = new List<Party>();
 
+    /*
+        기본스텟 : hp/power/speed 순
+        0.전사  1.마법사  2.시프
+                 */
+    public int[,,] stateList = new int[3,5,3]
+    {
+        {{20, 10, 15}, {35, 15, 15}, {40, 20, 20}, {50, 25, 20}, {60, 30, 20}},
+        {{10, 20, 5}, {15, 15, 15}, {40, 20, 20}, {50, 25, 20}, {60, 30, 20}},
+        {{10, 5, 20}, {15, 10, 25}, {20, 20, 30}, {25, 25, 40}, {30, 30, 50}}
+    };
+
+
     //Knight - SkinArr 탐색 후 Skin에 매칭시킴.
     public void SetSkin(int num)
     {
@@ -146,7 +163,7 @@ public class UnitData : MonoBehaviour
     {
         Knight testKight = new Knight(0, "테스트용사", 0, 1, 0,
                          new int[]{0,1,2,3},
-                         5, 2, 1, 0,
+                         5, 2, 1, 20, 0,
                          new int[]{0});
         testKight.Test_Stat(20, 10, 15);
         knights.Add(testKight);
@@ -155,7 +172,7 @@ public class UnitData : MonoBehaviour
         //테스트 용사2
         testKight = new Knight(1, "테스트마법", 1, 1, 0,
                          new int[]{0,1,2,3},
-                         5, 2, 1, 0,
+                         5, 2, 1, 10, 0,
                          new int[]{1});
         testKight.Test_Stat(10, 20, 5);
         knights.Add(testKight);
@@ -164,7 +181,7 @@ public class UnitData : MonoBehaviour
         //테스트 용사3
         testKight = new Knight(2, "테스트도적", 2, 1, 0,
                          new int[]{0,1,2,3},
-                         5, 2, 1, 0,
+                         5, 2, 1, 10, 0,
                          new int[]{2});
         testKight.Test_Stat(10, 5, 20);
         knights.Add(testKight);
@@ -221,6 +238,21 @@ public class UnitData : MonoBehaviour
     public void RemoveTeam(int num)
     {
 
+    }
+
+
+
+    
+    
+    //랜덤 용병생성
+    public void CreateRandomKnight(int cnt)
+    {
+        Knight[] knightList = new Knight[cnt];
+        for(int i = 0; i < cnt; i ++)
+        {
+
+
+        }
     }
 
 }
