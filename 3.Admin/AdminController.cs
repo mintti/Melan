@@ -11,6 +11,7 @@ public class AdminController : MonoBehaviour
     private UnitData unit;
     
 
+    public GameObject[] knightGameObjList = new GameObject[3];
     private void Start()
     {
         unit = DataController.Instance.unit;
@@ -20,6 +21,7 @@ public class AdminController : MonoBehaviour
     {
         CodeBox.ClearList(list);
 
+        int index = 0;
         foreach(Knight k in unit.knights)
         {
             GameObject obj = CodeBox.AddChildInParent(list, knightPrefab);

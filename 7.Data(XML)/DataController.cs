@@ -77,11 +77,11 @@ public class DataController : MonoBehaviour
     public void Test_InsertData()
     {
         //데이타 삽입
+        skin.LoadResource();
         unit.Test_InsertData();
         MonsterData.Instance.InsertData();
         dungeon.SetData();
         text.setTextData();
-        SkinData.Instance.LoadResource();
     }
 
     #region  새로운 데이타(던전, 용병 등)를 생성하는 부분
