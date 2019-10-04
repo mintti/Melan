@@ -81,6 +81,7 @@ public class DataController : MonoBehaviour
         MonsterData.Instance.InsertData();
         dungeon.SetData();
         text.setTextData();
+        SkinData.Instance.LoadResource();
     }
 
     #region  새로운 데이타(던전, 용병 등)를 생성하는 부분
@@ -88,49 +89,12 @@ public class DataController : MonoBehaviour
     private void CreateData()
     {
         dungeon.DungeonMake();
+        unit.CreateRandomKnight(3);
     }
 
     #endregion
 
     #region 새로운 XML 데이타를 생성하는 부분
-
-    private void CreateXml()
-    {
-        XmlDocument xmlDoc = new XmlDocument();
-        xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "utf-8", "yes"));
-
-        //루트노드생성    
-        XmlNode root = xmlDoc.CreateNode(XmlNodeType.Element, "PlayerInfo" , string.Empty);
-        xmlDoc.AppendChild(root);
-
-        //1. PlayerData
-        XmlNode player = xmlDoc.CreateNode(XmlNodeType.Element, "Player" , string.Empty);
-        root.AppendChild(player);
-        XmlElement day = xmlDoc.CreateElement("Day");
-        day.InnerText = "1";
-        player.AppendChild(day);
-        XmlElement gold = xmlDoc.CreateElement("Gold");
-        gold.InnerText = "0";
-        player.AppendChild(gold);
-        XmlElement stress = xmlDoc.CreateElement("Stress");
-        stress.InnerText = "0";
-        player.AppendChild(stress);
-
-        //2. DungeonProgress
-        XmlNode dp = xmlDoc.CreateNode(XmlNodeType.Element, "DungeonProgress", string.Empty);
-        root.AppendChild(dp);
-
-        for(int i = 0 ; i < 8 ; i++)
-        {
-            
-        }
-
-        //3. Unit
-
-
-
-        xmlDoc.Save("./Assets/Resources/XML/PlayerData.xml");
-    }
 
     public void CreateKnightXml(Knight k)
     {
@@ -241,7 +205,34 @@ public class DataController : MonoBehaviour
         character.SelectSingleNode("Level").InnerText = "5";
         character.SelectSingleNode("Experience").InnerText = "180";
 
+        #region 노드 생성 참고
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "utf-8", "yes"));
+
+        //루트노드생성    
+        XmlNode root = xmlDoc.CreateNode(XmlNodeType.Element, "PlayerInfo" , string.Empty);
+        xmlDoc.AppendChild(root);
+
+        //1. PlayerData
+        XmlNode player = xmlDoc.CreateNode(XmlNodeType.Element, "Player" , string.Empty);
+        root.AppendChild(player);
+        XmlElement day = xmlDoc.CreateElement("Day");
+        day.InnerText = "1";
+        player.AppendChild(day);
+        XmlElement gold = xmlDoc.CreateElement("Gold");
+        gold.InnerText = "0";
+        player.AppendChild(gold);
+        XmlElement stress = xmlDoc.CreateElement("Stress");
+        stress.InnerText = "0";
+        player.AppendChild(stress);
+
+        //2. DungeonProgress
+        XmlNode dp = xmlDoc.CreateNode(XmlNodeType.Element, "DungeonProgress", string.Empty);
+        root.AppendChild(dp); 
+
+        #endregion;
         xmlDoc.Save("./Assets/Resources/Character.xml");
+
 
     }
     */

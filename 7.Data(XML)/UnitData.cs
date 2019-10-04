@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 #region Unit, Knight Class Info
 
@@ -25,6 +24,7 @@ public class Knight
     public List<int> uni;
     //추후 Array로 바꾸기.
     public Sprite skin; //Unit.skins.closet[skinNum]으로 호출됨.
+    public Skin testSkin;
 
     //[XML]로드 이후, 스킬 탐색 함수를 통해 값이 지정된다.
     public int maxHp;
@@ -45,6 +45,8 @@ public class Knight
         num = _num; name = _name; job = _job; level = _level; exper = _exper;
         usedSkill = _usedSkill; skillPoint = _skillPoint; favor = _favor; day = _day; hp = _hp; stress = _stress;
         skinArr = _skinArr;
+
+        testSkin = new Skin(SkinData.Instance.RandomSkin());
     }
 
     public void Test_Stat(int _hp, int _power, int _speed)
@@ -52,6 +54,25 @@ public class Knight
         hp = _hp;
         power = _power;
         speed = _speed;
+    }
+}
+
+public class RandomKnight
+{
+    public string name;
+    public int job;
+    public int level;
+    public int[] skinNum = new int[6];
+    Skin skin;
+
+    public RandomKnight(string _name, int _job, int _level, int[] _skin)
+    {
+        name = _name;
+        job = _job;
+        level = _level;
+        skinNum = _skin;
+
+        skin = new Skin(skinNum);
     }
 }
 #endregion
@@ -242,16 +263,29 @@ public class UnitData : MonoBehaviour
 
 
 
-    
-    
     //랜덤 용병생성
+    RandomKnight[] RandomKnightList;
     public void CreateRandomKnight(int cnt)
     {
-        Knight[] knightList = new Knight[cnt];
+        /*
+        player UnitLevel별 허용 직업군
+        1. 0~3
+        2. 4~7
+        3. 7~11
+        */
+
+
+        int playerLevel = PlayerData.Instance.Level;
+        RandomKnightList = new RandomKnight[cnt];
         for(int i = 0; i < cnt; i ++)
-        {
+        {  
+            string name = "테스트";
+            int job = Random.Range(0, playerLevel == 0 ? 4 : playerLevel == 1 ? 8 : 12);
+            int level = Random.Range(1, playerLevel + 2); 
 
+            int[] skin = SkinData.Instance.RandomSkin();
 
+            RandomKnightList[i] = new RandomKnight(name, job, level, skin);
         }
     }
 

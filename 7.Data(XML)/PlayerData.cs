@@ -51,4 +51,7 @@ public class PlayerData : MonoBehaviour
     {
         Day++;
     }
+
+    private int level; //1~3
+    public int Level{get{return level;} set{level = value;}}
 }
