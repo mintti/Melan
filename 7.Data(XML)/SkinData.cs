@@ -83,8 +83,6 @@ public class SkinData : MonoBehaviour
         path = "1.Skin/3.Pupil/";
         pupil = Resources.LoadAll<Sprite>(path);
 
-        Debug.Log("로드완료");
-
     }
 
     private void LoadResource2(string path, Sprite[] array, int type)
@@ -112,12 +110,14 @@ public class SkinData : MonoBehaviour
 
     public int[] RandomSkin()
     {
+        int eye = Random.Range(0, topBrow.Length);
         int[] skin = new int[6]{
+            
             Random.Range(0, frontHair.Length),
             Random.Range(0, backHair.Length),
-            Random.Range(0, topBrow.Length),
-            Random.Range(0, underBrow.Length),
-            Random.Range(0, back.Length),
+            eye,
+            eye,
+            eye,
             Random.Range(0, pupil.Length)
         };
         

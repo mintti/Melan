@@ -10,7 +10,7 @@ public class KnightPrefab : MonoBehaviour
     public Image skin;
     public Text name;
     public Text stress;
-
+    
     #endregion
 
     public Knight k{get;set;}

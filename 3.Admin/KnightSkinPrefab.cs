@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class KnightPrefab_v2 : MonoBehaviour
+public class KnightSkinPrefab : MonoBehaviour
 {
     public GameObject frontHair;
     public GameObject backHair;
@@ -12,12 +12,11 @@ public class KnightPrefab_v2 : MonoBehaviour
     public GameObject back;
     public GameObject pupil;
 
-    public Knight k;
+    public Skin skin;
 
-    public void SetData(Knight _k)
+    public void SetData(Skin _skin)
     {
-        k = _k;
-        Skin skin = k.testSkin;
+        skin = _skin;
 
         frontHair.GetComponent<SpriteRenderer>().sprite = skin.frontHair;
         backHair.GetComponent<SpriteRenderer>().sprite = skin.backHair;
@@ -28,6 +27,7 @@ public class KnightPrefab_v2 : MonoBehaviour
 
         pupil.GetComponent<SpriteRenderer>().sprite = skin.pupil;
     }
+    
 
     
     void SetMask(GameObject obj, Sprite sprite)

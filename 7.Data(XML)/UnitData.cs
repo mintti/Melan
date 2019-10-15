@@ -56,23 +56,37 @@ public class Knight
         speed = _speed;
     }
 }
-
+[System.Serializable]
 public class RandomKnight
 {
     public string name;
     public int job;
     public int level;
     public int[] skinNum = new int[6];
-    Skin skin;
 
-    public RandomKnight(string _name, int _job, int _level, int[] _skin)
+    public RandomKnight(bool b)
     {
-        name = _name;
-        job = _job;
-        level = _level;
-        skinNum = _skin;
+        if(b)
+        {
+           CreateRandomKnight(); 
+        }
+    }
 
-        skin = new Skin(skinNum);
+    public void CreateRandomKnight()
+    {
+        /*
+        player UnitLevel별 허용 직업군
+        1. 0~2
+        2. 3~5
+        3. 6~8
+        */
+        int playerLevel = PlayerData.Instance.Level;
+        
+        name = "테스트";
+        job = Random.Range(0, playerLevel == 0 ? 3 : playerLevel == 1 ? 6 : 9);
+        level = Random.Range(1, playerLevel + 2); 
+
+        skinNum = SkinData.Instance.RandomSkin();
     }
 }
 #endregion
@@ -146,6 +160,25 @@ public class KnightState
 
 public class UnitData : MonoBehaviour
 {
+    private static UnitData _instance = null;
+
+    public static UnitData Instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = FindObjectOfType(typeof(UnitData)) as UnitData;
+
+                if(_instance == null)
+                {
+                    Debug.LogError("There's no active UnitData object");
+                }
+            }
+            return _instance;
+        }
+    }
+
     public SkinData skins;
 
     public List<Knight> knights = new List<Knight>(); //기사리스트
@@ -264,29 +297,15 @@ public class UnitData : MonoBehaviour
 
 
     //랜덤 용병생성
-    RandomKnight[] RandomKnightList;
+    public RandomKnight[] randomKnightList = new RandomKnight[3];
+
     public void CreateRandomKnight(int cnt)
     {
-        /*
-        player UnitLevel별 허용 직업군
-        1. 0~3
-        2. 4~7
-        3. 7~11
-        */
-
-
-        int playerLevel = PlayerData.Instance.Level;
-        RandomKnightList = new RandomKnight[cnt];
-        for(int i = 0; i < cnt; i ++)
-        {  
-            string name = "테스트";
-            int job = Random.Range(0, playerLevel == 0 ? 4 : playerLevel == 1 ? 8 : 12);
-            int level = Random.Range(1, playerLevel + 2); 
-
-            int[] skin = SkinData.Instance.RandomSkin();
-
-            RandomKnightList[i] = new RandomKnight(name, job, level, skin);
+        for(int i =0 ; i < cnt; i++)
+        {
+            randomKnightList[i] = new RandomKnight(true);
         }
     }
+    
 
 }

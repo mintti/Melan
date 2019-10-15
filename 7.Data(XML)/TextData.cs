@@ -38,5 +38,10 @@ public class TextData : MonoBehaviour
       workList_Prefab_ment[1] = string.Format("테스트 멘트2");
       workList_Prefab_ment[2] = string.Format("테스트 멘트3");
    }
-   
+
+
+   /* 캐릭터 직업 */
+    public string[] job_lan = new string[11]{"전사" , "마법사", "도적" , "미정", 
+                                            "미정", "미정", "미정", "미정",
+                                            "미정", "미정", "미정"};
 }
