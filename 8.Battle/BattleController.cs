@@ -306,7 +306,7 @@ public class BattleController : MonoBehaviour
             Knight k = ks.k;
             foreach (Transform skillObj in skillObjList)
             {
-                skillObj.GetComponent<BattleSkillPrefab>().SetData(SkillData.Instance.GetSkill(k.job, k.usedSkill[index++]));
+                skillObj.GetComponent<BattleSkillPrefab>().SetData(SkillData.Instance.GetSkill(k.job, k.skill[index++]));
             }
             //스킬 유효성 검사를 통해 skillObjList갱신해줌.
         }

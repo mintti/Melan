@@ -9,7 +9,6 @@ public class AdminController : MonoBehaviour
     public GameObject knightPrefab; //admin - knight 객체.
 
     private UnitData unit;
-    
 
     public GameObject[] knightGameObjList = new GameObject[3];
     private void Start()

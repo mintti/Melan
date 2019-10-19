@@ -19,9 +19,11 @@ public class AdminNewKnight : MonoBehaviour
             knightSkinPrefab[i].SetData(new Skin(randomKnights[i].skinNum));
         }
     }
-
-    public void ClickSignal(int sig)
+    public int sig;
+    //NewKnight -  Click()에서 호출됨.
+    public void ClickSignal(int _sig)
     {
+        sig = _sig;
         for(int i = 0 ; i < newKnights.Length; i ++)
         {
             if (i == sig)

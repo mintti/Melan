@@ -17,10 +17,10 @@ public class Monster
     public int speed;
     public int stress;
 
-    public List<int> uni = new List<int>();
+    public int[] uni;
 
     public Monster(int _num, string _name, int[] _skills,
-                   int _hp, int _power, int _speed, List<int> _uni)
+                   int _hp, int _power, int _speed, int[] _uni)
     {
         num = _num;
         name = _name;
@@ -84,8 +84,8 @@ public class MonsterData : MonoBehaviour
 
         //데이터 삽입
         #region 몬스터 리스트
-        monsters[0] = new Monster(0, "슬라임", new int[]{0,1}, 10, 6, 5, new List<int>());
-        monsters[1] = new Monster(1, "발발이", new int[]{0,1}, 10, 10, 10, new List<int>());
+        monsters[0] = new Monster(0, "슬라임", new int[]{0,1}, 10, 6, 5, null);
+        monsters[1] = new Monster(1, "발발이", new int[]{0,1}, 10, 10, 10, null);
 
         #endregion
         //이미지로드

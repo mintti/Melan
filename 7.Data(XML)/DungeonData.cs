@@ -142,6 +142,7 @@ public class DungeonData : MonoBehaviour
         }
 
         ConnectDungoen(array);
+        DataController.Instance.SaveDungeon(array);
     }
 
     private void ConnectDungoen(int[] array)

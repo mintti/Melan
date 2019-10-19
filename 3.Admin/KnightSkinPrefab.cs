@@ -11,7 +11,6 @@ public class KnightSkinPrefab : MonoBehaviour
     public GameObject underBrow;
     public GameObject back;
     public GameObject pupil;
-
     public Skin skin;
 
     public void SetData(Skin _skin)

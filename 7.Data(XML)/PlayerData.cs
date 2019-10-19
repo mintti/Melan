@@ -33,6 +33,7 @@ public class PlayerData : MonoBehaviour
         set{
             gold = value;
             GameController.Instance.PlayerDataUpdate();
+            DataController.Instance.UpdateGold();
             }
     }
     public int Day{
@@ -40,12 +41,19 @@ public class PlayerData : MonoBehaviour
         set{
             day = value; 
             GameController.Instance.PlayerDataUpdate();
+            DataController.Instance.UpdateDay();
             }
     }
     #endregion
 
     private int stress;
-    public int Stress{get{return stress;} set{stress = value;}}
+    public int Stress{
+        get{return stress;}
+        set{
+            stress = value;
+            DataController.Instance.UpdateGold();
+            }
+    }
 
     public void NextDay()
     {

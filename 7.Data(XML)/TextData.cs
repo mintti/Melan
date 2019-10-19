@@ -28,6 +28,9 @@ public class TextData : MonoBehaviour
    public string[] workList_Prefab_ment{get;set;} = new string[3];
    public Sprite[] workList_Prefab_Image{get;set;} = new Sprite[3];
 
+    public string[] employment_Ment = new string[2]{
+        "고용 시 해당 금액이 빠져나가고, 30턴 후 다시 지급합니다.",
+        "지급하지 않을 경우 계약이 해지됩니다."};
    public void setTextData()
    {
       dungoenCol_Ment[0] = string.Format("출전 가능. 이곳을 눌러 준비해주세요.");
@@ -40,8 +43,10 @@ public class TextData : MonoBehaviour
    }
 
 
-   /* 캐릭터 직업 */
     public string[] job_lan = new string[11]{"전사" , "마법사", "도적" , "미정", 
                                             "미정", "미정", "미정", "미정",
                                             "미정", "미정", "미정"};
+
+    
+
 }

@@ -47,6 +47,8 @@ public class DataController : MonoBehaviour
         string _Filestr = "Resources/XML/SecondData.xml";
         System.IO.FileInfo fi = new System.IO.FileInfo(_Filestr);
 
+        xmlDoc = new XmlDocument();
+
         if(fi.Exists)
         {
             LoadXml("SecondData");
@@ -71,7 +73,6 @@ public class DataController : MonoBehaviour
     public SkinData skin;
 
     public TextData text;
-
     
 
     public void Test_InsertData()
@@ -106,7 +107,6 @@ public class DataController : MonoBehaviour
     public void LoadXml(string temp)
     {
         TextAsset textAsset = Resources.Load("XML/"+ temp) as TextAsset;
-        XmlDocument xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(textAsset.text);
         
         //1. PlayerData
@@ -139,8 +139,7 @@ public class DataController : MonoBehaviour
                 System.Convert.ToInt32(_node.SelectSingleNode("Job").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Level").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Exper").InnerText),
-                CodeBox.StringSplit(_node.SelectSingleNode("UseSkill").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Point").InnerText),
+                CodeBox.StringSplit(_node.SelectSingleNode("Skill").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Favor").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Day").InnerText),
                 System.Convert.ToInt32(_node.SelectSingleNode("Hp").InnerText),
@@ -185,6 +184,8 @@ public class DataController : MonoBehaviour
         //4-2. GameTurn - PartyEvent
 
         //4-3. GameTurn - KnightEvent
+
+
     }
 
     #endregion
@@ -247,4 +248,206 @@ public class DataController : MonoBehaviour
         }
         return arr;
     }
+
+    /*
+    모든 행동에 따른 TextAsset을 저장한다.
+    */
+    public XmlDocument xmlDoc; //첫 데이터 로드 시 지정됨.
+    
+    #region COMMON
+    public void ConnetctedXmlDoc(string text)
+    {
+        if(text == "first")
+        {
+
+        }
+        else if(text == "continue")
+        {
+            
+        }
+    }
+    public void SaveOverlapXml(string info)
+    {
+        xmlDoc.Save("./Assets/Resources/XML/PlayerData.xml");
+        Debug.Log( info + " Save Complete.");
+    }
+    #endregion
+    
+    #region PLAYER
+    public void UpdateGold()
+    {
+        XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
+        
+        node.SelectSingleNode("Gold").InnerText =  System.Convert.ToString(player.Gold);
+
+        SaveOverlapXml("골드업데이트");
+    }
+
+    public void UpdateDay()
+    {
+        XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
+        
+        node.SelectSingleNode("Day").InnerText =  System.Convert.ToString(player.Day);
+
+        SaveOverlapXml("Day업데이트");
+    }
+
+    public void UpdateStress()
+    {
+        XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
+        
+        node.SelectSingleNode("Stress").InnerText =  System.Convert.ToString(player.Stress);
+
+        SaveOverlapXml("Player Stress 업데이트");
+    }
+
+    #endregion
+
+    #region WORLD
+    public void SaveDungeon(int[] array)
+    {
+        XmlNode main = xmlDoc.SelectSingleNode("PlayerData");
+        
+        XmlNode root = xmlDoc.CreateNode(XmlNodeType.Element, "DungeonInfo", string.Empty);
+        main.AppendChild(root);
+
+        for(int i = 0 ; i < 8 ; i ++)
+        {
+            XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Dungeon", string.Empty);
+            root.AppendChild(child);
+
+            XmlElement num = xmlDoc.CreateElement("Num");
+            num.InnerText = System.Convert.ToString(array[i]);
+            child.AppendChild(num);
+
+            XmlElement isClear = xmlDoc.CreateElement("IsClear");
+            isClear.InnerText = "false";
+            child.AppendChild(isClear);
+
+            XmlElement saturation = xmlDoc.CreateElement("Saturation");
+            saturation.InnerText = "0";
+            child.AppendChild(saturation);
+
+            XmlElement search = xmlDoc.CreateElement("SearchP");
+            search.InnerText = "0";
+            child.AppendChild(search);
+        }
+
+        SaveOverlapXml("던전생성");
+    }
+
+    public void UpdateDungeon(int num)
+    {
+        DungeonProgress d = DungeonData.Instance.dungeon_Progress[num];
+        XmlNodeList nodes = xmlDoc.SelectNodes("PlayerData/DungeonInfo/Dungeon");
+        XmlNode dungeon = nodes[num];
+
+        dungeon.SelectSingleNode("IsClear").InnerText = System.Convert.ToString(d.isClear);
+        dungeon.SelectSingleNode("Saturation").InnerText = System.Convert.ToString(d.Saturation);
+        dungeon.SelectSingleNode("SearchP").InnerText = System.Convert.ToString(d.SearchP);
+
+        SaveOverlapXml("던전업데이트");
+    }
+    #endregion
+
+    #region ADMIN
+    public void AddKnight(Knight k)
+    {
+        XmlNode root = xmlDoc.SelectSingleNode("PlayerData/KnightInfo");
+        
+        XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Knight", string.Empty);
+        root.AppendChild(child);
+
+        // * 기본적인 인포
+        XmlElement name = xmlDoc.CreateElement("Name");
+        name.InnerText = k.name;
+        child.AppendChild(name);
+
+        XmlElement job = xmlDoc.CreateElement("Job");
+        job.InnerText = System.Convert.ToString(k.job);
+        child.AppendChild(job);
+
+        XmlElement level = xmlDoc.CreateElement("Level");
+        job.InnerText = System.Convert.ToString(k.job);
+        child.AppendChild(job);
+
+        XmlElement exper = xmlDoc.CreateElement("Exper");
+        job.InnerText = System.Convert.ToString(k.job);
+        child.AppendChild(job);
+
+        XmlElement skill = xmlDoc.CreateElement("Skill");
+        skill.InnerText = IntArrayToString(k.skill);
+        child.AppendChild(skill);
+
+        XmlElement favor = xmlDoc.CreateElement("Favor");
+        favor.InnerText = System.Convert.ToString(k.favor);
+        child.AppendChild(favor);
+
+        XmlElement day = xmlDoc.CreateElement("Day");
+        day.InnerText = System.Convert.ToString(k.day);
+        child.AppendChild(day);
+
+        XmlElement skin = xmlDoc.CreateElement("Skin");
+        skin.InnerText = IntArrayToString(k.skinArr);;
+        child.AppendChild(skin);
+
+        // * 전투관련 정보
+        XmlElement isAlive = xmlDoc.CreateElement("IsAlive");
+        isAlive.InnerText = System.Convert.ToString(k.isAlive);
+        child.AppendChild(isAlive);
+
+        XmlElement hp = xmlDoc.CreateElement("Hp");
+        hp.InnerText = System.Convert.ToString(k.hp);
+        child.AppendChild(hp);
+
+        XmlElement stress = xmlDoc.CreateElement("Stress");
+        stress.InnerText = System.Convert.ToString(k.stress);
+        child.AppendChild(stress);
+
+        XmlElement uni = xmlDoc.CreateElement("Uni");
+        uni.InnerText = IntArrayToString(k.uni);;
+        child.AppendChild(uni);
+
+        SaveOverlapXml("새로운 기사!");
+    }
+
+    private string IntArrayToString(int[] array)
+    {
+        if(array == null)
+            return "";
+
+        string text = "";
+        for(int i = 0 ; i < array.Length; i++)
+            text+= array[i] + ",";
+        text = text.Substring(0, text.Length -1);
+        
+        return text;
+    }
+
+
+    public void UpdateKnight(Knight k, string type)
+    {
+        switch(type)
+        {
+            case "" :
+                break;
+            default :
+                break;
+        }
+        SaveOverlapXml("기사업데이트(" + type + ")");
+    }
+
+    public void AddParty()
+    {
+
+    }
+    public void UpdateParty()
+    {
+
+    }
+    #endregion
+
+    #region SYSTEM
+
+    #endregion
 }

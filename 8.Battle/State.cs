@@ -97,7 +97,7 @@ public class State
     public int Speed{get{int value = System.Convert.ToInt32(speed* speedMultiple); return value;} set{speed = value;}}
     private int stress;
     public int Stress{get{return stress;} set{stress = value;}}
-    public List<int> uni;
+    public int[] uni;
     public BattleElement element = new BattleElement();
     //배수 변수
     private float powerMultiple;
@@ -107,7 +107,7 @@ public class State
     private LifeType lifeType;
     public LifeType LifeType{get{return lifeType;} set{lifeType = value;}}
 
-    public State(int h, int p, int s, int st, List<int> u, LifeType t)
+    public State(int h, int p, int s, int st, int[] u, LifeType t)
     {
         Hp = h; Power = p; Speed = s; Stress = st;
         uni = u;

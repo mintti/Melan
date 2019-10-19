@@ -50,6 +50,5 @@ public class NewKnight : MonoBehaviour
     public void Click()
     {
         adminNewKnight.ClickSignal(n);
-        Debug.Log("sig : " + n);
     }
 }
