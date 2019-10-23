@@ -17,7 +17,7 @@ public class BattleKnightPrefab : MonoBehaviour
     public void SetData(KnightState _ks)
     {
         ks = _ks;
-        img.sprite = ks.k.skin;
+        //img.sprite = ks.k.skin;
 
         isKnight = true;
         UpdateText();

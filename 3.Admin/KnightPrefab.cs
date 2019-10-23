@@ -7,7 +7,7 @@ public class KnightPrefab : MonoBehaviour
 {
     #region  Obj Part
 
-    public Image skin;
+    public Image jobImg;
     public Text name;
     public Text stress;
     
@@ -18,7 +18,7 @@ public class KnightPrefab : MonoBehaviour
     public void SetData(Knight _k)
     {
         k = _k;
-        skin.sprite = k.skin;
+        jobImg.sprite = ImageData.Instance.job[k.job];
         name.text = string.Format("{0}", k.name);
         stress.text = k.stress + "%";      
     }

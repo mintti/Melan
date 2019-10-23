@@ -5,11 +5,19 @@ using UnityEngine.UI;
 
 public class WorldController : MonoBehaviour
 {
-    
-
     public GameObject world;
     public Button _bt;
     private UnitData unit;
+
+    public Button participateBt;
+    private int cnt;
+    public int Cnt{
+        get{return cnt;}
+        set{
+            cnt = value;
+            participateBt.interactable = cnt == 0 ? false : true;
+        }
+    }
 
     //1-2. 던전 선택 후, 출전 클릭 시 : 변수 선언
     public GameObject selectKnighObj;
@@ -20,7 +28,11 @@ public class WorldController : MonoBehaviour
     public GameObject knightPrefab;
 
     public Transform selectView;
-
+    public GameObject knightPrefabSelect;
+    //텍스쳐
+    public KnightSkinPrefab[] SkinObjs = new KnightSkinPrefab[4];
+    public Texture[] textures = new Texture[4];
+    public List<int> txrArr = new List<int>();
 
     //출전 시 이벤트 
     public EventManager event_;
@@ -33,28 +45,49 @@ public class WorldController : MonoBehaviour
 
 
     #region 1-3. 던전 선택 후, 출전 용병 List 생성 : 코드  
+    public void WhatDungeon(int n)
+    {
+        d = DungeonData.Instance.dungeon_Progress[n].d;
+    }
     public void MakeKnightList(Transform list)
     {
         CodeBox.ClearList(list);
 
         foreach(Knight k in unit.knights)
         {
+            if(k.teaming == true)
+                continue;
             GameObject obj = CodeBox.AddChildInParent(list, knightPrefab);
+            
             obj.GetComponent<WorldKnightPrefab>().SetData(k);
         }
 
-        //용병 선택 창 초기화.
+        //초기화.
         CodeBox.ClearList(selectView);
+        txrArr.Clear();
+        Cnt = 0;
     }
 
     //파티 List & 오브젝트(Select View)에 요소 추가
     public void AddKnightInParty(Knight k)
     {
-        WorldKnightPrefab obj = CodeBox.AddChildInParent(selectView, knightPrefab).GetComponent<WorldKnightPrefab>();
+        if(Cnt == 4)
+            return;
+        WorldKnightSelect obj = CodeBox.AddChildInParent(selectView, knightPrefabSelect).GetComponent<WorldKnightSelect>();
 
-        //셀렉트 뷰 내부에 있기 때문에 데이터 호출 후, 기능 제한.
-        obj.KngihtInSelectView(k);
-       
+        //사용하지 않는 Texture 찾아 출력
+        int i;
+        for(i = 0 ; i < 4 ; i ++)
+        {
+            if(txrArr.Contains(i) == false)
+                break;
+        }
+        
+        txrArr.Add(i);
+        SkinObjs[i].SetData(k.skin);
+        obj.SetData(k.num, textures[i], i);
+        
+        Cnt++;
     }
     //파티 List & 오브젝트(Select View)에서 삭제
     public void RemoveKnightInParty(Knight k)
@@ -71,17 +104,21 @@ public class WorldController : MonoBehaviour
         }
         foreach(Transform t in selectView)
         {
-            Knight k_ = t.GetComponent<WorldKnightPrefab>().k;
-            if(k.num == k_.num)
+            WorldKnightSelect com = t.GetComponent<WorldKnightSelect>();
+            if(k.num == com.kNum)
             {
+                txrArr.Remove(com.txrNum);
+                Cnt--;
                 Destroy(t.gameObject);
                 break;
             }
         }
     }
+
     #endregion
 
     #region 1-4. 출전! (xml추가 필)
+    
     public void ParticipateInDungeon()
     {
         //size는 출전 창에서 선택 창에 존재하는 자식 오브젝트 수로 카운트.
@@ -92,9 +129,7 @@ public class WorldController : MonoBehaviour
         for(int i = 0 ; i < size; i++)
         {
             Transform t = selectView.GetChild(i);
-            Knight k = t.GetComponent<WorldKnightPrefab>().k;
-
-            arr[i] = k.num;
+            arr[i] = t.GetComponent<WorldKnightSelect>().kNum;
         }
 
         //배열의 마지막에 Dungeon정보 저장.

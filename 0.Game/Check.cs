@@ -24,7 +24,7 @@ public class Check : MonoBehaviour
         switch(type)
         {
             case "고용" :
-                int pay = unit.knightPay[unit.randomKnightList[adminNewKnight.sig].level -1];
+                int pay = unit.knightPay[unit.randomKnightList[adminNewKnight.Sig].level -1];
                 SetText(string.Format("▶G {0}◀", pay), text.employment_Ment[0], text.employment_Ment[1]);
                 break;
 
@@ -46,7 +46,8 @@ public class Check : MonoBehaviour
         switch(type)
         {
             case "고용" :
-            UnitData.Instance.Employment(adminNewKnight.sig);
+            UnitData.Instance.Employment(adminNewKnight.Sig);
+            adminNewKnight.DisableButton();//비활
             break;
 
             default :

@@ -16,7 +16,6 @@ public class Knight
     public int[] skill; //보유한 스킬
     public int favor;
     public int day;
-    public int[] skinArr;
 
     public bool isAlive;
     public int hp;
@@ -24,8 +23,8 @@ public class Knight
     
     public int[] uni;
     //추후 Array로 바꾸기.
-    public Sprite skin; //Unit.skins.closet[skinNum]으로 호출됨.
-    public Skin testSkin;
+    public int[] skinArr;
+    public Skin skin; //Unit.skins.closet[skinNum]으로 호출됨.
 
     //[XML]로드 이후, 스킬 탐색 함수를 통해 값이 지정된다.
     public int maxHp;//job[level] 에 의한
@@ -47,14 +46,17 @@ public class Knight
         skill = _skill; favor = _favor; day = _day; hp = _hp; stress = _stress;
         skinArr = _skinArr;
 
-        testSkin = new Skin(SkinData.Instance.RandomSkin());
+        skin = new Skin(skinArr);
+
+        GetState();
     }
 
-    public void Test_Stat(int _hp, int _power, int _speed)
+    public void GetState()
     {
-        hp = _hp;
-        power = _power;
-        speed = _speed;
+        int[,,] stateList = UnitData.Instance.stateList; 
+        maxHp = stateList[job, level, 0];
+        power = stateList[job, level, 1];
+        speed = stateList[job, level, 2];
     }
 }
 [System.Serializable]
@@ -65,6 +67,8 @@ public class RandomKnight
     public int level;
     public int[] skinNum = new int[6];
     public int[] skill;
+
+    public bool isEmploy;
 
     public RandomKnight(bool b)
     {
@@ -89,6 +93,7 @@ public class RandomKnight
         level = Random.Range(1, playerLevel + 2); 
 
         skinNum = SkinData.Instance.RandomSkin();
+        isEmploy = false;
     }
 }
 #endregion
@@ -206,7 +211,7 @@ public class UnitData : MonoBehaviour
     {
         int i = knights.FindIndex(o => o.num == num);
 
-        knights[i].skin = skins.closet[knights[i].skinArr[0]];
+        //knights[i].skin = skins.closet[knights[i].skinArr[0]];
         //추후 array탐색형식으로 변경.
         /*
         for(int j = 0; j < 1; j++)
@@ -214,36 +219,6 @@ public class UnitData : MonoBehaviour
 
         }
          */
-    }
-
-
-    public void Test_InsertData()
-    {
-        Knight testKight = new Knight(0, "테스트용사", 0, 1, 0,
-                         new int[]{0,1,2,3},
-                          2, 1, 20, 0,
-                         new int[]{0});
-        testKight.Test_Stat(20, 10, 15);
-        knights.Add(testKight);
-        SetSkin(0);
-
-        //테스트 용사2
-        testKight = new Knight(1, "테스트마법", 1, 1, 0,
-                         new int[]{0,1,2,3},
-                          2, 1, 10, 0,
-                         new int[]{1});
-        testKight.Test_Stat(10, 20, 5);
-        knights.Add(testKight);
-        SetSkin(1);
-        
-        //테스트 용사3
-        testKight = new Knight(2, "테스트도적", 2, 1, 0,
-                         new int[]{0,1,2,3},
-                          2, 1, 10, 0,
-                         new int[]{2});
-        testKight.Test_Stat(10, 5, 20);
-        knights.Add(testKight);
-        SetSkin(2);
     }
 
     public void SetData(Knight k)
@@ -310,21 +285,28 @@ public class UnitData : MonoBehaviour
         {
             randomKnightList[i] = new RandomKnight(true);
         }
+        DataController.Instance.AddRandomKnight(randomKnightList);
     }
     
+    //용병고용. Check -> IsCheck()에서 호출됨.
     public void Employment(int i)
     {
         RandomKnight rn = randomKnightList[i];
 
-        int hp = stateList[rn.job, rn.level, 0];
-        int num = knights.Count -1;
+        int hp = stateList[rn.job, rn.level- 1, 0];
+        int num = knights.Count;
         knights.Add(new Knight(
             num, rn.name, rn.job, rn.level, 0, rn.skill, 0,
             PlayerData.Instance.Day, hp, 0, rn.skinNum
         ));
-
+        
+        //등록 및 전산처리
         DataController.Instance.AddKnight(knights[num]);
+        DataController.Instance.UpdateRandomKnight(i);
+        
         PlayerData.Instance.Gold -= knightPay[rn.level -1];
+        randomKnightList[i].isEmploy = true;
+        
     }
 
     #endregion

@@ -79,7 +79,6 @@ public class DataController : MonoBehaviour
     {
         //데이타 삽입
         skin.LoadResource();
-        unit.Test_InsertData();
         MonsterData.Instance.InsertData();
         dungeon.SetData();
         text.setTextData();
@@ -351,6 +350,7 @@ public class DataController : MonoBehaviour
     #endregion
 
     #region ADMIN
+    //UnitData - Employment(). 기사 고용에 해당. 
     public void AddKnight(Knight k)
     {
         XmlNode root = xmlDoc.SelectSingleNode("PlayerData/KnightInfo");
@@ -368,12 +368,12 @@ public class DataController : MonoBehaviour
         child.AppendChild(job);
 
         XmlElement level = xmlDoc.CreateElement("Level");
-        job.InnerText = System.Convert.ToString(k.job);
-        child.AppendChild(job);
+        level.InnerText = System.Convert.ToString(k.level);
+        child.AppendChild(level);
 
         XmlElement exper = xmlDoc.CreateElement("Exper");
-        job.InnerText = System.Convert.ToString(k.job);
-        child.AppendChild(job);
+        exper.InnerText = System.Convert.ToString(k.exper);
+        child.AppendChild(exper);
 
         XmlElement skill = xmlDoc.CreateElement("Skill");
         skill.InnerText = IntArrayToString(k.skill);
@@ -445,6 +445,52 @@ public class DataController : MonoBehaviour
     {
 
     }
+
+    public void AddRandomKnight(RandomKnight[] k)
+    {
+        XmlNode root = xmlDoc.SelectSingleNode("PlayerData/Info/RandomKnightInfo");
+        
+        for(int i = 0 ; i < k.Length; i ++)
+        {   
+            XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Knight", string.Empty);
+            root.AppendChild(child);
+
+            // * 기본적인 인포
+            XmlElement name = xmlDoc.CreateElement("Name");
+            name.InnerText = k[i].name;
+            child.AppendChild(name);
+
+            XmlElement job = xmlDoc.CreateElement("Job");
+            job.InnerText = System.Convert.ToString(k[i].job);
+            child.AppendChild(job);
+
+            XmlElement level = xmlDoc.CreateElement("Level");
+            level.InnerText = System.Convert.ToString(k[i].level);
+            child.AppendChild(level);
+            
+            XmlElement employ = xmlDoc.CreateElement("Employ");
+            employ.InnerText = "false";
+            child.AppendChild(employ);
+
+            XmlElement skin = xmlDoc.CreateElement("Skin");
+            skin.InnerText = IntArrayToString(k[i].skinNum);;
+            child.AppendChild(skin);
+        }
+
+        SaveOverlapXml("고용기사생성");
+    }
+
+    //고용정보 업데이트(대부분)
+    public void UpdateRandomKnight(int index)
+    {
+        XmlNodeList nodes = xmlDoc.SelectNodes("PlayerData/Info/RandomKnightInfo/Knight");
+        XmlNode node = nodes[index];
+
+        node.SelectSingleNode("Employ").InnerText = "true";
+        SaveOverlapXml("고용정보 업데이트");
+    }
+
+
     #endregion
 
     #region SYSTEM

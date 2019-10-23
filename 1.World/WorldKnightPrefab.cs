@@ -7,13 +7,17 @@ public class WorldKnightPrefab : MonoBehaviour
 {
     #region  Obj Part
     public WorldController world;
-
-    public Image skin;
+    
     public GameObject check;
-    public GameObject teaming;
     #endregion
 
     public Knight k{get;set;}
+    public Text nameText;
+    public Text jobText;
+    public Text levelText;
+    public Text hpText;
+    public Text stressText;
+
     private int isType{get;set;} = 0;  // 0 : 선택가능 기사리스트 , 1 : 선택 불가 블럭 타입(현제 팀 출전중.),  2: 선택 시 제거됨(셀렉트뷰)
 
     void Start()
@@ -33,16 +37,13 @@ public class WorldKnightPrefab : MonoBehaviour
 
     public void SetData(Knight _k)
     {
-        
         k = _k;
-        skin.sprite = k.skin;
 
-        //출전 중인 기사들은..
-        if(k.teaming) 
-        {
-            IsType(1);
-        }
-
+        nameText.text = k.name;
+        jobText.text = TextData.Instance.job_lan[k.job];
+        levelText.text = string.Format("{0}{1}", k.level, TextData.Instance.levelTail);
+        hpText.text = string.Format("{0}/{1}", k.hp, k.maxHp);
+        stressText.text = string.Format("{0}%", k.stress);
     }
 
     //Obj Button 클릭시 호출됨.
@@ -68,11 +69,6 @@ public class WorldKnightPrefab : MonoBehaviour
             case 0 :
                 isType = 0;
                 check.SetActive(false);
-                //teaming.SetActive(false);
-                break;
-            case 1 : 
-                isType = 1;
-                teaming.SetActive(true);
                 break;
             case 2 :
                 isType = 2;

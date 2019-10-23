@@ -10,7 +10,7 @@ public class AdminController : MonoBehaviour
 
     private UnitData unit;
 
-    public GameObject[] knightGameObjList = new GameObject[3];
+    
     private void Start()
     {
         unit = DataController.Instance.unit;

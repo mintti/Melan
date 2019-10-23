@@ -23,7 +23,10 @@ public class ImageData : MonoBehaviour
             return _instance;
         }
     }
-
+    //직업
+    public Sprite[] job = new Sprite[8];
+    
+    //스킬
     public Sprite targetSolo;
     public Sprite targetMulti;
     
@@ -31,7 +34,6 @@ public class ImageData : MonoBehaviour
     public Sprite stun;
     public Sprite poison;
     public Sprite ele;
-
 
     public Sprite GetSprite(string type)
     {

@@ -31,8 +31,9 @@ public class TextData : MonoBehaviour
     public string[] employment_Ment = new string[2]{
         "고용 시 해당 금액이 빠져나가고, 30턴 후 다시 지급합니다.",
         "지급하지 않을 경우 계약이 해지됩니다."};
-   public void setTextData()
-   {
+    public string levelTail;
+    public void setTextData()
+    {
       dungoenCol_Ment[0] = string.Format("출전 가능. 이곳을 눌러 준비해주세요.");
       dungoenCol_Ment[1] = string.Format("출전 불가능. 이전 던전 클리어 필요.");
       dungoenCol_Ment[2] = string.Format("출전 불가능. 토벌간 파티 존재.");
@@ -40,7 +41,9 @@ public class TextData : MonoBehaviour
       workList_Prefab_ment[0] = string.Format("출전 중 몬스터 발견!");
       workList_Prefab_ment[1] = string.Format("테스트 멘트2");
       workList_Prefab_ment[2] = string.Format("테스트 멘트3");
-   }
+      
+      levelTail = "급";
+    }
 
 
     public string[] job_lan = new string[11]{"전사" , "마법사", "도적" , "미정", 
