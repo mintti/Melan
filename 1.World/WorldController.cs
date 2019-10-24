@@ -21,6 +21,7 @@ public class WorldController : MonoBehaviour
 
     //1-2. 던전 선택 후, 출전 클릭 시 : 변수 선언
     public GameObject selectKnighObj;
+    public Transform selectKnightListTr;
     private Dungeon d; //col에서 호출된 d.
 
     //1-3.던전 선택 후, 출전 시, 용병 List관련. : 변수 선언
@@ -44,11 +45,18 @@ public class WorldController : MonoBehaviour
     }
 
 
-    #region 1-3. 던전 선택 후, 출전 용병 List 생성 : 코드  
-    public void WhatDungeon(int n)
+    #region 1-3. 던전 선택 후, 출전 용병 List 생성 : 코드
+    public void SelectDungeon(int n)
     {
+        if(DungeonData.Instance.CanGo(n) == false)
+            return;
+        
         d = DungeonData.Instance.dungeon_Progress[n].d;
+        selectKnighObj.SetActive(true);
+        MakeKnightList(selectKnightListTr);
+
     }
+    
     public void MakeKnightList(Transform list)
     {
         CodeBox.ClearList(list);

@@ -33,23 +33,16 @@ public class GameController : MonoBehaviour
     public EventData eventData;
     public PlayerData player;
 
-    void Start()
+    //DataController - LoadDataProcess(2)에서 호출됨.
+    public void ConnectData()
     {
-       //Data 연결
         data = DataController.Instance;
         eventData = EventData.Instance;
         player = data.player;
 
-        //초기 데이터
         world.Click(); //초기 화면
         PlayerDataUpdate();
         SetWorldDungoenPrefabs();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     #region  Player Data
@@ -74,12 +67,26 @@ public class GameController : MonoBehaviour
 
     #endregion
     
-    public void LoadBattleScene()
+    public void LoadScene(int num)
     {
-        eventData.SetBattleData(event_.selectWork);
-        SceneManager.LoadScene("2.Battle");
+        switch(num)
+        {
+            case 0 :
+                SceneManager.LoadScene("0.Start");
+                break;
+            case 1:
+                SceneManager.LoadScene("1.Main");
+                break;
+            case 2: 
+                eventData.SetBattleData(event_.selectWork);
+                SceneManager.LoadScene("2.Battle");
+                break;
+            case 3:
+                break;
+            default :
+                break;
+        }
     }
-
 
     //Castle Click
     public Button bt;

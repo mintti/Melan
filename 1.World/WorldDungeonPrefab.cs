@@ -9,6 +9,7 @@ public class WorldDungeonPrefab : MonoBehaviour
     public Text nameText;
     public Text saturationText; //포화도 텍스트
     public Text searchPText; //탐색률 텍스트
+    public GameObject cloude;
 
     private Sprite[] img = new Sprite[3];
 
@@ -23,5 +24,7 @@ public class WorldDungeonPrefab : MonoBehaviour
         nameText.text = dp.d.name;
         saturationText.text = string.Format("{0}%", dp.Saturation);
         searchPText.text =  string.Format("{0}%",dp.SearchP );
+    
+        cloude.SetActive(dp.SearchP < 10 ? true : false);
     }
 }

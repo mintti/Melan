@@ -47,7 +47,7 @@ public class DungeonProgress
         Reset();
     }
 
-    public void SetData(Dungeon _d, bool _isClear, double _saturation, double _searchP){
+    public DungeonProgress(Dungeon _d, bool _isClear, double _saturation, double _searchP){
         d = _d;
         isClear = _isClear;
         Saturation = _saturation;
@@ -153,5 +153,35 @@ public class DungeonData : MonoBehaviour
             dungeon_Progress[i] = new DungeonProgress(d);
         }
     }
-    
+
+    public bool CanGo(int n)
+    {
+        switch(n)
+        {
+            case 0 :
+                return true;
+            case 1 :
+                return true;
+            case 2 :
+                return CanGo2(0);
+            case 3 :
+                return CanGo2(0)|CanGo2(1);
+            case 4 :
+                return CanGo2(1);
+            case 5 :
+                return CanGo2(2)|CanGo2(3);
+            case 6 :
+                return CanGo2(3)|CanGo2(4);
+            case 7 :
+                return CanGo2(5)|CanGo2(6);
+            default :
+                return false;
+        }
+    }
+    public bool CanGo2(int n)
+    {
+        if(dungeon_Progress[n].SearchP == 100)
+            return true;
+        else return false;
+    }
 }

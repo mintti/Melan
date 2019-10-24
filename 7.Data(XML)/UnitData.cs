@@ -39,12 +39,12 @@ public class Knight
 
     //xml로드 값
     public Knight(int _num, string _name, int _job, int _level, int _exper,
-                  int[] _skill, int _favor, int _day, int _hp, int _stress,
-                  int[] _skinArr)
+                  int[] _skill, int _favor, int _day, int[] _skinArr, 
+                  bool _isAlive, int _hp, int _stress, int[] _uni)
     {
         num = _num; name = _name; job = _job; level = _level; exper = _exper;
-        skill = _skill; favor = _favor; day = _day; hp = _hp; stress = _stress;
-        skinArr = _skinArr;
+        skill = _skill; favor = _favor; day = _day;  skinArr = _skinArr;
+        isAlive = _isAlive; hp = _hp; stress = _stress;  uni = _uni;
 
         skin = new Skin(skinArr);
 
@@ -76,6 +76,14 @@ public class RandomKnight
         {
            CreateRandomKnight(); 
         }
+    }
+    public RandomKnight(string _name, int _job, int _level, bool _employ, int[] _skinNum)
+    {
+        name = _name;
+        job = _job;
+        level = _level;
+        isEmploy = _employ;
+        skinNum = _skinNum;
     }
 
     public void CreateRandomKnight()
@@ -206,25 +214,7 @@ public class UnitData : MonoBehaviour
     {10, 20, 30, 40, 50};
 
 
-    //Knight - SkinArr 탐색 후 Skin에 매칭시킴.
-    public void SetSkin(int num)
-    {
-        int i = knights.FindIndex(o => o.num == num);
-
-        //knights[i].skin = skins.closet[knights[i].skinArr[0]];
-        //추후 array탐색형식으로 변경.
-        /*
-        for(int j = 0; j < 1; j++)
-        {
-
-        }
-         */
-    }
-
-    public void SetData(Knight k)
-    {
-        
-    }
+    
     #region 데이터세팅.추후 설정.
     //데이터 load 함수. 로직참고.
     void AdminDataLoad(){
@@ -296,8 +286,9 @@ public class UnitData : MonoBehaviour
         int hp = stateList[rn.job, rn.level- 1, 0];
         int num = knights.Count;
         knights.Add(new Knight(
-            num, rn.name, rn.job, rn.level, 0, rn.skill, 0,
-            PlayerData.Instance.Day, hp, 0, rn.skinNum
+            num, rn.name, rn.job, rn.level, 0,
+            rn.skill, 0, PlayerData.Instance.Day, rn.skinNum,
+            true, hp, 0, null
         ));
         
         //등록 및 전산처리
