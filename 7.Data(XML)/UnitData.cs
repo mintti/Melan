@@ -121,7 +121,7 @@ public class Party
     {
         
     }
-    public Party(int _d, int[] _kNum)
+    public Party(int _d, int[] _kNum, int _day)
     {  
         dungeonNum = _d;
         
@@ -130,24 +130,12 @@ public class Party
         knightStates = new KnightState[size];
         for(int i = 0; i< size; i++)
         {
-            Knight k = DataController.Instance.unit.knights[_kNum[i]];
             this.k[i] = _kNum[i];
+
+            Knight k = UnitData.Instance.knights[_kNum[i]];
+            k.teaming = true;
             knightStates[i] = new KnightState(k);
         }
-        day = CodeBox.DungoenReturn(dungeonNum).day;
-    }
-
-    //Xml 불러오기
-    public void LoadParty(int _d, int[] _k, KnightState[] _ks, int _day)
-    {
-        dungeonNum = _d;
-        int size = _k.Length;
-
-        k = new int[size];
-        k = _k;
-        knightStates = new KnightState[size];
-        knightStates = _ks;
-
         day = _day;
     }
 
@@ -244,12 +232,15 @@ public class UnitData : MonoBehaviour
         int[] Karr = new int[size];
         
         for(int i = 0 ; i < size; i++)
-        {
-            knights[list[i]].teaming = true;
             Karr[i] = list[i];
-        }
+            
+        int dungeon = list[size];
+        int day = CodeBox.DungoenReturn(dungeon).day;
+
+        Party p = new Party(dungeon, Karr, day);
+        partys.Add(p);
+        DataController.Instance.AddParty(p);
         
-        partys.Add(new Party(list[size], Karr));
     }
 
     //해당 인덱스 찾기
@@ -283,12 +274,13 @@ public class UnitData : MonoBehaviour
     {
         RandomKnight rn = randomKnightList[i];
 
+        int[] arr = new int[4]{0 ,1, 2, 3};
         int hp = stateList[rn.job, rn.level- 1, 0];
         int num = knights.Count;
         knights.Add(new Knight(
             num, rn.name, rn.job, rn.level, 0,
-            rn.skill, 0, PlayerData.Instance.Day, rn.skinNum,
-            true, hp, 0, null
+            arr, 0, PlayerData.Instance.Day, rn.skinNum,
+            true, hp, 0, arr
         ));
         
         //등록 및 전산처리

@@ -58,6 +58,7 @@ public class PlayerData : MonoBehaviour
     public void NextDay()
     {
         Day++;
+        UnitData.Instance.CreateRandomKnight(3);
     }
 
     private int level; //1~3
