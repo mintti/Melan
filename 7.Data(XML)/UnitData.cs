@@ -54,9 +54,9 @@ public class Knight
     public void GetState()
     {
         int[,,] stateList = UnitData.Instance.stateList; 
-        maxHp = stateList[job, level, 0];
-        power = stateList[job, level, 1];
-        speed = stateList[job, level, 2];
+        maxHp = stateList[job, level-1 , 0];
+        power = stateList[job, level-1, 1];
+        speed = stateList[job, level-1, 2];
     }
 }
 [System.Serializable]

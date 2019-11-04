@@ -27,12 +27,14 @@ public class KnightSkinPrefab : MonoBehaviour
         pupil.GetComponent<SpriteRenderer>().sprite = skin.pupil;
     }
     
-
-    
     void SetMask(GameObject obj, Sprite sprite)
     {
         obj.GetComponent<SpriteRenderer>().sprite = sprite;
         obj.GetComponent<SpriteMask>().sprite = sprite;
     }
+
+    #region 모션
+
+    #endregion
 }
 

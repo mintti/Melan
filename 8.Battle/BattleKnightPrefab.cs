@@ -7,8 +7,8 @@ public class BattleKnightPrefab : MonoBehaviour
 {
     public KnightState ks;
 
-    public Image img;
-
+    public KnightSkinPrefab skin;
+    
     //해당스크립트 활성화 여부임. SetData()를 통해 활성화됨.
     public bool isKnight;
     
@@ -17,8 +17,8 @@ public class BattleKnightPrefab : MonoBehaviour
     public void SetData(KnightState _ks)
     {
         ks = _ks;
-        //img.sprite = ks.k.skin;
-
+        
+        skin.SetData(ks.k.skin);
         isKnight = true;
         UpdateText();
     }
@@ -60,4 +60,30 @@ public class BattleKnightPrefab : MonoBehaviour
             infoObj.SetActive(true);  
         }
     }
+
+    public void TurnStart()
+    {
+        FadeIn();
+    }
+
+    public void TurnEnd()
+    {
+        FadeOut();
+    }
+    #region 효과
+    public RawImage rawImage;
+    private void FadeOut()
+    {
+        rawImage.color = new Color(150, 150, 150);
+    }
+    private void FadeIn()
+    {
+        rawImage.color = new Color(255, 255, 255);
+    }
+    #endregion
+
+
+    #region 모션
+
+    #endregion
 }

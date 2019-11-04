@@ -10,7 +10,7 @@ public class BattleController : MonoBehaviour
 
     public BattleKnightPrefab[] kps = new BattleKnightPrefab[4];//0~3;
     public BattleMonsterPrefab[] mps = new BattleMonsterPrefab[4];//4~7;
-
+    
     public Text phaseText;
     public Text turnText;
     
@@ -140,7 +140,8 @@ public class BattleController : MonoBehaviour
         Bdata = EventData.Instance.Bdata;
         knightCount = Bdata.p.k.Length;
         
-        for(int i = 0; i < Bdata.p.k.Length; i++)
+        int cnt = Bdata.p.k.Length;
+        for(int i = 0; i < cnt; i++)
         {
             KnightState ks = Bdata.p.knightStates[i];
             if(ks.s.Hp > 0)
@@ -149,6 +150,10 @@ public class BattleController : MonoBehaviour
                 kps[i].SetData(ks);
                 thingTarget.Add(i);
             }
+        }
+        for(int i = cnt; i < 4; i++)
+        {
+            kps[i].gameObject.SetActive(false);
         }
         
         //1-1-2 Bdata(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
