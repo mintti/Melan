@@ -11,6 +11,10 @@ public enum LifeType
 {
     K, M
 }
+public enum ElementType
+{
+    물,불
+}
 public class BattleElement
 {
     public ElementType type;

@@ -311,7 +311,9 @@ public class BattleController : MonoBehaviour
             Knight k = ks.k;
             foreach (Transform skillObj in skillObjList)
             {
+                /*
                 skillObj.GetComponent<BattleSkillPrefab>().SetData(SkillData.Instance.GetSkill(k.job, k.skill[index++]));
+                 */
             }
             //스킬 유효성 검사를 통해 skillObjList갱신해줌.
         }
@@ -356,7 +358,7 @@ public class BattleController : MonoBehaviour
         if(n <= 0)
             return;
         GameObject obj = CodeBox.AddChildInParent(KnightCCObj, CCPrefab);
-        obj.GetComponent<CCIconPrefab>().SetData(s, n);
+        //obj.GetComponent<CCIconPrefab>().SetData(s, n);
     }
 
     #endregion

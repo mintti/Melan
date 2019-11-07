@@ -8,12 +8,15 @@ namespace Form
 {
     public enum SkillType{NONE, COMMON, DAM, SHD, BUF, DBUF, SUPPOSDAM}
     public enum DamType{NONE, AD, AP}
-    public enum Target{NONE, ME, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
+    public enum Target{NONE, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
 
     public class Skill : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler
     {
         private int job;
         private int skillNum;
+        
+        private string name;
+        private string explan;
 
         public int level;
         public SkillType skillType;
@@ -41,6 +44,14 @@ namespace Form
 
             level = _level; skillType = _st; damType = _dt; target = _t;
             cost = _cost; isElement = _isEle; cost_Element = _cost_ele;
+
+            nameText.text = _name;
+            costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
+        }
+        public void SetData(int _job, Skill _skill)
+        {
+            job = _job; skillNum = _skill.num;
+            name = _skill.name; explan = _skill.explan;
 
             nameText.text = _name;
             costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
@@ -81,7 +92,7 @@ namespace Form
             costText.gameObject.SetActive(value);
         }
 
-        #region push 시
+        #region 포인터이벤트
 
         public Timer_Skill timer;
 
@@ -107,6 +118,7 @@ namespace Form
             sprite = skillIconImg.sprite;
         }
         
+        //Timer에서 호출됨.
         public void PushComplete()
         {
             SetIconMod();
