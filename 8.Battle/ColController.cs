@@ -88,16 +88,8 @@ public class ColController : MonoBehaviour
     }
     public void EndDrag(Transform skill)
     {
-        if(invisibleSkill.parent == transform)
-        {
-        }
-        else
-        {
-            
-            BattleUI.SetActive(true);
-            SwapSkillHierarchy(invisibleSkill, skill);
-        }
-       
+        BattleUI.SetActive(true);
+        SwapSkillHierarchy(invisibleSkill, skill);
     }
     #endregion
 }
