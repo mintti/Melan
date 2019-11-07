@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Form;
 
 public class ImageData : MonoBehaviour
 {
@@ -51,5 +52,23 @@ public class ImageData : MonoBehaviour
         }
     }
     
+
+    public Sprite skillIcon;
+    public Sprite GetSprite(Form.SkillType type)
+    {
+        switch(type)
+        {
+            case Form.SkillType.NONE : return skillIcon;
+            case Form.SkillType.COMMON : return skillIcon;
+            case Form.SkillType.DAM : return skillIcon;
+            case Form.SkillType.SHD : return skillIcon;
+            case Form.SkillType.BUF : return skillIcon;
+            case Form.SkillType.DBUF : return skillIcon;
+            case Form.SkillType.SUPPOSDAM : return skillIcon;
+            default :
+                CodeBox.PrintError("ImageData - GetSprite_icon () 유형 없음");
+                return null;
+        }
+    }
   
 }
