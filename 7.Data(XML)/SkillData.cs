@@ -4,13 +4,13 @@ using UnityEngine;
 
 #region Skill Class Info
 
-public class Skill
+public class SkillInfo
 {
     public int num;
     public string name;
     public string explan;
 
-    public Skill(int _num, string _name, string _explan)
+    public SkillInfo(int _num, string _name, string _explan)
     {
         num = num; name = _name; explan = _explan;
     }
@@ -50,10 +50,8 @@ public class SkillData : MonoBehaviour
     }
 
 
-    public Skill GetSkill(int job, int num)
+    public SkillInfo GetSkill(int job, int num)
     {
-        Skill skill;
-
         switch(job)
         {
             case 0 : 
@@ -72,18 +70,18 @@ public class SkillData : MonoBehaviour
 //skills[0] = new Skill(0,,,,,,,,);
 public class Wizard
 {
-    public Skill[] skills = new Skill[4];
+    public SkillInfo[] skills = new SkillInfo[4];
     
     public Wizard()
     {
-        skills[0] = new Skill(0, "속성공격", "한 대상을 시전자의 속성을 담은 마법");
-        skills[1] = new Skill(1, "속성강화공격", "한 대상을 속성을 2번 담아 사용가능");
-        skills[2] = new Skill(2, "힐링", "한 명의 아군을 치유");
-        skills[3] = new Skill(3, "바인", "한 대상을 덩굴로 적을 속박");
+        skills[0] = new SkillInfo(0, "속성공격", "한 대상을 시전자의 속성을 담은 마법");
+        skills[1] = new SkillInfo(1, "속성강화공격", "한 대상을 속성을 2번 담아 사용가능");
+        skills[2] = new SkillInfo(2, "힐링", "한 명의 아군을 치유");
+        skills[3] = new SkillInfo(3, "바인", "한 대상을 덩굴로 적을 속박");
     }
 
 
-    public void Skill(int n, State playerS, State targetS)
+    public void SkillInfo(int n, State playerS, State targetS)
     {
         switch(n)
         {
@@ -108,18 +106,18 @@ public class Wizard
 
 public class Thief
 {
-    public Skill[] skills = new Skill[4];
+    public SkillInfo[] skills = new SkillInfo[4];
 
     public Thief()
     {
         
-        skills[0] = new Skill(0,"단검투척", "한 대상에게 단검을 던짐");
-        skills[1] = new Skill(1,"약점찾기", "한 대상의 약점을 찾음");
-        skills[2] = new Skill(2,"암살", "약점 찾기 후 사용가능");
-        skills[3] = new Skill(3,"탈출", "현재 전투에서 도망친다.");
+        skills[0] = new SkillInfo(0,"단검투척", "한 대상에게 단검을 던짐");
+        skills[1] = new SkillInfo(1,"약점찾기", "한 대상의 약점을 찾음");
+        skills[2] = new SkillInfo(2,"암살", "약점 찾기 후 사용가능");
+        skills[3] = new SkillInfo(3,"탈출", "현재 전투에서 도망친다.");
     }
 
-    public void Skill(int n, State playerS, State targetS)
+    public void SkillInfo(int n, State playerS, State targetS)
     {
         switch(n)
         {
@@ -144,14 +142,14 @@ public class Thief
 
 public class Warrior
 {
-    public Skill[] skills = new Skill[4];
+    public SkillInfo[] skills = new SkillInfo[4];
 
     public Warrior()
     {
-        skills[0] = new Skill(0, "베기", "적을 벤다");
-        skills[1] = new Skill(1, "다중베기", "전체 대상을 벤다");
-        skills[2] = new Skill(2, "함성", "적 전체에게 허약을 시도한다");
-        skills[3] = new Skill(3, "강화", "다음 공격을 강화");
+        skills[0] = new SkillInfo(0, "베기", "적을 벤다");
+        skills[1] = new SkillInfo(1, "다중베기", "전체 대상을 벤다");
+        skills[2] = new SkillInfo(2, "함성", "적 전체에게 허약을 시도한다");
+        skills[3] = new SkillInfo(3, "강화", "다음 공격을 강화");
     }
 
     public void Skill(int n, State playerS, State targetS)

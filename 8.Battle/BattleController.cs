@@ -155,8 +155,10 @@ public class BattleController : MonoBehaviour
         {
             kps[i].gameObject.SetActive(false);
         }
+        //1-1-2 스킬 폼을 세팅해줌.
+        ColController.Instance.SetForm();
         
-        //1-1-2 Bdata(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
+        //1-1-3 Bdata(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
         int size = Bdata.m.Length;
         Monster[] monsterArr = new Monster[size];
         for(int i = 0 ; i < size; i ++)
@@ -255,19 +257,6 @@ public class BattleController : MonoBehaviour
         isSpeed = false; // 감지 매턴 순서 지정 후 false해줌.
     }
 
-    public Transform skillObjList;
-
-    private int behavior;
-    public int Behavior{get{return behavior;} 
-        set{
-            behavior = value;
-            if( behavior == 0)
-            {
-                NextTurn();
-            }
-            behaviorText.text = string.Format("행동력 : {0}" , Behavior);
-    }}
-    public Text behaviorText;
     //3-2 [전투] 상태임.
     private void Battle()
     {
@@ -290,7 +279,6 @@ public class BattleController : MonoBehaviour
 
         //전투 실행.(Player 행동결정)
 
-        Behavior = 3;
         Debug.Log("  Battle() 실행");
         
         //알맞는 thing을 위해 몬스터의 경우, 부족한 기사 수만큼 피봇 수를 빼줌. 
@@ -303,19 +291,9 @@ public class BattleController : MonoBehaviour
             int num = thingTarget[sequence[who]];
             KnightState ks = kps[num].ks;
             
-            //상태CC 세팅
-            SettingUI(ks.s);
 
             //스킬을 세팅해줌
-            int index = 0;
-            Knight k = ks.k;
-            foreach (Transform skillObj in skillObjList)
-            {
-                /*
-                skillObj.GetComponent<BattleSkillPrefab>().SetData(SkillData.Instance.GetSkill(k.job, k.skill[index++]));
-                 */
-            }
-            //스킬 유효성 검사를 통해 skillObjList갱신해줌.
+            ColController.Instance.TurnStart(num);
         }
         else//일단 임시(테스트용)
         {
@@ -335,31 +313,6 @@ public class BattleController : MonoBehaviour
     }
     #region PlayerUI 세팅
 
-    public void SettingUI(State s)
-    {
-        SetKnightCC(s);
-    }
-
-    
-    /* 상단 우측) CC상태바 생성 UI */
-    public Transform KnightCCObj;
-    public GameObject CCPrefab;
-    public void SetKnightCC(State s)
-    {
-        CodeBox.ClearList(KnightCCObj);
-
-        SetKnightCC_2("속성", s.element.Cnt);
-        SetKnightCC_2("출혈", s.afterDil.blo);
-        SetKnightCC_2("독", s.afterDil.pois);
-        SetKnightCC_2("기절", s.cc.Stun);
-    }
-    void SetKnightCC_2(string s, int n)
-    {
-        if(n <= 0)
-            return;
-        GameObject obj = CodeBox.AddChildInParent(KnightCCObj, CCPrefab);
-        //obj.GetComponent<CCIconPrefab>().SetData(s, n);
-    }
 
     #endregion
     //턴을 넘긴 상태.

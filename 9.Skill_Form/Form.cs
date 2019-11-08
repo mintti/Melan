@@ -1,17 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Form;
-public class WizardForm : MonoBehaviour
+
+public class Form : MonoBehaviour
 {
     private int myCost;
     private int myCost_Element;
 
-    public Form.Skill[] skill= new Form.Skill[15];
-    private void Start() {
-        
-    }
+    public Skill[] skill;
 
+    public void MyTurn()
+    {
+
+    }
+    public void Test()
+    {
+        Debug.Log("출력됨");
+    }
 
     void SetData()
     {   /*
@@ -20,6 +25,4 @@ public class WizardForm : MonoBehaviour
          */
         //skill.Skill[0] = SkillData.Instance.GetSkill()
     }
-
-    
 }

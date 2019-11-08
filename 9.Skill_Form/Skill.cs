@@ -4,14 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-namespace Form
-{
     public enum SkillType{NONE, COMMON, DAM, SHD, BUF, DBUF, SUPPOSDAM}
     public enum DamType{NONE, AD, AP}
     public enum Target{NONE, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
 
-    public class Skill : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler
-    {
+public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler
+{
         private int job;
         private int skillNum;
         
@@ -48,12 +46,12 @@ namespace Form
             nameText.text = _name;
             costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
         }
-        public void SetData(int _job, Skill _skill)
+        public void SetData(int _job, SkillInfo skillInfo)
         {
-            job = _job; skillNum = _skill.num;
-            name = _skill.name; explan = _skill.explan;
+            job = _job; skillNum = skillInfo.num;
+            name = skillInfo.name; explan = skillInfo.explan;
 
-            nameText.text = _name;
+            nameText.text = name;
             costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
         }
 
@@ -96,8 +94,7 @@ namespace Form
 
         public Timer_Skill timer;
 
-        Vector3 skillPos = new Vector3();
-        Vector3 linePos = new Vector3();
+        Vector3 resetPos = new Vector3();
         Sprite sprite;
 
         private bool isPush;
@@ -113,9 +110,13 @@ namespace Form
             timer.SetData(this, 1f);
             timer.gameObject.SetActive(true);
             
-            linePos = transform.GetChild(1).position;
-            skillPos = transform.GetChild(2).position;
+            resetPos = transform.position;
+            
             sprite = skillIconImg.sprite;
+        }
+        public void OnPointerExit(PointerEventData data)
+        {
+            timer.TimerEnd();
         }
         
         //Timer에서 호출됨.
@@ -144,15 +145,13 @@ namespace Form
         //아이콘 <-> 스킬모양
         private void SetIconMod()
         {
-            //skillIconImg.sprite = ImageData.Instance.GetSprite(SkillType.NONE);
             skillIconImg.sprite = ColController.Instance.testSkillspr;
             SamMod(true);
         }
 
         private void SetSkillMod()
         {
-            transform.GetChild(1).position = linePos;
-            transform.GetChild(2).position = skillPos;
+            transform.position = resetPos;
             skillIconImg.sprite = sprite;
             SamMod(false);
         }
@@ -164,5 +163,4 @@ namespace Form
             costText.enabled = !isIcon;
         }
         #endregion
-    }   
 }

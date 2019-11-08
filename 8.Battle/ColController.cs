@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Form;
 using UnityEngine.EventSystems;
 
 public class ColController : MonoBehaviour
@@ -27,6 +26,7 @@ public class ColController : MonoBehaviour
     /*
         1. SkillForm에서 Skill을 입력 받을 경우 icon을 알맞게 수정해줍니다.
         2. 수많은 COL을 전투 상황에 맞게 배치해주는 함수입니다.
+        3. 입력 받은 Form을 생성해준다.
     */
     public GameObject BattleUI;
 
@@ -41,11 +41,54 @@ public class ColController : MonoBehaviour
     
     public GameObject NoneArea;
     public Sprite testSkillspr;
-    
+
     List<GameObject> objList = new List<GameObject>();
-    Form.Skill skill;
-    //각 Form.Skill - PushComplete()에서 호출됨. 
-    public void SetData(Form.Skill _skill)
+    Skill skill;
+
+    //Form 관련 
+    public GameObject[] formList = new GameObject[10];
+    public GameObject[] formObj;
+
+    //Battle진행2
+    private int behavior;
+    public int Behavior{get{return behavior;} 
+        set{behavior = value; if(behavior == 0) TurnEnd();}}
+    private int who;
+    
+    #region FORM SETTING
+    public void SetForm()
+    {
+        Battle b = EventData.Instance.Bdata;
+        formObj = new GameObject[b.p.k.Length];
+
+        int index = 0;
+        foreach(int kNum in b.p.k)
+        {
+            GameObject form = formList[UnitData.Instance.knights[kNum].job];
+            formObj[index] = CodeBox.AddChildInParent(BattleUI.transform, form);
+
+            formObj[index].GetComponent<Form>().Test();    
+            formObj[index++].SetActive(false);
+        }
+        Debug.Log("SetForm _ Complete");
+    }
+
+    public void TurnStart(int _who)
+    {
+        who = _who;
+        
+        formObj[who].SetActive(true);
+    }
+    private void TurnEnd()
+    {
+        formObj[who].SetActive(false);
+        BattleController.Instance.NextTurn();
+    }
+    
+    #endregion
+    #region COL SETTING 
+    //각 Skill - PushComplete()에서 호출됨. 
+    public void SetData(Skill _skill)
     {   
         skill  = _skill; //인자 저장.
 
@@ -53,7 +96,7 @@ public class ColController : MonoBehaviour
         ChangeColForm(true);
     }
 
-    //입력 받은 SKill을 분석하여 알맞게 폼을 변경해준다.
+    //입력 받은 SKill을 분석하여 알맞게 COL폼을 변경해준다.
     public void ChangeColForm(bool value)
     {
         if(value)
@@ -62,19 +105,19 @@ public class ColController : MonoBehaviour
 
             switch(skill.target)
             {
-                case Form.Target.NONE :
+                case Target.NONE :
                     SetForm(0);
                     break;
-                case Form.Target.MINE :
+                case Target.MINE :
                     
                     break;
-                case Form.Target.WE :
+                case Target.WE :
                     SetForm(1);
                     break;
-                case Form.Target.THAT :
+                case Target.THAT :
 
                     break;
-                case Form.Target.THEY :
+                case Target.THEY :
                     SetForm(2);
                     break;
                 default : 
@@ -131,6 +174,7 @@ public class ColController : MonoBehaviour
 
         }
     }
+    #endregion
 
     #region SkillDrag 관련
     public Transform invisibleSkill;

@@ -1,16 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Form;
 
 public class Timer_Skill : MonoBehaviour
 {
     private float goalTime;    
     private float time;
 
-    private Form.Skill skill;
+    private Skill skill;
 
-    public void SetData(Form.Skill _skill, float _goalTime)
+    public void SetData(Skill _skill, float _goalTime)
     {
         skill = _skill;
         goalTime = _goalTime;
@@ -25,5 +24,10 @@ public class Timer_Skill : MonoBehaviour
             skill.PushComplete();
             gameObject.SetActive(false);
         }
+    }
+
+    public void TimerEnd()
+    {
+        gameObject.SetActive(false);
     }
 }
