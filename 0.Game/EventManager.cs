@@ -95,7 +95,7 @@ public class EventManager : MonoBehaviour
         ChangeWork();
     }
 
-    // * Party 기반으로 이벤트 생성
+    #region  * Party 기반 이벤트
     public void CreatePartyEvent()
     {
         foreach (Party p in unit.partys)
@@ -106,21 +106,23 @@ public class EventManager : MonoBehaviour
                 if(false)
                     return;
             }
-            //N. Battle 생성
+
+            CreateBattle(p);
+        }
+    }
+
+    void CreateBattle(Party p)
+    {
+        //N. Battle 생성
             Dungeon d = dungeon.dungeons[p.dungeonNum];
             
             // 1~4명 / 1~8명... 1~16명, 최대 페이즈 4
             int cnt = d.level <= 5 ? 5 : d.level <= 10 ? 9 : d.level <= 15 ? 13 : 17 ; 
             cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, cnt-1), cnt); // (1 ~ cnt) ~ 4 사이의 값                    
-                    
-            // * 랜덤 몬스터 카운트
-            //   추후 퍼센테이지 따서 확률로 몬스터 지정하기.
-            int mLen = d.monsters.Length; 
-            int[] arr = new int[cnt];
-            for(int i = 0; i< cnt; i++)
-            {
-                arr[i] = d.monsters[UnityEngine.Random.Range(0, mLen)];
-            }
+
+            int[] arr = new int[cnt];   
+            arr = d.GetMonster(cnt);
+
             //Battle 생성 및 인자 전달.
             Battle b = new Battle(p, arr);
             EventData.Instance.battles.Add(b);
@@ -128,10 +130,12 @@ public class EventManager : MonoBehaviour
             int index = EventData.Instance.battles.IndexOf(b);
             //투데이에 추가해줌.
             EventData.Instance.todayWork.Add(new Work(0, index));
-        }
     }
 
+
+    #endregion
     
+    #region * 업무 이벤트
     /* 
        190819_이 부분은 업무 관련 이벤트 변경..?      */
     public void ChangeWork()
@@ -146,5 +150,7 @@ public class EventManager : MonoBehaviour
             }
         }
     }
+
+    #endregion
     #endregion
 }

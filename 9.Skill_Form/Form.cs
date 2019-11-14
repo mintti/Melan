@@ -4,25 +4,24 @@ using UnityEngine;
 
 public class Form : MonoBehaviour
 {
-    private int myCost;
-    private int myCost_Element;
-
+    private int cost; //행동력
+    public int Cost{get{return cost;} set{cost = value;}}
     public Skill[] skill;
 
+    private State state;
     public void MyTurn()
     {
-
+        Cost = 3;
     }
-    public void Test()
-    {
-        Debug.Log("출력됨");
-    }
-
-    void SetData()
-    {   /*
+    void SetData(State _state)
+    {   
+        state = _state;
+        /*
             0 기본 공격 1 방어
             2부터 표기된 스킬들. 2-2는 3의 값을 가짐.
          */
         //skill.Skill[0] = SkillData.Instance.GetSkill()
+
+        
     }
 }

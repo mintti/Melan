@@ -9,6 +9,7 @@ public class BattleController : MonoBehaviour
     #region 데코 부분
 
     public BattleKnightPrefab[] kps = new BattleKnightPrefab[4];//0~3;
+    public Transform[] monsterPos = new Transform[4];
     public BattleMonsterPrefab[] mps = new BattleMonsterPrefab[4];//4~7;
     
     public Text phaseText;
@@ -128,8 +129,10 @@ public class BattleController : MonoBehaviour
     
     //1. 테이타 로드.
     public List<Monster> monsterList = new List<Monster>();
+    public List<int> monsterTarget = new List<int>();
+    public List<int> knightTarget = new List<int>();
+
     public List<State> thing = new List<State>();
-    
     public List<int> thingTarget = new List<int>();
     public int knightCount;
     private void LoadBattleData()
@@ -178,6 +181,7 @@ public class BattleController : MonoBehaviour
     //2. 몬스터 정보 로드(Phase가 변경될때 프로퍼티에서 호출됨.)
     // [(몬스터)로드] 상태에 해당함. 표시되는 몬스터를 로드..
     //turn이 변경될 때 마다 SettingTurn() 호출.
+    public GameObject monsterObj;
     private void MonsterSetting()
     {
         Debug.Log(" MonsterSetting() 실행");
@@ -194,7 +198,10 @@ public class BattleController : MonoBehaviour
                 State = BattleState.승리;
                 return;
             }
+
+            monsterObj = MonsterData.Instance.monsterPrefabs[monsterList[0].num];
             
+            mps[i] = CodeBox.AddChildInParent(monsterPos[i], monsterObj).GetComponent<BattleMonsterPrefab>();
             //2-1-1 show와 thing 에 추가
             mps[i].SetData(monsterList[0]);
             thing.Add(mps[i].s);
@@ -241,15 +248,21 @@ public class BattleController : MonoBehaviour
                     sequence.Add(i);
             }
         }
-        //(테스트) 순서확인
-        /*
-        Debug.Log("시퀀스 사이즈 : " + sequence.Count);
-        for(int i = 0; i < sequence.Count; i++)
-        {
-            GetPrefabState(sequence[i]);
-        }
-         */
         
+        //Target지정자
+        knightTarget.Clear();
+        monsterTarget.Clear();
+        for(int i = 0; i < thing.Count; i++)
+        {
+            if(thing[i].Hp > 0)
+            {
+                if(thing[i].LifeType == LifeType.K)
+                    knightTarget.Add(i);
+                else
+                    monsterTarget.Add(i);
+            }
+        }
+
         //3-1-2 턴 카운트 시작(1부터)하며 전투 시작.
         Turn++;
         who = 0; //pivot이라 0부터 시작.
@@ -297,6 +310,8 @@ public class BattleController : MonoBehaviour
         }
         else//일단 임시(테스트용)
         {
+            int num = thingTarget[sequence[who]];
+            GetPrefabState(n);
             NextTurn();
         }
 

@@ -124,6 +124,19 @@ public class State
         speedMultiple = 1;
 
     }
+    public void SetData(int h, int p, int s, int st, int[] u, LifeType t)
+    {
+        Hp = h; Power = p; Speed = s; Stress = st;
+        uni = u;
+
+        LifeType = t;
+
+        impact = new Del(선언);
+
+        powerMultiple = 1;
+        speedMultiple = 1;
+
+    }
 
     #region 상태이상 효과 관련
     private Del impact;

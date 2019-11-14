@@ -10,8 +10,9 @@ public class TargetArea : MonoBehaviour
         
     public void SetData()
     {
-
+        ColIsIn(false);
     }
+    
     private void SetText(int who)
     {
         switch(who)

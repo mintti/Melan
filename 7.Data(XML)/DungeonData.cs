@@ -8,19 +8,62 @@ public class Dungeon
     public int num;
     public string name{get;set;}
     public int level{get;set;}
-    public int[] monsters{get;set;}
-    public int boss;
     public int day{get;set;}
-    public Dungeon(string _name, int _level, int[] _monsters, int _boss)
+
+    public int[] commonMonster;
+    public int eliteMonster;
+    public int boss;
+
+    public Dungeon(string _name, int _level, int _boss)
     {
         name = _name;
         level = _level;
-        monsters = _monsters;
         boss = _boss;
 
         day = 3 * level; 
     }
+
+    public void SetData(string _name, int _level, int _boss)
+    {
+        name = _name;
+        level = _level;
+        boss = _boss;
+
+        day = 3 * level; 
+        SetMonster();
+    }
     
+    public void SetMonster()
+    {
+        commonMonster = new int[3]{0, 0, 0};
+        eliteMonster =0 ;
+        boss = 0;
+    }
+    public int[] GetMonster(int size)
+    {
+        int[] array = new int[size];
+        int m = 0;
+        
+        DungeonProgress dp = DungeonData.Instance.GetDungoenProgress(num);
+        //M은 몬스터로.. dp에 의거하여 해당하는 몬스터정보를 Dungeon에서 가져옴.
+        
+        int difficulty = dp.GetDifficulty();
+        int commonPer = difficulty == 0 ? 10 : 8 ;
+        
+        if(difficulty == 2)
+        {
+            commonPer = 9;
+            array[size-1] = boss;
+            size --;
+        }
+
+        for(int i = 0; i< size; i++)
+        {
+            array[i] = Random.Range(0, 10) < commonPer ? commonMonster[Random.Range(0, commonMonster.Length)] : eliteMonster;
+        }
+        
+        return array; 
+    }    
 }
 
 public class DungeonProgress
@@ -60,6 +103,11 @@ public class DungeonProgress
         searchP = 0;
     }
 
+    public int GetDifficulty()
+    {
+        return searchP < 50 ? 0 : searchP < 90 ? 1 : 2;
+    }
+
 }
 
 public class DungeonData : MonoBehaviour
@@ -83,40 +131,51 @@ public class DungeonData : MonoBehaviour
         }
     }
 
-
-
-
     public Dungeon[] dungeons = new Dungeon[16];
     public DungeonProgress[] dungeon_Progress = new DungeonProgress[8];
 
     public void SetData()
     {
         /*   level 1  */
-        dungeons[0] = new Dungeon("슬라임 군락", 1 , new int[]{0,1}, 0);
-        dungeons[1] = new Dungeon("음험한 산지", 1, new int[]{2,3}, 1);
-        dungeons[2] = new Dungeon("맑은 오아시스", 1, new int[]{4,5}, 2);
-        dungeons[3] = new Dungeon("의문의 땅굴", 1, new int[]{6,7}, 3);
+        dungeons[0].SetData("슬라임 군락", 1 , 0);
+        dungeons[1].SetData("음험한 산지", 1, 1);
+        dungeons[2].SetData("맑은 오아시스", 1, 2);
+        dungeons[3].SetData("의문의 땅굴", 1, 3);
 
         /*   level 2  */
-        dungeons[4] = new Dungeon("비명의 산", 2, new int[]{8,9}, 4);
-        dungeons[5] = new Dungeon("깊고 어두운 호수", 2, new int[]{10,11},5);
-        dungeons[6] = new Dungeon("꽃피는 화원", 2, new int[]{12, 13}, 6);
-        dungeons[7] = new Dungeon("환각의 숲", 2, new int[]{14, 15}, 7);
-        dungeons[8] = new Dungeon("키큰 오두막", 2, new int[]{16,17}, 8);
-        dungeons[9] = new Dungeon("의문의 탑", 2, new int[]{18, 19}, 9);
+        dungeons[4].SetData("비명의 산", 2, 4);
+        dungeons[5].SetData("깊고 어두운 호수", 2, 5);
+        dungeons[6].SetData("꽃피는 화원", 2, 6);
+        dungeons[7].SetData("환각의 숲", 2, 7);
+        dungeons[8].SetData("키큰 오두막", 2, 8);
+        dungeons[9].SetData("의문의 탑", 2,  9);
         
         /*   level 3   */
-        dungeons[10] = new Dungeon("황폐한 평원", 3, new int[]{20,21}, 10);
-        dungeons[11] = new Dungeon("크로드네 령", 3, new int[]{22,23}, 11);
-        dungeons[12] = new Dungeon("테레제바 국", 3, new int[]{24,25}, 12);
-        dungeons[13] = new Dungeon("X의 골짜기", 3, new int[]{}, 13);
+        dungeons[10].SetData("황폐한 평원", 3, 10);
+        dungeons[11].SetData("크로드네 령", 3, 11);
+        dungeons[12].SetData("테레제바 국", 3, 12);
+        dungeons[13].SetData("X의 골짜기", 3,13);
 
         /*   level 4   */
-        dungeons[14] = new Dungeon("마왕성", 4, new int[]{26,27}, 0);
-        dungeons[15] = new Dungeon("이형의 땅", 4, new int[]{28,29}, 0);
+        dungeons[14].SetData("마왕성", 4, 0);
+        dungeons[15].SetData("이형의 땅", 4, 0);
     }
 
-    
+    //해당하는 던전NUM의 던전진행의 인덱스를 출력
+    public DungeonProgress GetDungoenProgress(Dungeon d)
+    {
+        for(int i = 0 ;i < dungeon_Progress.Length; i++)
+        {
+            if(dungeon_Progress[i].d  == d)
+                return dungeon_Progress[i];
+        }
+        return null;
+    }
+    public DungeonProgress GetDungoenProgress(int dNum)
+    {
+        return GetDungoenProgress(dungeons[dNum]);
+    }
+
     //DataController에서 호출됨.
     public void DungeonMake()
     {

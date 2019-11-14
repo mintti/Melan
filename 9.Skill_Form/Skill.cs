@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
     public enum DamType{NONE, AD, AP}
     public enum Target{NONE, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
 
-public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler
+public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
         private int job;
         private int skillNum;
@@ -114,6 +114,17 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, ID
             
             sprite = skillIconImg.sprite;
         }
+
+        public void OnPointerUp(PointerEventData data)
+        {
+            if(isPush)
+            {
+                ColController.Instance.EndDrag(transform);
+                SetSkillMod();
+            }
+            
+        }
+        
         public void OnPointerExit(PointerEventData data)
         {
             timer.TimerEnd();
@@ -132,16 +143,6 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, ID
             if(isPush)
                 transform.position = eventData.position;
         }
-            
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            if(isPush) 
-            {
-                ColController.Instance.EndDrag(transform);
-                SetSkillMod();
-            }
-        }
-        
         //아이콘 <-> 스킬모양
         private void SetIconMod()
         {

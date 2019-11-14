@@ -97,4 +97,6 @@ public class MonsterData : MonoBehaviour
         }
     }
 
+
+    public GameObject[] monsterPrefabs;
 }

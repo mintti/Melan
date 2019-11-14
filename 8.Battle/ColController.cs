@@ -24,9 +24,10 @@ public class ColController : MonoBehaviour
     }
 
     /*
-        1. SkillForm에서 Skill을 입력 받을 경우 icon을 알맞게 수정해줍니다.
+        1. SkillForm에서 Skill을 입력 받을 경우 icon을 알맞게 수정해줍니다. ==> SKill에서 구현됨.
         2. 수많은 COL을 전투 상황에 맞게 배치해주는 함수입니다.
         3. 입력 받은 Form을 생성해준다.
+        4. Col 된 스킬을 저장하고 
     */
     public GameObject BattleUI;
 
@@ -66,8 +67,7 @@ public class ColController : MonoBehaviour
         {
             GameObject form = formList[UnitData.Instance.knights[kNum].job];
             formObj[index] = CodeBox.AddChildInParent(BattleUI.transform, form);
-
-            formObj[index].GetComponent<Form>().Test();    
+  
             formObj[index++].SetActive(false);
         }
         Debug.Log("SetForm _ Complete");
@@ -78,6 +78,7 @@ public class ColController : MonoBehaviour
         who = _who;
         
         formObj[who].SetActive(true);
+        formObj[who].GetComponent<Form>().MyTurn();
     }
     private void TurnEnd()
     {
@@ -109,13 +110,13 @@ public class ColController : MonoBehaviour
                     SetForm(0);
                     break;
                 case Target.MINE :
-                    
+                    SetForm(1 , GetIndex(true));
                     break;
                 case Target.WE :
                     SetForm(1);
                     break;
                 case Target.THAT :
-
+                    SetForm(2 , GetIndex(false));
                     break;
                 case Target.THEY :
                     SetForm(2);
@@ -128,9 +129,27 @@ public class ColController : MonoBehaviour
         foreach(GameObject obj in objList)
         {
             obj.SetActive(value);
+            obj.GetComponent<TargetArea>().SetData();
         }
     }
 
+    bool[] GetIndex(bool isKnight)
+    {
+        BattleController battle = BattleController.Instance;
+        bool[] array = new bool[4];
+        if(isKnight)
+        {
+            for(int i  = 0; i < 4; i++)
+                array[i] = battle.knightTarget.Contains(i);    
+        }
+        else
+        {
+            for(int i  = 0; i < 4; i++)
+                array[i] = battle.monsterTarget.Contains(i + battle.knightCount);    
+        }
+
+        return array;
+    }
     
     private void SetForm(int target)
     {
@@ -152,20 +171,49 @@ public class ColController : MonoBehaviour
         }
     }
     //Part로 나눠진..
-    private void SetForm(int target, int index)
-    {   //0: KNIGHT 2. MONSTER_하프_하프 3. MONSTER_하프_쿼터 4. BOSS
+    private void SetForm(int target, bool[] index)
+    {   //1: KNIGHT 2. MONSTER  3. BOSS
         switch(target)
         {
             case 1 :
-                objList.Add(knightArea_4[index]);
+                for(int i = 0 ;i < 4 ; i++)
+                {
+                    if(index[i])
+                        objList.Add(knightArea_4[i]);
+                }
                 break;
             case 2 :
-                objList.Add(monsterArea_HALF_2[index]);
+                for(int i = 0; i < 2 ; i ++)
+                {
+                    if(index[0])
+                    {
+                        if(index[3])
+                        {
+                            objList.Add(monsterArea_HALF_4[0]);
+                            objList.Add(monsterArea_HALF_4[1]);
+                        }
+                        else
+                        {
+                            objList.Add(monsterArea_HALF_2[0]);
+                        }
+                    }
+                    else objList.Add(monsterArea_HALF_2[0]);
+                    if(index[1])
+                    {
+                        if(index[2])
+                        {
+                            objList.Add(monsterArea_HALF_4[2]);
+                            objList.Add(monsterArea_HALF_4[3]);
+                        }
+                        else
+                        {
+                            objList.Add(monsterArea_HALF_2[1]);
+                        }
+                    }
+                    else objList.Add(monsterArea_HALF_2[1]);
+                }
                 break;
             case 3 :
-                objList.Add(monsterArea_HALF_4[index]);
-                break;
-            case 4:
                 objList.Add(monsterArea_BOSS);
                 break;
             default : 
