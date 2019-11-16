@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BattleMonsterPrefab : MonoBehaviour
 {
+    public BattleController battle;
     public MonsterState ms;
     public State s;
     public SpriteRenderer img;
@@ -13,6 +14,7 @@ public class BattleMonsterPrefab : MonoBehaviour
     public bool isMonster;
     
     private void Start() {
+        battle = BattleController.Instance;
         isMonster = false;
     }
 
@@ -32,10 +34,22 @@ public class BattleMonsterPrefab : MonoBehaviour
         isMonster = true;
     }
 
-    public int GetSingleTarget()
+    public State GetSingleTarget()
     {
-        int target = Random.Range(0, BattleController.Instance.knightTarget.Count);
+        int targetNum = Random.Range(0, battle.knightTarget.Count);
+        State target = battle.thing[targetNum];
+        
+        return target;
+    }
 
+    public State GetSingleTarget_Lowest_HP()
+    {
+        int targetNum = 0;
+        for(int i = 1 ; i < battle.knightTarget.Count; i++)
+        {
+           targetNum = battle.thing[targetNum].Hp < battle.thing[i].Hp ? targetNum : i;
+        }
+        State target = battle.thing[targetNum];
         return target;
     }
 }
