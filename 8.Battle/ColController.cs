@@ -23,6 +23,9 @@ public class ColController : MonoBehaviour
         }
     }
 
+    private void Start() {
+        ResetForm();
+    }
     /*
         1. SkillForm에서 Skill을 입력 받을 경우 icon을 알맞게 수정해줍니다. ==> SKill에서 구현됨.
         2. 수많은 COL을 전투 상황에 맞게 배치해주는 함수입니다.
@@ -30,20 +33,8 @@ public class ColController : MonoBehaviour
         4. Col 된 스킬을 저장하고 
     */
     public GameObject BattleUI;
-
-    public GameObject knightArea_ALL;
-    public GameObject[] knightArea_4 = new GameObject[4];
-
-    public GameObject monsterArea_ALL;
-    public GameObject monsterArea_BOSS;
-    public GameObject[] monsterArea_4 = new GameObject[4];//미사용 예정..
-    public GameObject[] monsterArea_HALF_4 = new GameObject[4];
-    public GameObject[] monsterArea_HALF_2 = new GameObject[2];
-    
-    public GameObject NoneArea;
     public Sprite testSkillspr;
 
-    List<GameObject> objList = new List<GameObject>();
     Skill skill;
 
     //Form 관련 
@@ -56,7 +47,8 @@ public class ColController : MonoBehaviour
         set{behavior = value; if(behavior == 0) TurnEnd();}}
     private int who;
     
-    #region FORM SETTING
+    #region SKILL FORM SETTING
+    
     public void SetForm()
     {
         Battle b = EventData.Instance.Bdata;
@@ -87,141 +79,101 @@ public class ColController : MonoBehaviour
     }
     
     #endregion
-    #region COL SETTING 
+    #region COL SETTING
+    public GameObject monsterColForm;
+    public GameObject[] monstersObj = new GameObject[4];
+    public GameObject monsterAllObj;
+    public GameObject bossObj;
+    public GameObject knightsObj;
+
     //각 Skill - PushComplete()에서 호출됨. 
     public void SetData(Skill _skill)
     {   
         skill  = _skill; //인자 저장.
 
         BattleUI.SetActive(false);
-        ChangeColForm(true);
+        ChangeColForm();
     }
 
     //입력 받은 SKill을 분석하여 알맞게 COL폼을 변경해준다.
-    public void ChangeColForm(bool value)
+    public void ChangeColForm()
     {
-        if(value)
+        ResetForm();
+        switch(skill.target)
         {
-            objList.Clear();
-
-            switch(skill.target)
-            {
-                case Target.NONE :
-                    SetForm(0);
-                    break;
-                case Target.MINE :
-                    SetForm(1 , GetIndex(true));
-                    break;
-                case Target.WE :
-                    SetForm(1);
-                    break;
-                case Target.THAT :
-                    SetForm(2 , GetIndex(false));
-                    break;
-                case Target.THEY :
-                    SetForm(2);
-                    break;
-                default : 
-                    Debug.Log("예외값 입력됨");
-                    break;
-            }
-        }
-        foreach(GameObject obj in objList)
-        {
-            obj.SetActive(value);
-            obj.GetComponent<TargetArea>().SetData();
+            case Target.NONE :
+                SetColForm_KnightAll();
+                break;
+            case Target.MINE :
+                    
+                break;
+            case Target.WE :
+                SetColForm_KnightAll();
+                break;
+            case Target.THAT :
+                SetColForm_Monster(GetMonsterIndex());
+                break;
+            case Target.THEY :
+                SetColForm_MonsterAll(GetMonsterIndex());
+                break;
+            default : 
+                Debug.Log("예외값 입력됨");
+                break;
         }
     }
+        
 
-    bool[] GetIndex(bool isKnight)
+    bool[] GetMonsterIndex()
     {
         BattleController battle = BattleController.Instance;
-        bool[] array = new bool[4];
-        if(isKnight)
-        {
-            for(int i  = 0; i < 4; i++)
-                array[i] = battle.knightTarget.Contains(i);    
-        }
-        else
-        {
-            for(int i  = 0; i < 4; i++)
-                array[i] = battle.monsterTarget.Contains(i + battle.knightCount);    
-        }
+        bool[] array = new bool[5];
+        
+        for(int i  = 0; i < 4; i++)
+            array[i] = battle.monsterTarget.Contains(i + battle.knightCount);    
+        
 
+        array[4] = false;
         return array;
     }
-    
-    private void SetForm(int target)
-    {
-        //target. 0: NONE스킬. 1: KNIGHT. 2. MONSTER
-        switch(target)
-        {
-            case 0:
-                objList.Add(NoneArea);
-                break;  
-            case 1:
-                objList.Add(knightArea_ALL);
-                break;
-            case 2:
-                objList.Add(monsterArea_ALL);
-                break;
-            default : 
-                Debug.Log("예외값이 입력됨.");
-                break;
-        }
-    }
-    //Part로 나눠진..
-    private void SetForm(int target, bool[] index)
-    {   //1: KNIGHT 2. MONSTER  3. BOSS
-        switch(target)
-        {
-            case 1 :
-                for(int i = 0 ;i < 4 ; i++)
-                {
-                    if(index[i])
-                        objList.Add(knightArea_4[i]);
-                }
-                break;
-            case 2 :
-                for(int i = 0; i < 2 ; i ++)
-                {
-                    if(index[0])
-                    {
-                        if(index[3])
-                        {
-                            objList.Add(monsterArea_HALF_4[0]);
-                            objList.Add(monsterArea_HALF_4[1]);
-                        }
-                        else
-                        {
-                            objList.Add(monsterArea_HALF_2[0]);
-                        }
-                    }
-                    else objList.Add(monsterArea_HALF_2[0]);
-                    if(index[1])
-                    {
-                        if(index[2])
-                        {
-                            objList.Add(monsterArea_HALF_4[2]);
-                            objList.Add(monsterArea_HALF_4[3]);
-                        }
-                        else
-                        {
-                            objList.Add(monsterArea_HALF_2[1]);
-                        }
-                    }
-                    else objList.Add(monsterArea_HALF_2[1]);
-                }
-                break;
-            case 3 :
-                objList.Add(monsterArea_BOSS);
-                break;
-            default : 
-                Debug.Log("예외값이 입력됨.");
-                break;
 
-        }
+    public void SetColForm_KnightAll()
+    {
+        knightsObj.SetActive(true);
+        knightsObj.GetComponent<TargetArea>().SetData();
     }
+    public void SetColForm_MonsterAll(bool[] value)
+    {
+        monsterColForm.SetActive(true);
+        monsterAllObj.SetActive(true);
+        monsterAllObj.GetComponent<TargetArea>().SetData();
+        for(int i = 0 ;i < 4 ; i ++)
+        {
+            monstersObj[i].GetComponent<TargetArea>().SetData(true);
+            monstersObj[i].SetActive(value[i]);
+        }
+        bossObj.GetComponent<TargetArea>().SetData(true);
+        bossObj.SetActive(value[4]);
+    }
+    public void SetColForm_Monster(bool[] value)
+    {
+        monsterColForm.SetActive(true);
+        for(int i = 0 ;i < 4 ; i ++)
+        {
+            monstersObj[i].GetComponent<TargetArea>().SetData();
+            monstersObj[i].SetActive(value[i]);
+        }
+        bossObj.SetActive(value[4]);
+    }
+
+    private void ResetForm()
+    {
+        for(int i = 0 ;i < 4 ; i ++) monstersObj[i].SetActive(false);
+        bossObj.SetActive(false);
+        monsterAllObj.SetActive(false);
+        knightsObj.SetActive(false);
+        monsterColForm.SetActive(false);
+    }
+    
     #endregion
 
     #region SkillDrag 관련
@@ -256,7 +208,7 @@ public class ColController : MonoBehaviour
     //누군가에게 col하지 않은채로 끝났다.
     public void EndDrag(Transform skill)
     {
-        ChangeColForm(false);
+        ResetForm();
         BattleUI.SetActive(true);
         SwapSkillHierarchy(invisibleSkill, skill);
     }

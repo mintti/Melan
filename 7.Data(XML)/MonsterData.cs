@@ -77,7 +77,9 @@ public class MonsterData : MonoBehaviour
     public int size;
     public Monster[] monsters;
 
-
+    private void Start() {
+        Debug.Log(monsterPrefabs.Length);
+    }
     public void InsertData()
     {
          monsters = new Monster[size];
@@ -85,7 +87,8 @@ public class MonsterData : MonoBehaviour
         //데이터 삽입
         #region 몬스터 리스트
         monsters[0] = new Monster(0, "슬라임", new int[]{0,1}, 10, 6, 5, null);
-        monsters[1] = new Monster(1, "발발이", new int[]{0,1}, 10, 10, 10, null);
+        monsters[1] = new Monster(1, "토끼슬라임", new int[]{0,1}, 10, 6, 5, null);
+        monsters[2] = new Monster(2, "킹슬라임", new int[]{0,1}, 10, 6, 5, null);
 
         #endregion
         //이미지로드
@@ -99,4 +102,5 @@ public class MonsterData : MonoBehaviour
 
 
     public GameObject[] monsterPrefabs;
+
 }

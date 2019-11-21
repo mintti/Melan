@@ -8,7 +8,7 @@ public class BattleMonsterPrefab : MonoBehaviour
     public MonsterState ms;
     public State s;
     public SpriteRenderer img;
-    public SpriteRenderer shadow;
+    
 
     //해당스크립트 활성화 여부임. SetData()를 통해 활성화됨.
     public bool isMonster;
@@ -29,9 +29,25 @@ public class BattleMonsterPrefab : MonoBehaviour
         s = ms.s;
         
         img.sprite = m.img;
-        shadow.sprite = m.img;
-
         isMonster = true;
+
+         TargetOff();
+    }
+
+    public void MyTurn()
+    {
+
+    }
+
+    public GameObject targetObj;
+    public void TargetOn()
+    {
+        targetObj.SetActive(true);
+    }
+    public void TargetOff()
+    {
+        targetObj.SetActive(false);
+
     }
 
     public State GetSingleTarget()

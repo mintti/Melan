@@ -31,6 +31,11 @@ public class BattleKnightPrefab : MonoBehaviour
     public Text speedText;
     public Text stressText;
 
+    //HP2
+    public Text hpNowText;
+    public Text hpTotalText;
+    public RectTransform hpTr;
+
     public void UpdateText()
     {
         HpText();
@@ -40,13 +45,21 @@ public class BattleKnightPrefab : MonoBehaviour
     }
 
     public void HpText()
-    {   hpText.text = string.Format("{0}/{1}", ks.s.Hp, ks.k.hp);}
+    {   hpText.text = string.Format("{0}/{1}", ks.s.Hp, ks.k.hp);
+        hpNowText.text  = System.Convert.ToString(ks.s.Hp); hpTotalText.text =  string.Format("/{0}", ks.k.hp);
+        hpTr.sizeDelta = new Vector2(GetHpWidthSize() , hpTr.rect.height);
+    }
+    public float GetHpWidthSize()
+    {
+        float value = 160 * (ks.s.Hp/ks.k.hp);
+        return value;
+    }
     public void PowerText()
     {   powerText.text = string.Format("{0}", ks.s.Power);}
     public void SpeedText()
     {   speedText.text = string.Format("{0}", ks.s.Speed);}
     public void StressText()
-    {   stressText.text = string.Format( "{0}%", ks.s.Stress);}
+    {   stressText.text = string.Format( "{0}%", ks.s.Stress);} 
 
     public void Click()
     {
@@ -64,14 +77,18 @@ public class BattleKnightPrefab : MonoBehaviour
     public void TurnStart()
     {
         FadeIn();
+        myTurnObj.SetActive(true);
     }
 
     public void TurnEnd()
     {
         FadeOut();
+        
+        myTurnObj.SetActive(false);
     }
     #region 효과
     public RawImage rawImage;
+    public GameObject myTurnObj;
     private void FadeOut()
     {
         rawImage.color = new Color(150, 150, 150);

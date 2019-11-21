@@ -7,10 +7,18 @@ public class TargetArea : MonoBehaviour
 {
     public Text targetText;
     public Image colImage; //명도관리로..
-        
+    public GameObject select;
+
+    private bool isView;
     public void SetData()
     {
+        isView = true;
         ColIsIn(false);
+    }
+    public void SetData(bool v)
+    {   isView = false;
+        colImage.color = new Color32(0, 0, 0,255);
+        select.SetActive(false);
     }
     
     private void SetText(int who)
@@ -36,10 +44,18 @@ public class TargetArea : MonoBehaviour
         }
     }
 
-    #region  트리거 영역 _ 프리팹 내 COL에서 호출됨.
-    public void ColIsIn(bool v)
+    #region 
+    private void OnTriggerEnter2D(Collider2D other) {
+        ColIsIn(true);
+    }
+    private void OnTriggerExit2D(Collider2D other) {
+        ColIsIn(false);
+    }
+    private void ColIsIn(bool v)
     {
-        colImage.color = v == true ? new Color(0, 0, 0, 0.2f) : new Color(0, 0, 0, 0.6f);
+        if(!isView) return;
+        colImage.color = v == true ? new Color32(0, 0, 0,255) : new Color32(100, 100, 100,255);
+        select.SetActive(v);
     }
     #endregion
 }

@@ -14,7 +14,7 @@ public class M01_Slime : MonoBehaviour
         battle = BattleController.Instance;
         bmp = this.transform.GetComponent<BattleMonsterPrefab>();
         state = bmp.s;
-        turn = 0;
+        turn = battle.Turn;
     }
 
     public void SetData()
@@ -27,11 +27,10 @@ public class M01_Slime : MonoBehaviour
         switch (turn%2)
         {
             case 0 :
-                int target = bmp.GetSingleTarget();
-                battle.thing[target].AdDam(state.Power);
+                State targetState = bmp.GetSingleTarget();
+                targetState.AdDam(state.Power);
                 break;
             case 1 :
-
                 break;
             default:
                 break;
@@ -39,4 +38,5 @@ public class M01_Slime : MonoBehaviour
 
         turn++;
     }
+
 }

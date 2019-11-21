@@ -181,7 +181,7 @@ public class BattleController : MonoBehaviour
     //2. 몬스터 정보 로드(Phase가 변경될때 프로퍼티에서 호출됨.)
     // [(몬스터)로드] 상태에 해당함. 표시되는 몬스터를 로드..
     //turn이 변경될 때 마다 SettingTurn() 호출.
-    public GameObject monsterObj;
+    private GameObject monsterObj;
     private void MonsterSetting()
     {
         Debug.Log(" MonsterSetting() 실행");
@@ -201,7 +201,7 @@ public class BattleController : MonoBehaviour
 
             monsterObj = MonsterData.Instance.monsterPrefabs[monsterList[0].num];
             
-            mps[i] = CodeBox.AddChildInParent(monsterPos[i], monsterObj).GetComponent<BattleMonsterPrefab>();
+            mps[i] = CodeBox.AddChildInParent(monsterPos[i], monsterObj).GetComponentInChildren<BattleMonsterPrefab>();
             //2-1-1 show와 thing 에 추가
             mps[i].SetData(monsterList[0]);
             thing.Add(mps[i].s);
@@ -303,13 +303,14 @@ public class BattleController : MonoBehaviour
         {
             int num = thingTarget[sequence[who]];
             KnightState ks = kps[num].ks;
-            
+            kps[num].TurnStart();
 
             //스킬을 세팅해줌
             ColController.Instance.TurnStart(num);
         }
         else//일단 임시(테스트용)
         {
+            
             int num = thingTarget[sequence[who]];
             GetPrefabState(n);
             NextTurn();
