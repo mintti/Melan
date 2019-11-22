@@ -70,14 +70,27 @@ public class SkillData : MonoBehaviour
 //skills[0] = new Skill(0,,,,,,,,);
 public class Wizard
 {
-    public SkillInfo[] skills = new SkillInfo[4];
+    public SkillInfo[] skills = new SkillInfo[14];
     
     public Wizard()
     {
-        skills[0] = new SkillInfo(0, "속성공격", "한 대상을 시전자의 속성을 담은 마법");
-        skills[1] = new SkillInfo(1, "속성강화공격", "한 대상을 속성을 2번 담아 사용가능");
-        skills[2] = new SkillInfo(2, "힐링", "한 명의 아군을 치유");
-        skills[3] = new SkillInfo(3, "바인", "한 대상을 덩굴로 적을 속박");
+        int i = 0;
+        //COMMON
+        skills[i] = new SkillInfo(i++, "타격", "한 대상을 시전자의 속성을 담은 마법");
+        skills[i] = new SkillInfo(i++, "방어", "일정량을 방어");
+        skills[i] = new SkillInfo(i++, "넘기기", "턴 넘기기");
+        //SKILL
+        skills[i] = new SkillInfo(i++, "차칭", "마법 에너지를 모은다");
+        skills[i] = new SkillInfo(i++, "매직", "한 대상에게 AP공격");
+        skills[i] = new SkillInfo(i++, "강화매직", "한 대상에게 강화된 AP공격");
+        skills[i] = new SkillInfo(i++, "매직샤워", "전체 대상에게 AP공격");
+        skills[i] = new SkillInfo(i++, "강화매직샤워", "전체 대상에게 강화된 AP공격");
+        skills[i] = new SkillInfo(i++, "매직커터", "AP커팅/절단효과");
+        skills[i] = new SkillInfo(i++, "잔상", "2턴간 시전자에게 가하는 공격이 일정확률로 빗나간다.");
+        skills[i] = new SkillInfo(i++, "외곡", "1턴간 아군 전체에게 가하는 공격이 빗나간다.");
+        skills[i] = new SkillInfo(i++, "슬로우", "한 대상의 SPEED를 낮춘다.");
+        skills[i] = new SkillInfo(i++, "크러쉬", "한 대상에게 AP데미지를 주고 1턴간 기절시킴. ");
+        skills[i] = new SkillInfo(i++, "매직쉴드", "2턴간 피해를 감소시킴.");
     }
 
 

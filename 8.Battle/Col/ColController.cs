@@ -23,7 +23,13 @@ public class ColController : MonoBehaviour
         }
     }
 
+    BattleController battle;
+    private void Awake()
+    {
+        battle = BattleController.Instance;
+    }
     private void Start() {
+        
         ResetForm();
     }
     /*
@@ -45,7 +51,7 @@ public class ColController : MonoBehaviour
     private int behavior;
     public int Behavior{get{return behavior;} 
         set{behavior = value; if(behavior == 0) TurnEnd();}}
-    private int who;
+    public int who{get;set;}
     
     #region SKILL FORM SETTING
     
@@ -55,11 +61,13 @@ public class ColController : MonoBehaviour
         formObj = new GameObject[b.p.k.Length];
 
         int index = 0;
+
         foreach(int kNum in b.p.k)
         {
             GameObject form = formList[UnitData.Instance.knights[kNum].job];
             formObj[index] = CodeBox.AddChildInParent(BattleUI.transform, form);
-  
+
+            formObj[index].GetComponent<Form>().SetData(battle.kps[kNum]);
             formObj[index++].SetActive(false);
         }
         Debug.Log("SetForm _ Complete");
@@ -85,6 +93,7 @@ public class ColController : MonoBehaviour
     public GameObject monsterAllObj;
     public GameObject bossObj;
     public GameObject knightsObj;
+    public GameObject knightObj;
 
     //각 Skill - PushComplete()에서 호출됨. 
     public void SetData(Skill _skill)
@@ -102,10 +111,10 @@ public class ColController : MonoBehaviour
         switch(skill.target)
         {
             case Target.NONE :
-                SetColForm_KnightAll();
+                SetColForm_Knight();
                 break;
             case Target.MINE :
-                    
+                SetColForm_Knights();
                 break;
             case Target.WE :
                 SetColForm_KnightAll();
@@ -122,10 +131,8 @@ public class ColController : MonoBehaviour
         }
     }
         
-
     bool[] GetMonsterIndex()
     {
-        BattleController battle = BattleController.Instance;
         bool[] array = new bool[5];
         
         for(int i  = 0; i < 4; i++)
@@ -136,6 +143,20 @@ public class ColController : MonoBehaviour
         return array;
     }
 
+    private void SetColForm_Knight()
+    {
+        knightObj.SetActive(true);
+        battle.kps[who].transform.GetComponent<KnightCol>().SetData(false);
+        battle.kps[who].TargetOff();
+    }
+    private void SetColForm_Knights()
+    {
+        for(int i = 0 ;i <4; i++)
+        {
+            if(battle.kps[i].isKnight)
+                battle.kps[i].transform.GetComponent<KnightCol>().SetData(true);
+        }
+    }
     public void SetColForm_KnightAll()
     {
         knightsObj.SetActive(true);
@@ -148,10 +169,10 @@ public class ColController : MonoBehaviour
         monsterAllObj.GetComponent<TargetArea>().SetData();
         for(int i = 0 ;i < 4 ; i ++)
         {
-            monstersObj[i].GetComponent<TargetArea>().SetData(true);
+            monstersObj[i].GetComponent<MonsterCol>().SetData(false);
             monstersObj[i].SetActive(value[i]);
         }
-        bossObj.GetComponent<TargetArea>().SetData(true);
+        bossObj.GetComponent<MonsterCol>().SetData(false);
         bossObj.SetActive(value[4]);
     }
     public void SetColForm_Monster(bool[] value)
@@ -159,7 +180,7 @@ public class ColController : MonoBehaviour
         monsterColForm.SetActive(true);
         for(int i = 0 ;i < 4 ; i ++)
         {
-            monstersObj[i].GetComponent<TargetArea>().SetData();
+            monstersObj[i].GetComponent<MonsterCol>().SetData(true);
             monstersObj[i].SetActive(value[i]);
         }
         bossObj.SetActive(value[4]);
@@ -167,16 +188,24 @@ public class ColController : MonoBehaviour
 
     private void ResetForm()
     {
-        for(int i = 0 ;i < 4 ; i ++) monstersObj[i].SetActive(false);
+        for(int i = 0 ;i < 4 ; i ++)
+        {
+            monstersObj[i].GetComponent<MonsterCol>().TargetOff_();
+            monstersObj[i].SetActive(false);
+        }
         bossObj.SetActive(false);
         monsterAllObj.SetActive(false);
         knightsObj.SetActive(false);
         monsterColForm.SetActive(false);
+        knightObj.SetActive(false);
+        
+        battle.kps[who].TargetOff();
+        targetNum = -1;
     }
     
     #endregion
 
-    #region SkillDrag 관련
+    #region SkillDrag 관련 / COL로 인한 스킬의 사용도 이곳에서
     public Transform invisibleSkill;
     
     public static void SwapKSkills(Transform sour, Transform dest)
@@ -205,12 +234,25 @@ public class ColController : MonoBehaviour
         SwapSkillHierarchy(invisibleSkill, skill);
     }
     
-    //누군가에게 col하지 않은채로 끝났다.
+    
     public void EndDrag(Transform skill)
     {
+        if(targetNum== -1)
+        {
+            //누군가에게 col하지 않은채로 끝났다.
+            ResetForm();
+        }
+        
+        Debug.Log("타겟넘버 >> " + targetNum);
         ResetForm();
         BattleUI.SetActive(true);
         SwapSkillHierarchy(invisibleSkill, skill);
+    }
+    
+    int targetNum;
+    public void SetSkillTarget(int i)
+    {// i = -1 : 취소(Null), 0~3 : Knight , 4~7 : Monster,  8 : Boss, 9 : AllKnight,  10 : AllMonster, 11 : Me; 
+        targetNum = i;
     }
     #endregion
 }

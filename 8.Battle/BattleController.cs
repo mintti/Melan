@@ -9,6 +9,7 @@ public class BattleController : MonoBehaviour
     #region 데코 부분
 
     public BattleKnightPrefab[] kps = new BattleKnightPrefab[4];//0~3;
+    public MonsterStateViewer[] msv = new MonsterStateViewer[5];
     public Transform[] monsterPos = new Transform[4];
     public BattleMonsterPrefab[] mps = new BattleMonsterPrefab[4];//4~7;
     
@@ -194,7 +195,12 @@ public class BattleController : MonoBehaviour
                 //표시될 몬스터가 있으면, 로드 종료
                 //               없으면, [승리] 상태가됨.
                 if(mps[0].isMonster)
+                {
+                    for(; i<4 ;i++)
+                        msv[i].gameObject.SetActive(false);//스테이트,COL임
+                    
                     break;
+                }
                 State = BattleState.승리;
                 return;
             }
@@ -206,9 +212,13 @@ public class BattleController : MonoBehaviour
             mps[i].SetData(monsterList[0]);
             thing.Add(mps[i].s);
             thingTarget.Add(4+i);
+            //2-1-1-2 스테이트 상태COL 활성화
+            msv[i].gameObject.SetActive(true);
+            msv[i].SetData(mps[i]);
             //2-1-2 호출된 몬스터는 리스트에서 삭제
             monsterList.Remove(monsterList[0]);
         }
+        msv[4].gameObject.SetActive(false);//※이거 보스...
         
 
         //2-2 몬스터 세팅 완료했으니 전투 순서를 정해줌. (3-1 이동)
@@ -310,10 +320,9 @@ public class BattleController : MonoBehaviour
         }
         else//일단 임시(테스트용)
         {
-            
             int num = thingTarget[sequence[who]];
             GetPrefabState(n);
-            NextTurn();
+            //NextTurn();
         }
 
     }
@@ -334,6 +343,7 @@ public class BattleController : MonoBehaviour
     //턴을 넘긴 상태.
     public void NextTurn()
     {
+        StartCoroutine("Wait1Sec");
         who++;
         State = BattleState.전투;
     }
@@ -401,7 +411,34 @@ public class BattleController : MonoBehaviour
         {
             name = mps[num-4].ms.m.name;
         }
+
         Debug.Log(name);
     }
 
+    //배틀 시 State 로드
+    public State GetSingleTarget()
+    {
+        int targetNum = UnityEngine.Random.Range(0, knightTarget.Count);
+        State target = thing[targetNum];
+        
+        return target;
+    }
+
+    public State GetSingleTarget_Lowest_HP()
+    {
+        int targetNum = 0;
+        for(int i = 1 ; i < knightTarget.Count; i++)
+        {
+           targetNum = thing[targetNum].Hp < thing[i].Hp ? targetNum : i;
+        }
+        State target = thing[targetNum];
+        return target;
+    }
+
+    //대기 코루틴
+    IEnumerator Wait1Sec()
+    {
+        yield return new WaitForSeconds(1f);
+        Debug.Log("대기 완료");
+    }
 }

@@ -9,79 +9,81 @@ using UnityEngine.EventSystems;
     public enum Target{NONE, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
 
 public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
-{
-        private int job;
-        private int skillNum;
+{       
+    private int job;
+    private int skillNum;
         
-        private string name;
-        private string explan;
+    private string name;
+    private string explan;
 
-        public int level;
-        public SkillType skillType;
-        public DamType damType;
-        public Target target;
-        public int cost;
-        public bool isElement;//ele속성을 사용하는 스킬인가?
-        public int cost_Element;
+    public int level;
+    public SkillType skillType;
+    public DamType damType;
+    public Target target;
+    public int cost;
+    public bool isElement;//ele속성을 사용하는 스킬인가?
+    public int cost_Element;
 
-        public Image skillIconImg;
-        public Text nameText;
-        public Text costText;
-        public GameObject cost_ele_Obj; //코스트 부족일때 활성
-        public GameObject lockObj;//레벨부족일때 활성
+    public Image skillIconImg;
+    public Text nameText;
+    public Text costText;
+    public GameObject eleCost;
+    public GameObject cost_ele_Obj; //코스트 부족일때 활성
+    public GameObject lockObj;//레벨부족일때 활성
 
-        private bool isLevel; //레벨 부적합.
-        private bool isInvisible;
+    private bool isLevel; //레벨 부적합.
+    private bool isInvisible;
 
         
-        private bool only_View;
-        //WizardForm에서 로드케함.
-        public void SetData(int _job, int _skillNum, string _name, int _level, SkillType _st, DamType _dt, Target _t, int _cost, bool _isEle, int _cost_ele)
+    private bool only_View;
+    public void SetData(KnightState ks, SkillInfo skillInfo)
+    {
+        //기본정보
+        job = ks.k.job;
+        SetLock(ks.k.level);
+
+        //스킬정보
+        skillNum = skillInfo.num;
+        name = skillInfo.name; explan = skillInfo.explan;
+
+        nameText.text = name;
+        costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
+        if(isElement)
         {
-            job = _job; skillNum = _skillNum;
-
-            level = _level; skillType = _st; damType = _dt; target = _t;
-            cost = _cost; isElement = _isEle; cost_Element = _cost_ele;
-
-            nameText.text = _name;
-            costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
+            eleCost.SetActive(true);
+            eleCost.GetComponentInChildren<Text>().text = System.Convert.ToString(cost_Element);
         }
-        public void SetData(int _job, SkillInfo skillInfo)
-        {
-            job = _job; skillNum = skillInfo.num;
-            name = skillInfo.name; explan = skillInfo.explan;
-
-            nameText.text = name;
-            costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
-        }
+        else eleCost.SetActive(false);
+    }
 
 
         //Lock의 여부
-        public void SetLock(int knightLevel)
-        {
-            Lock(knightLevel >= level ? false : true);
-        }
-        public void SetLock(bool value)
-        {
-            Lock(value);
-        }
+    public void SetLock(int knightLevel)
+    {
+        Lock(knightLevel >= level ? false : true);
+    }
+    public void SetLock(bool value)
+    {
+        Lock(value);
+    }
 
-        //버튼의 활성비활성
-        public void UpdateUserCost_Element(int cost)
-        {
-            if(!isLevel || !isElement) return;
+    //버튼의 활성비활성
+    public void UpdateUserCost_Element(int cost)
+    {
+        if(!isLevel || !isElement) return;
            
-            Active( cost >= cost_Element ? true : false);
-        }
+        Active( cost >= cost_Element ? true : false);
+    }
         
 
-        //레벨딸려 비활 || 적의 공격으로 비활
-        private void Lock(bool value)
-        {
-            lockObj.SetActive(value);
-            costText.gameObject.SetActive(!value);
-            isLevel = !value;
-        }
+    //레벨딸려 비활 || 적의 공격으로 비활
+    private void Lock(bool value)
+    {
+        lockObj.SetActive(value);
+        costText.gameObject.SetActive(!value);
+        nameText.gameObject.SetActive(!value);
+        isLevel = !value;
+    }
         
         //Ele사용 스킬 cost충분 여부.
         private void Active(bool value)
@@ -106,6 +108,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
 
         public void OnPointerDown(PointerEventData data)
         {
+            if(!isLevel) return;
             isPush = false;
             timer.SetData(this, 1f);
             timer.gameObject.SetActive(true);
@@ -160,6 +163,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
         void SamMod(bool isIcon)
         {
             transform.GetChild(1).gameObject.SetActive(!isIcon);
+            eleCost.SetActive(!isIcon);
             nameText.enabled = !isIcon;
             costText.enabled = !isIcon;
         }

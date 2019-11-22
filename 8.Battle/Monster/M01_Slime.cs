@@ -27,16 +27,18 @@ public class M01_Slime : MonoBehaviour
         switch (turn%2)
         {
             case 0 :
-                State targetState = bmp.GetSingleTarget();
+                State targetState = battle.GetSingleTarget();
                 targetState.AdDam(state.Power);
                 break;
             case 1 :
+                targetState = battle.GetSingleTarget();
+                targetState.AdDam(state.Power);
                 break;
             default:
                 break;
         }
 
-        turn++;
+        battle.NextTurn();
     }
 
 }

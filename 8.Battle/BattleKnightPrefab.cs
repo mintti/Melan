@@ -97,6 +97,18 @@ public class BattleKnightPrefab : MonoBehaviour
     {
         rawImage.color = new Color(255, 255, 255);
     }
+
+    //Skill TargetEffect
+    public GameObject targetObj;
+    public void TargetOn()
+    {
+        targetObj.SetActive(true);
+    }
+    public void TargetOff()
+    {
+        targetObj.SetActive(false);
+
+    }
     #endregion
 
 
