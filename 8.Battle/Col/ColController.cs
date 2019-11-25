@@ -70,7 +70,6 @@ public class ColController : MonoBehaviour
             formObj[index].GetComponent<Form>().SetData(battle.kps[kNum]);
             formObj[index++].SetActive(false);
         }
-        Debug.Log("SetForm _ Complete");
     }
 
     public void TurnStart(int _who)
@@ -80,7 +79,7 @@ public class ColController : MonoBehaviour
         formObj[who].SetActive(true);
         formObj[who].GetComponent<Form>().MyTurn();
     }
-    private void TurnEnd()
+    public void TurnEnd()
     {
         formObj[who].SetActive(false);
         BattleController.Instance.NextTurn();
@@ -99,7 +98,6 @@ public class ColController : MonoBehaviour
     public void SetData(Skill _skill)
     {   
         skill  = _skill; //인자 저장.
-
         BattleUI.SetActive(false);
         ChangeColForm();
     }
@@ -235,24 +233,87 @@ public class ColController : MonoBehaviour
     }
     
     
-    public void EndDrag(Transform skill)
+    public void EndDrag(Transform _skill)
     {
         if(targetNum== -1)
         {
             //누군가에게 col하지 않은채로 끝났다.
-            ResetForm();
+        }
+        else
+        {
+            //스킬의 사용
+            SkillData.Instance.UseSkill(skill.job, skill.skillNum, GetMyState(), GetState(targetNum));
+            formObj[who].GetComponent<Form>().Cost -= skill.cost;
+            formObj[who].GetComponent<Form>().UpdateText();
         }
         
-        Debug.Log("타겟넘버 >> " + targetNum);
         ResetForm();
         BattleUI.SetActive(true);
-        SwapSkillHierarchy(invisibleSkill, skill);
+        SwapSkillHierarchy(invisibleSkill, _skill);
+    }
+    private State GetMyState()
+    {
+        return battle.kps[who].ks.s;
+    }
+
+    private State[] GetState(int num)
+    {
+        State[] states = new State[0];
+        if(num <=3)
+        {
+            states = new State[1];
+            states[0] = battle.kps[num].ks.s;
+        }
+        else if(num <=7)
+        {
+            states = new State[1];
+            states[0] = battle.mps[num-4].s;
+        }
+        else if(num ==8)
+        {
+            states = new State[1];
+            states[0] = battle.mps[4].s;
+        }
+        else if(num == 9)
+        {
+            states = new State[battle.knightTarget.Count];
+            for(int i = 0 ; i< states.Length; i++)
+                states[i] = battle.kps[battle.knightTarget[i]].ks.s;
+            
+        }
+        else if(num == 10)
+        {
+            states = new State[battle.monsterTarget.Count];
+            for(int i = 0 ; i< states.Length; i++)
+                states[i] = battle.mps[battle.monsterTarget[i]].s;
+        }
+        else if(num == 11)
+        {
+            states = new State[1];
+            states[0] = GetMyState();
+        }
+
+        return states;
     }
     
     int targetNum;
     public void SetSkillTarget(int i)
     {// i = -1 : 취소(Null), 0~3 : Knight , 4~7 : Monster,  8 : Boss, 9 : AllKnight,  10 : AllMonster, 11 : Me; 
         targetNum = i;
+    }
+
+    //대상이 되었던 몬스터의 Text를 업데이트한다.
+    public void UpdateData()
+    {
+        if(targetNum >=4 && targetNum <=8)
+        {
+            battle.msv[targetNum-4].UpdateText();
+        }
+        else if(targetNum == 10)
+        {
+            for(int i = 0 ; i < battle.monsterTarget.Count; i++ )
+                battle.msv[battle.monsterTarget[i]].UpdateText();
+        }
     }
     #endregion
 }

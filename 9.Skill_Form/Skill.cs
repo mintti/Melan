@@ -9,9 +9,10 @@ using UnityEngine.EventSystems;
     public enum Target{NONE, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
 
 public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
-{       
-    private int job;
-    private int skillNum;
+{   
+    private KnightState ks;
+    public int job{get;set;}
+    public int skillNum{get;set;}
         
     private string name;
     private string explan;
@@ -34,11 +35,16 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
     private bool isLevel; //레벨 부적합.
     private bool isInvisible;
 
+    int knightCost;
+    int knightEleCost;
+
         
     private bool only_View;
-    public void SetData(KnightState ks, SkillInfo skillInfo)
+    
+    public void SetData(KnightState _ks, SkillInfo skillInfo)
     {
         //기본정보
+        ks = _ks;
         job = ks.k.job;
         SetLock(ks.k.level);
 
@@ -54,6 +60,10 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
             eleCost.GetComponentInChildren<Text>().text = System.Convert.ToString(cost_Element);
         }
         else eleCost.SetActive(false);
+
+        knightCost = ColController.Instance.formObj[ColController.Instance.who].GetComponent<Form>().Cost;
+        knightEleCost = ks.s.element.Cnt;
+        UpdateCost();
     }
 
 
@@ -66,13 +76,26 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
     {
         Lock(value);
     }
-
-    //버튼의 활성비활성
-    public void UpdateUserCost_Element(int cost)
+    
+    //업데이트//버튼의 활성비활성
+    public void UpdateCost()
+    {
+        CheckCost();
+        CheckEleCost();
+    }
+    //그냥 코스트
+    void CheckCost()
     {
         if(!isLevel || !isElement) return;
-           
-        Active( cost >= cost_Element ? true : false);
+        
+        Active(  knightCost >= cost_Element ? true : false);
+    }
+    //엘레
+    public void CheckEleCost()
+    {
+        if(!isLevel || !isElement) return;
+        
+        Active( knightEleCost >= cost_Element ? true : false);
     }
         
 
@@ -89,7 +112,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
         private void Active(bool value)
         {
             cost_ele_Obj.SetActive(value);
-            costText.gameObject.SetActive(value);
+            //costText.gameObject.SetActive(value);
         }
 
         #region 포인터이벤트

@@ -23,7 +23,7 @@ public class MonsterStateViewer : MonoBehaviour
     public Text hpTotalText;
     public RectTransform hpTr;
 
-    public void HpText()
+    void HpText()
     {   
         hpNowText.text  = System.Convert.ToString(bmp.ms.s.Hp); hpTotalText.text =  string.Format("/{0}", bmp.ms.m.hp);
         hpTr.sizeDelta = new Vector2(GetHpWidthSize() , hpTr.rect.height);
@@ -33,5 +33,10 @@ public class MonsterStateViewer : MonoBehaviour
     {
         float value = 100 * (bmp.ms.s.Hp/bmp.ms.m.hp);
         return value;
+    }
+
+    public void UpdateText()
+    {
+        HpText();
     }
 }

@@ -201,6 +201,7 @@ public class UnitData : MonoBehaviour
     public int[] knightPay = new int[5]
     {10, 20, 30, 40, 50};
 
+    public List<int> useElementJob = new List<int>(){1};
 
     
     #region 데이터세팅.추후 설정.

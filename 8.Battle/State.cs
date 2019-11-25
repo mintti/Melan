@@ -13,7 +13,7 @@ public enum LifeType
 }
 public enum ElementType
 {
-    물,불
+    M
 }
 public class BattleElement
 {
@@ -67,7 +67,7 @@ public class CC
         Bine = 0;
     }
 
-    public void Update()
+    public void UpdateCC()
     {
         Stun = 0;
         Weakness--;
@@ -94,7 +94,7 @@ public class State
 
     //기본 변수
     private int hp;
-    public int Hp{get{return hp;} set{hp = value;}}
+    public int Hp{get{return hp;} set{hp = value; if(hp<0) hp =0;}}
     private int power;
     public int Power{get{int value = System.Convert.ToInt32(power* powerMultiple); return value;} set{power = value;}}
     private int speed;
@@ -124,6 +124,7 @@ public class State
         speedMultiple = 1;
 
     }
+
     public void SetData(int h, int p, int s, int st, int[] u, LifeType t)
     {
         Hp = h; Power = p; Speed = s; Stress = st;
@@ -138,6 +139,11 @@ public class State
 
     }
 
+    
+    public void NextTurn()
+    {
+
+    }
     #region 상태이상 효과 관련
     private Del impact;
 

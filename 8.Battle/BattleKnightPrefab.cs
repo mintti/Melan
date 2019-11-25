@@ -21,6 +21,7 @@ public class BattleKnightPrefab : MonoBehaviour
         skin.SetData(ks.k.skin);
         isKnight = true;
         UpdateText();
+        myTurnObj.SetActive(false);
     }
     
     //정보로드

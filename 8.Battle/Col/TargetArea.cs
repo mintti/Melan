@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TargetArea : MonoBehaviour
 {
-    public int targetNum;
+    public int targetNum;   
     public GameObject select;
 
     private bool isView;
