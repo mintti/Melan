@@ -145,6 +145,7 @@ public class BattleController : MonoBehaviour
         knightCount = Bdata.p.k.Length;
         
         int cnt = Bdata.p.k.Length;
+        thing.Clear();
         for(int i = 0; i < cnt; i++)
         {
             KnightState ks = Bdata.p.knightStates[i];
@@ -314,14 +315,14 @@ public class BattleController : MonoBehaviour
             int num = thingTarget[sequence[who]];
             KnightState ks = kps[num].ks;
             kps[num].TurnStart();
-
+            Debug.Log(num + "의 턴!");
             //스킬을 세팅해줌
             ColController.Instance.TurnStart(num);
         }
         else//일단 임시(테스트용)
         {
             int num = thingTarget[sequence[who]];
-            GetPrefabState(n);
+            mps[n-knightCount].MyTurn();
             //NextTurn();
         }
 
@@ -344,8 +345,6 @@ public class BattleController : MonoBehaviour
     public void NextTurn()
     {
         StartCoroutine("Wait1Sec");
-        who++;
-        State = BattleState.전투;
     }
     
 
@@ -421,6 +420,8 @@ public class BattleController : MonoBehaviour
         int targetNum = UnityEngine.Random.Range(0, knightTarget.Count);
         State target = thing[targetNum];
         
+        ColController.Instance.SetSkillTarget(targetNum);
+
         return target;
     }
 
@@ -432,13 +433,58 @@ public class BattleController : MonoBehaviour
            targetNum = thing[targetNum].Hp < thing[i].Hp ? targetNum : i;
         }
         State target = thing[targetNum];
+        
+        ColController.Instance.SetSkillTarget(9);
         return target;
     }
 
     //대기 코루틴
+    public GameObject waitObj;
     IEnumerator Wait1Sec()
     {
-        yield return new WaitForSeconds(1f);
+        waitObj.SetActive(true);
+        yield return new WaitForSeconds(1);
+        
+        waitObj.SetActive(false);
+        who++;
+        State = BattleState.전투;
         Debug.Log("대기 완료");
+    }
+
+    public void FineDie(LifeType lt)
+    {
+        isSpeed = true;//다음 턴 순서 변경 필요.
+
+        int num;
+        if(lt == LifeType.K)
+        {
+            for(int i = 0; i< knightTarget.Count;i ++)
+            {
+                if(kps[i].ks.s.alive == AliveType.생존)
+                {//생존 중에서만 찾는거니깐                
+                    if(kps[i].ks.s.Hp <= 0)
+                    {
+                        kps[i].Die();
+                        return;    
+                    }
+                }
+            }
+        }
+        else
+        {
+            for(int i = 0; i < monsterTarget.Count; i++)
+            {
+                BattleMonsterPrefab mps_ = mps[monsterTarget[i]-knightCount];
+                if(mps_.s.alive == AliveType.생존)
+                {
+                    if(mps_.s.Hp <= 0)
+                    {
+                        mps[i].Die();
+                        return;
+                    }
+                } 
+            }
+        }
+        Debug.Log("죽은 대상을 찾지못함 LifeType >> " + lt);
     }
 }

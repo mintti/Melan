@@ -107,6 +107,7 @@ public class State
     private float powerMultiple;
     private float speedMultiple;
 
+    public AliveType alive;
     //이건 몬스터인가?
     private LifeType lifeType;
     public LifeType LifeType{get{return lifeType;} set{lifeType = value;}}
@@ -114,6 +115,7 @@ public class State
     public State(int h, int p, int s, int st, int[] u, LifeType t)
     {
         Hp = h; Power = p; Speed = s; Stress = st;
+        alive = h > 0 ? AliveType.생존 : AliveType.죽음; 
         uni = u;
 
         LifeType = t;
@@ -138,7 +140,11 @@ public class State
         speedMultiple = 1;
 
     }
-
+    //사망처리
+    public void Die()
+    {
+        alive = AliveType.죽음;
+    }
     
     public void NextTurn()
     {

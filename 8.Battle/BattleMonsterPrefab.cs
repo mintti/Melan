@@ -19,6 +19,7 @@ public class BattleMonsterPrefab : MonoBehaviour
 
     public void Die()
     {
+        s.Die();
         isMonster = false;
     }
     //BattleCon - MonsterSetting()에서 호출됨.
@@ -30,14 +31,17 @@ public class BattleMonsterPrefab : MonoBehaviour
         img.sprite = m.img;
         isMonster = true;
 
-         TargetOff();
+        TargetOff();
     }
 
     public void MyTurn()
     {
-        this.BroadcastMessage("UseSkill", transform,  SendMessageOptions.DontRequireReceiver);
+        ColController.Instance.SetSkillTarget(9);
+        gameObject.SendMessage("UseSkill");
+        
+        battle.NextTurn();
     }
-
+    #region  UI관련
     public GameObject targetObj;
     public void TargetOn()
     {
@@ -48,5 +52,6 @@ public class BattleMonsterPrefab : MonoBehaviour
         targetObj.SetActive(false);
 
     }
+    #endregion
 
 }

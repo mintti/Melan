@@ -21,9 +21,27 @@ public class BattleKnightPrefab : MonoBehaviour
         skin.SetData(ks.k.skin);
         isKnight = true;
         UpdateText();
-        myTurnObj.SetActive(false);
+        TurnEnd();
     }
     
+    public void Die()
+    {
+        ks.s.Die();
+    }
+    #region  게임 진행
+    public void TurnStart()
+    {
+        myTurnObj.SetActive(true);
+    }
+
+    public void TurnEnd()
+    {
+        TargetOff();
+        myTurnObj.SetActive(false);
+    }
+
+    #endregion
+    #region 효과(UI)
     //정보로드
     public GameObject infoObj;
 
@@ -37,6 +55,7 @@ public class BattleKnightPrefab : MonoBehaviour
     public Text hpTotalText;
     public RectTransform hpTr;
 
+    //Text 관련
     public void UpdateText()
     {
         HpText();
@@ -45,23 +64,14 @@ public class BattleKnightPrefab : MonoBehaviour
         StressText();
     }
 
-    public void HpText()
-    {   hpText.text = string.Format("{0}/{1}", ks.s.Hp, ks.k.hp);
-        hpNowText.text  = System.Convert.ToString(ks.s.Hp); hpTotalText.text =  string.Format("/{0}", ks.k.hp);
-        hpTr.sizeDelta = new Vector2(GetHpWidthSize() , hpTr.rect.height);
-    }
-    public float GetHpWidthSize()
-    {
-        float value = 160 * (ks.s.Hp/ks.k.hp);
-        return value;
-    }
     public void PowerText()
     {   powerText.text = string.Format("{0}", ks.s.Power);}
     public void SpeedText()
     {   speedText.text = string.Format("{0}", ks.s.Speed);}
     public void StressText()
     {   stressText.text = string.Format( "{0}%", ks.s.Stress);} 
-
+    
+    //인포
     public void Click()
     {
         if(isKnight)
@@ -74,30 +84,8 @@ public class BattleKnightPrefab : MonoBehaviour
             infoObj.SetActive(true);  
         }
     }
-
-    public void TurnStart()
-    {
-        FadeIn();
-        myTurnObj.SetActive(true);
-    }
-
-    public void TurnEnd()
-    {
-        FadeOut();
-        
-        myTurnObj.SetActive(false);
-    }
-    #region 효과
-    public RawImage rawImage;
+    //타겟 관련.
     public GameObject myTurnObj;
-    private void FadeOut()
-    {
-        rawImage.color = new Color(150, 150, 150);
-    }
-    private void FadeIn()
-    {
-        rawImage.color = new Color(255, 255, 255);
-    }
 
     //Skill TargetEffect
     public GameObject targetObj;
@@ -109,6 +97,17 @@ public class BattleKnightPrefab : MonoBehaviour
     {
         targetObj.SetActive(false);
 
+    }
+    //체력바
+    public void HpText()
+    {   hpText.text = string.Format("{0}/{1}", ks.s.Hp, ks.k.hp);
+        hpNowText.text  = System.Convert.ToString(ks.s.Hp); hpTotalText.text =  string.Format("/{0}", ks.k.hp);
+        hpTr.sizeDelta = new Vector2(GetHpWidthSize() , hpTr.rect.height);
+    }
+    public float GetHpWidthSize()
+    {
+        float value = 160 * ((float)ks.s.Hp/(float)ks.k.hp);
+        return value;
     }
     #endregion
 

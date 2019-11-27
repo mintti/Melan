@@ -28,8 +28,8 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
     public Image skillIconImg;
     public Text nameText;
     public Text costText;
-    public GameObject eleCost;
-    public GameObject cost_ele_Obj; //코스트 부족일때 활성
+    public GameObject eleCostObj;
+    public GameObject fillCostObj; //코스트 부족일때 활성
     public GameObject lockObj;//레벨부족일때 활성
 
     private bool isLevel; //레벨 부적합.
@@ -56,13 +56,11 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
         costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
         if(isElement)
         {
-            eleCost.SetActive(true);
-            eleCost.GetComponentInChildren<Text>().text = System.Convert.ToString(cost_Element);
+            eleCostObj.SetActive(true);
+            eleCostObj.GetComponentInChildren<Text>().text = System.Convert.ToString(cost_Element);
         }
-        else eleCost.SetActive(false);
+        else eleCostObj.SetActive(false);
 
-        knightCost = ColController.Instance.formObj[ColController.Instance.who].GetComponent<Form>().Cost;
-        knightEleCost = ks.s.element.Cnt;
         UpdateCost();
     }
 
@@ -80,15 +78,20 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
     //업데이트//버튼의 활성비활성
     public void UpdateCost()
     {
+        knightCost = ColController.Instance.formObj[ColController.Instance.who].GetComponent<Form>().Cost;
+        knightEleCost = ks.s.element.Cnt;
+        
+        isPush = false; //매 턴 false 해주어야한다. 이유는 안하면 조건불충족해도 드래그가됨.
+
         CheckCost();
         CheckEleCost();
     }
     //그냥 코스트
     void CheckCost()
     {
-        if(!isLevel || !isElement) return;
+        if(!isLevel ) return;
         
-        Active(  knightCost >= cost_Element ? true : false);
+        Active(  knightCost >= cost ? true : false);
     }
     //엘레
     public void CheckEleCost()
@@ -111,8 +114,8 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
         //Ele사용 스킬 cost충분 여부.
         private void Active(bool value)
         {
-            cost_ele_Obj.SetActive(value);
-            //costText.gameObject.SetActive(value);
+            fillCostObj.SetActive(!value);
+            isInvisible = !value;
         }
 
         #region 포인터이벤트
@@ -131,7 +134,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
 
         public void OnPointerDown(PointerEventData data)
         {
-            if(!isLevel) return;
+            if(!isLevel || isInvisible) return;
             isPush = false;
             timer.SetData(this, 1f);
             timer.gameObject.SetActive(true);
@@ -186,7 +189,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
         void SamMod(bool isIcon)
         {
             transform.GetChild(1).gameObject.SetActive(!isIcon);
-            eleCost.SetActive(!isIcon);
+            if(isElement) eleCostObj.SetActive(!isIcon);
             nameText.enabled = !isIcon;
             costText.enabled = !isIcon;
         }

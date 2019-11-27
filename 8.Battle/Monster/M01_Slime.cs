@@ -38,7 +38,7 @@ public class M01_Slime : MonoBehaviour
                 break;
         }
 
-        battle.NextTurn();
+        ColController.Instance.UpdateData();
     }
 
 }

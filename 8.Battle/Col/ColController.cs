@@ -48,9 +48,6 @@ public class ColController : MonoBehaviour
     public GameObject[] formObj;
 
     //Battle진행2
-    private int behavior;
-    public int Behavior{get{return behavior;} 
-        set{behavior = value; if(behavior == 0) TurnEnd();}}
     public int who{get;set;}
     
     #region SKILL FORM SETTING
@@ -81,7 +78,9 @@ public class ColController : MonoBehaviour
     }
     public void TurnEnd()
     {
+        formObj[who].GetComponent<Form>().TurnEnd();
         formObj[who].SetActive(false);
+
         BattleController.Instance.NextTurn();
     }
     
@@ -285,7 +284,7 @@ public class ColController : MonoBehaviour
         {
             states = new State[battle.monsterTarget.Count];
             for(int i = 0 ; i< states.Length; i++)
-                states[i] = battle.mps[battle.monsterTarget[i]].s;
+                states[i] = battle.mps[battle.monsterTarget[i]-battle.knightCount].s;
         }
         else if(num == 11)
         {
@@ -305,14 +304,23 @@ public class ColController : MonoBehaviour
     //대상이 되었던 몬스터의 Text를 업데이트한다.
     public void UpdateData()
     {
-        if(targetNum >=4 && targetNum <=8)
+        if(targetNum >=0 && targetNum <=3)
+        {
+            battle.kps[targetNum].UpdateText();
+        }
+        else if(targetNum >=4 && targetNum <=8)
         {
             battle.msv[targetNum-4].UpdateText();
+        }
+        else if( targetNum == 9)
+        {
+            for(int i = 0 ; i < battle.knightTarget.Count; i++ )
+                battle.kps[i].UpdateText();
         }
         else if(targetNum == 10)
         {
             for(int i = 0 ; i < battle.monsterTarget.Count; i++ )
-                battle.msv[battle.monsterTarget[i]].UpdateText();
+                battle.msv[battle.monsterTarget[i]-battle.knightCount].UpdateText();
         }
     }
     #endregion

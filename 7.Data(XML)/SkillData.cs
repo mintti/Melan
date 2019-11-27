@@ -114,7 +114,7 @@ public class Wizard
 
     public void UseSkill(int n, State playerS, State[] targetsS)
     {
-        
+        int ele = 0;
         foreach(State targetS in targetsS)
         {
             switch(n)
@@ -123,7 +123,6 @@ public class Wizard
                     targetS.AdDam(playerS.Power * 0.2f);
                     break;
                 case 1: //방어
-                    
                     break;
                 case 2: //턴넘기기
                     ColController.Instance.TurnEnd();
@@ -133,45 +132,46 @@ public class Wizard
                     break;
                 case 4: //마나 공격
                     targetS.EleDam(playerS.element.type, playerS.Power);
-                    playerS.element.Cnt--;
+                    ele = 1;
                     break;
                 case 5: //마나 강화공격
                     targetS.EleDam(playerS.element.type, playerS.Power * 2);
-                    playerS.element.Cnt-=2;
+                    ele = 2;
                     break;
                 case 6: //매직샤워
                     targetS.EleDam(playerS.element.type, playerS.Power * 0.5f);
-                    playerS.element.Cnt-=2;
+                    ele =2;
                     break;
                 case 7: //강화 매직샤워
                     targetS.EleDam(playerS.element.type, playerS.Power);
-                    playerS.element.Cnt-=3;
+                    ele = 3;
                     break;
                 case 8: //매직커터
                     targetS.EleDam(playerS.element.type, playerS.Power * 1.5f);
                     //CC
-                    playerS.element.Cnt-=2;
+                    ele = 2;
                     break;
                 case 9: //잔상
-                    playerS.element.Cnt-=2;
+                    ele = 2;
                     break;
                 case 10: //외곡
-                    playerS.element.Cnt-=2;
+                    ele = 2;
                     break;
                 case 11: //슬로우
-                    playerS.element.Cnt-=2;
+                    ele = 2;
                     break;
                 case 12: //크러쉬
-                    playerS.element.Cnt-=2;
+                    ele = 2;
                     break;
                 case 13: //매직쉴드
-                    playerS.element.Cnt-=2;
+                    ele = 1;
                     break;
 
                 default :
                     break;
             }
         }
+        playerS.element.Cnt -= ele;
         ColController.Instance.UpdateData();
     }
 }

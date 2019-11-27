@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class Form : MonoBehaviour
 {
     private int cost; //행동력
-    public int Cost{get{return cost;} set{cost = value;}}
-    
+    public int Cost{get{return cost;} set{cost = value; if(cost == 0 && isMyTurn) ColController.Instance.TurnEnd();}}
+    bool isMyTurn;
     public Text costText;
     public BattleKnightPrefab bkp;
     public Skill[] skill;
@@ -17,8 +17,14 @@ public class Form : MonoBehaviour
     public void MyTurn()
     {
         Cost = 3;
+        isMyTurn = true;
         
         UpdateText();
+    }
+    public void TurnEnd()
+    {
+        isMyTurn = false;
+        bkp.TurnEnd();
     }
 
     public void SetData(BattleKnightPrefab _bkp)
@@ -32,12 +38,16 @@ public class Form : MonoBehaviour
         }
         
         isOtherText = UnitData.Instance.useElementJob.Contains(bkp.ks.k.job) ? true : false;
+        isMyTurn = false;
     }
 
     public void UpdateText()
     {
         costText.text = System.Convert.ToString(cost);
         if(isOtherText) UpdateEleText();
+
+        for(int i  = 0; i < skill.Length; i++)
+            skill[i].UpdateCost();
     }
 
     public Text eleCostText;
