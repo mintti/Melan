@@ -6,27 +6,24 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     private void Start() {
-        ClickTextButton();
+        ClickMiddleButton(1);
     }
     #region Middle
+    public Image gameImg;
     public Image textImg;
     public Image skillImg;
 
+    public GameObject gameInfoObj;
     public GameObject talkingUIObj;
 
-    public void ClickTextButton()
+    public void ClickMiddleButton(int n)
     {
-        skillImg.color = new Color(0, 0, 0);
-        textImg.color = new Color(255, 255, 255);
+        gameImg.color = n == 0 ? new Color(255, 255, 255) :new Color(0, 0, 0);
+        textImg.color = n == 1 ? new Color(255, 255, 255) :new Color(0, 0, 0);
+        skillImg.color = n == 2 ? new Color(255, 255, 255) :new Color(0, 0, 0);
 
-        talkingUIObj.SetActive(true);
-    }
-    public void ClickSkillButton()
-    {
-        skillImg.color = new Color(255, 255, 255);
-        textImg.color = new Color(0, 0, 0);
-
-        talkingUIObj.SetActive(false);
+        gameInfoObj.SetActive(n == 0);
+        talkingUIObj.SetActive(n == 1);
     }
     #endregion
 }

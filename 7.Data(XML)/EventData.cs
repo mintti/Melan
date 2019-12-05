@@ -21,7 +21,6 @@ public class Work
         index = _i;
     }
 }
-
 //이벤트 1. 전투
 [System.Serializable]
 public class Battle
@@ -35,6 +34,7 @@ public class Battle
         m = _m;
     }
 }
+
 
 public class EventData : MonoBehaviour
 {
@@ -74,5 +74,13 @@ public class EventData : MonoBehaviour
     {
         int n = w.index;
         Bdata = battles[n];
+    }
+
+    public void CompleteBattle(Battle b)
+    {
+        //Battle 씬에서 수행.
+
+        //보상 누적과
+        //battles리스트, XmlData 제거
     }
 }

@@ -19,11 +19,12 @@ public class WorldController : MonoBehaviour
         }
     }
 
+    private DungeonData dungeon;
     //1-2. 던전 선택 후, 출전 클릭 시 : 변수 선언
     public GameObject selectKnighObj;
     public Transform selectKnightListTr;
     private Dungeon d; //col에서 호출된 d.
-
+    
     //1-3.던전 선택 후, 출전 시, 용병 List관련. : 변수 선언
     public GameObject knightList;
     public GameObject knightPrefab;
@@ -41,17 +42,28 @@ public class WorldController : MonoBehaviour
     //초기 유닛데이타 컨넥팅
     private void Start()
     {
-        unit = DataController.Instance.unit;
+        unit = UnitData.Instance;
     }
 
+    //던전 화면 세팅 / 던전Obj 생성 함수(매 씬 로드때마다 호출됨)
+    public Transform[] dungeonPos = new Transform[8];
+    public void CreateDungeonInWorld()
+    {
+        dungeon = DungeonData.Instance;
+        for(int i =0 ;i < 8; i ++)
+        {
+            GameObject obj = CodeBox.AddChildInParent(dungeonPos[i], dungeon.dungoenObjArray[dungeon.dungeon_Progress[i].d.num]);
+            obj.GetComponentInChildren<WorldDungeonPrefab>().SetData(dungeon.dungeon_Progress[i], i);
+        }
+    }
 
     #region 1-3. 던전 선택 후, 출전 용병 List 생성 : 코드
     public void SelectDungeon(int n)
     {
-        if(DungeonData.Instance.CanGo(n) == false)
+        if(dungeon.CanGo(n) == false)
             return;
         
-        d = DungeonData.Instance.dungeon_Progress[n].d;
+        d = dungeon.dungeon_Progress[n].d;
         selectKnighObj.SetActive(true);
         MakeKnightList(selectKnightListTr);
 

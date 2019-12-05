@@ -14,7 +14,7 @@ public class Dungeon
     public int eliteMonster;
     public int boss;
 
-    public Dungeon(string _name, int _level, int _boss)
+    public Dungeon( string _name, int _level, int _boss)
     {
         name = _name;
         level = _level;
@@ -23,8 +23,9 @@ public class Dungeon
         day = 3 * level; 
     }
 
-    public void SetData(string _name, int _level, int _boss)
+    public void SetData(int _num, string _name, int _level, int _boss)
     {
+        num = _num;
         name = _name;
         level = _level;
         boss = _boss;
@@ -131,34 +132,36 @@ public class DungeonData : MonoBehaviour
         }
     }
 
+    public GameObject[] dungoenObjArray = new GameObject[16];
+
     public Dungeon[] dungeons = new Dungeon[16];
     public DungeonProgress[] dungeon_Progress = new DungeonProgress[8];
-
+    
     public void SetData()
     {
         /*   level 1  */
-        dungeons[0].SetData("슬라임 군락", 1 , 0);
-        dungeons[1].SetData("음험한 산지", 1, 1);
-        dungeons[2].SetData("맑은 오아시스", 1, 2);
-        dungeons[3].SetData("의문의 땅굴", 1, 3);
+        dungeons[0].SetData(0, "슬라임 군락", 1 , 0);
+        dungeons[1].SetData(1, "음험한 산지", 1, 1);
+        dungeons[2].SetData(2, "맑은 오아시스", 1, 2);
+        dungeons[3].SetData(3, "의문의 땅굴", 1, 3);
 
         /*   level 2  */
-        dungeons[4].SetData("비명의 산", 2, 4);
-        dungeons[5].SetData("깊고 어두운 호수", 2, 5);
-        dungeons[6].SetData("꽃피는 화원", 2, 6);
-        dungeons[7].SetData("환각의 숲", 2, 7);
-        dungeons[8].SetData("키큰 오두막", 2, 8);
-        dungeons[9].SetData("의문의 탑", 2,  9);
+        dungeons[4].SetData(4, "비명의 산", 2, 4);
+        dungeons[5].SetData(5, "깊고 어두운 호수", 2, 5);
+        dungeons[6].SetData(6, "꽃피는 화원", 2, 6);
+        dungeons[7].SetData(7, "환각의 숲", 2, 7);
+        dungeons[8].SetData(8, "키큰 오두막", 2, 8);
+        dungeons[9].SetData(9, "의문의 탑", 2,  9);
         
         /*   level 3   */
-        dungeons[10].SetData("황폐한 평원", 3, 10);
-        dungeons[11].SetData("크로드네 령", 3, 11);
-        dungeons[12].SetData("테레제바 국", 3, 12);
-        dungeons[13].SetData("X의 골짜기", 3,13);
+        dungeons[10].SetData(10, "황폐한 평원", 3, 10);
+        dungeons[11].SetData(11, "크로드네 령", 3, 11);
+        dungeons[12].SetData(12, "테레제바 국", 3, 12);
+        dungeons[13].SetData(13, "X의 골짜기", 3,13);
 
         /*   level 4   */
-        dungeons[14].SetData("마왕성", 4, 0);
-        dungeons[15].SetData("이형의 땅", 4, 0);
+        dungeons[14].SetData(14, "마왕성", 4, 0);
+        dungeons[15].SetData(15, "이형의 땅", 4, 0);
     }
 
     //해당하는 던전NUM의 던전진행의 인덱스를 출력

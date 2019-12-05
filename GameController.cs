@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour
 
         world.Click(); //초기 화면
         PlayerDataUpdate();
-        SetWorldDungoenPrefabs();
+        world.CreateDungeonInWorld();
     }
 
     #region  Player Data
@@ -109,23 +109,4 @@ public class GameController : MonoBehaviour
         //data.SaveOverlapXml();
 
     }
-
-
-    #region  던전 화면 세팅
-    public Transform dungeonList;
-    private WorldDungeonPrefab[] world_Dungoen_Prefabs = new WorldDungeonPrefab[8];
-    
-    public void SetWorldDungoenPrefabs()
-    {
-        world_Dungoen_Prefabs = dungeonList.GetComponentsInChildren<WorldDungeonPrefab>();
-        
-        int index = 0;
-        foreach (WorldDungeonPrefab prefab in world_Dungoen_Prefabs)
-        {
-            prefab.SetData(DungeonData.Instance.dungeon_Progress[index++]);
-        }    
-        
-    }
-
-    #endregion
 }

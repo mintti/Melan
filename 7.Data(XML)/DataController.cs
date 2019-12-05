@@ -268,7 +268,22 @@ public class DataController : MonoBehaviour
         }
 
         //4-2. GameTurn - PartyEvent
-
+        nodes = xmlDoc.SelectNodes("PlayerData/EventInfo/Evnet");
+        foreach (XmlNode _node in nodes)
+        {
+            switch(_node.SelectSingleNode("Type").InnerText)
+            {
+                case "BATTLE" :
+                    EventData.Instance.battles.Add(new Battle(
+                        unit.partys[System.Convert.ToInt32(_node.SelectSingleNode("PartyNum").InnerText)],
+                        CodeBox.StringSplit(_node.SelectSingleNode("Monsters").InnerText)));
+                    break;
+                case "다른" :
+                    break;
+                default : 
+                    break;
+            }
+        }
         //4-3. GameTurn - KnightEvent
 
         if(isNew) CreateData();
@@ -276,7 +291,8 @@ public class DataController : MonoBehaviour
     }
 
     #endregion
-   
+
+
 
     bool[] IntAsBool(int[] _arr)
     {
@@ -542,8 +558,37 @@ public class DataController : MonoBehaviour
         node.SelectSingleNode("Employ").InnerText = "true";
         SaveOverlapXml("고용정보 업데이트");
     }
+    #endregion
 
+    #region EVENT
+    
+    //01. 배틀
+    public void AddEvent(Battle b)
+    {
+        XmlNode root = xmlDoc.SelectSingleNode("PlayerData/EventInfo");
 
+        XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Event", string.Empty);
+        root.AppendChild(child);
+
+        XmlElement type = xmlDoc.CreateElement("Type");
+        type.InnerText = "BATTLE";
+        child.AppendChild(type);
+
+        XmlElement partyNum = xmlDoc.CreateElement("PartyNum");
+        partyNum.InnerText = System.Convert.ToString(b.p);
+        child.AppendChild(partyNum);
+
+        XmlElement monsters = xmlDoc.CreateElement("Monsters");
+        monsters.InnerText = IntArrayToString(b.m);
+        child.AppendChild(monsters);
+        
+        SaveOverlapXml("전투이벤트 추가");
+    }
+
+    public void RemoveEvent()
+    {
+    
+    }
     #endregion
 
     #region SYSTEM

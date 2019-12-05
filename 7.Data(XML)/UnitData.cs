@@ -150,12 +150,12 @@ public class Party
 public class KnightState
 {
     public Knight k;
-    public State s;
+    public State s = new State();
 
     public KnightState(Knight _k)
     {
         k = _k;
-        s = new State(k.hp, k.power, k.speed, k.stress, k.uni, LifeType.K);
+        s.SetData(this);
     }
 }
 #endregion
