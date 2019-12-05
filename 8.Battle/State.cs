@@ -15,30 +15,7 @@ public enum ElementType
 {
     M
 }
-public class BattleElement
-{
-    public ElementType type;
-    private int cnt;
-    public int Cnt{get{return cnt;} set{cnt = value;}}
 
-    public BattleElement()
-    {
-        cnt = 0;
-    }
-    
-    public void AddElement(ElementType t)
-    {
-        if(type == t)
-        {
-            cnt++;
-        }
-        else
-        {
-            type = t;
-            cnt = 1;
-        }
-    }
-}
 public class CC
 {
     //기절 > 속박 > 허약 = 약점
@@ -90,11 +67,28 @@ public class SuperCC
 [System.Serializable]
 public class State
 {
+    BattleKnightPrefab bkp;
+    BattleMonsterPrefab bmp;
+
     delegate void Del();
 
     //기본 변수
     private int hp;
-    public int Hp{get{return hp;} set{hp = value; if(hp<0) hp =0;}}
+    public int Hp{get{return hp;}
+        set{
+            hp = value;
+            if(hp> maxHp)
+                hp = maxHp;
+            else if(hp<=0)
+            {
+                hp =0;
+                Die();
+                return;
+            }
+            UpdateDataUI();
+        }
+    }
+    public int maxHp;
     private int power;
     public int Power{get{int value = System.Convert.ToInt32(power* powerMultiple); return value;} set{power = value;}}
     private int speed;
@@ -102,7 +96,7 @@ public class State
     private int stress;
     public int Stress{get{return stress;} set{stress = value;}}
     public int[] uni;
-    public BattleElement element = new BattleElement();
+    public int gage;
     //배수 변수
     private float powerMultiple;
     private float speedMultiple;
@@ -112,40 +106,75 @@ public class State
     private LifeType lifeType;
     public LifeType LifeType{get{return lifeType;} set{lifeType = value;}}
 
-    public State(int h, int p, int s, int st, int[] u, LifeType t)
+    #region 초기세팅
+    public void SetData(KnightState ks)
     {
-        Hp = h; Power = p; Speed = s; Stress = st;
-        alive = h > 0 ? AliveType.생존 : AliveType.죽음; 
-        uni = u;
+        hp = ks.k.hp;
+        Power = ks.k.power;
+        Speed = ks.k.speed;
+        Stress = ks.k.stress;
+        uni = ks.k.uni;
 
-        LifeType = t;
+        LifeType = LifeType.K;
 
         impact = new Del(선언);
 
         powerMultiple = 1;
         speedMultiple = 1;
+    }
+    
+    //몬스터
+    public void SetData(MonsterState ms)
+    {
+        hp = ms.m.hp;
+        Power = ms.m.power;
+        Speed = ms.m.speed;
+        Stress = ms.m.stress;
+        uni = ms.m.uni;
 
+        LifeType = LifeType.M;
+
+        impact = new Del(선언);
+
+        powerMultiple = 1;
+        speedMultiple = 1;
+    }
+    public void SetBMP(BattleMonsterPrefab bmp_)
+    {
+        bmp = bmp_;
+    }
+    public void SetBKP(BattleKnightPrefab bkp_)
+    {
+        bkp = bkp_;
     }
 
-    public void SetData(int h, int p, int s, int st, int[] u, LifeType t)
+    #endregion
+
+    private void UpdateDataUI()
     {
-        Hp = h; Power = p; Speed = s; Stress = st;
-        uni = u;
-
-        LifeType = t;
-
-        impact = new Del(선언);
-
-        powerMultiple = 1;
-        speedMultiple = 1;
-
+        if(lifeType == LifeType.K)
+        {
+            bkp.UpdateText();
+        }
+        else
+        {
+            bmp.msv.UpdateData();
+        }
     }
     //사망처리
     public void Die()
     {
         alive = AliveType.죽음;
+        if(lifeType == LifeType.K)
+        {
+            BattleController.Instance.DieKnight(bkp.index);
+        }
+        else
+        {
+            bmp.Die();
+            BattleController.Instance.KillMonster(bmp.index);
+        }
     }
-    
     public void NextTurn()
     {
 
@@ -237,11 +266,14 @@ public class State
     {
         Hp = 0;
     }
-    //유형 1. 속성 공격
-    public void EleDam(ElementType eleT, float v)
+
+
+    #region 속성공격
+    public void EleDam(float v)
     {
         Hp -= System.Convert.ToInt32(v);
     }
 
+    #endregion
 
 }

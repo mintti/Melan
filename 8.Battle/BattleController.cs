@@ -132,6 +132,7 @@ public class BattleController : MonoBehaviour
     public List<Monster> monsterList = new List<Monster>();
     public List<int> monsterTarget = new List<int>();
     public List<int> knightTarget = new List<int>();
+    public int phaseInMonsterCnt;
 
     public List<State> thing = new List<State>();
     public List<int> thingTarget = new List<int>();
@@ -148,11 +149,13 @@ public class BattleController : MonoBehaviour
         thing.Clear();
         for(int i = 0; i < cnt; i++)
         {
-            KnightState ks = Bdata.p.knightStates[i];
+            KnightState ks = Bdata.p.knightStates[i]; 
+            
             if(ks.s.Hp > 0)
             {
                 thing.Add(ks.s);
-                kps[i].SetData(ks);
+                kps[i].SetData(ks, i);
+                ks.s.SetBKP(kps[i]);
                 thingTarget.Add(i);
             }
         }
@@ -187,6 +190,15 @@ public class BattleController : MonoBehaviour
     private void MonsterSetting()
     {
         Debug.Log(" MonsterSetting() 실행");
+    
+        //2-0 초기화
+        phaseInMonsterCnt = 0;
+        while(thing.Count > knightCount)
+        {
+            thing.RemoveAt(knightCount);
+            thingTarget.RemoveAt(knightCount);
+        }
+        
         //2-1 표시될 몬스터를 showMonster에서 호출함
         for(int i = 0; i < 4; i ++)
         {
@@ -195,7 +207,7 @@ public class BattleController : MonoBehaviour
             {
                 //표시될 몬스터가 있으면, 로드 종료
                 //               없으면, [승리] 상태가됨.
-                if(mps[0].isMonster)
+                if(mps[0].s.alive == AliveType.생존)
                 {
                     for(; i<4 ;i++)
                         msv[i].gameObject.SetActive(false);//스테이트,COL임
@@ -210,9 +222,10 @@ public class BattleController : MonoBehaviour
             
             mps[i] = CodeBox.AddChildInParent(monsterPos[i], monsterObj).GetComponentInChildren<BattleMonsterPrefab>();
             //2-1-1 show와 thing 에 추가
-            mps[i].SetData(monsterList[0]);
+            mps[i].SetData(monsterList[0], i, msv[i]);
             thing.Add(mps[i].s);
             thingTarget.Add(4+i);
+            phaseInMonsterCnt++;
             //2-1-1-2 스테이트 상태COL 활성화
             msv[i].gameObject.SetActive(true);
             msv[i].SetData(mps[i]);
@@ -226,13 +239,13 @@ public class BattleController : MonoBehaviour
         Turn = 0;
         SettingTurn();
     }
-
     //3. 순서 전투
     //3-1. Speed 순서에 따라 순서 지정
     List<int> sequence = new List<int>(); //순서를 저장하는 배열.
     bool isSpeed; //Speed변경이 감지 되면 true; 
     private void SettingTurn()
     {
+        sequence.Clear();
         Debug.Log(" SettingTurn() 실행");
         //3-1-1 생존한 존재 중에서 순서를 지정하여 배열에 넣어줌.
         //      speed에 따라 시퀀스 배열에 순서를 삽입정렬해줌. (작은 수를 앞으로)
@@ -310,22 +323,36 @@ public class BattleController : MonoBehaviour
         if(n >= 4) n  -= (4 - knightCount);
         //3-2-1 기사 혹은 몬스터의 공격
         //      해당 턴이 기사일 경우, (사용자에게 입력받는) 해당 기사의 Skill셋으로 변경해줌.
+
         if(thing[n].LifeType == LifeType.K)
         {
             int num = thingTarget[sequence[who]];
             KnightState ks = kps[num].ks;
             kps[num].TurnStart();
-            Debug.Log(num + "의 턴!");
             //스킬을 세팅해줌
             ColController.Instance.TurnStart(num);
         }
         else//일단 임시(테스트용)
         {
+            if(mps[n-knightCount].s.alive == AliveType.죽음)
+            {
+                NextTurn();
+                return;
+            }
             int num = thingTarget[sequence[who]];
             mps[n-knightCount].MyTurn();
-            //NextTurn();
         }
 
+    }
+    public void LogThing()
+    {
+        string text = string.Format("thing size({0}) >> ", thing.Count);
+
+        for(int i = 0 ;i <thing.Count;i ++)
+        {
+            text += thing[i].LifeType;
+        }
+        Debug.Log(text);
     }
     //스킬 유효성 검사
     private void IsSkill()
@@ -346,49 +373,60 @@ public class BattleController : MonoBehaviour
     {
         StartCoroutine("Wait1Sec");
     }
+    private void FastNextTurn()
+    {
+        who++;
+        State = BattleState.전투;
+    }
     
 
     //4. [처치] 상태
-    private void KillMonster()
+    public void KillMonster(int num)
     {
         //4-1. 몬스터의 정보에서 보상을 가져와 파티 정보에 누적시킴.
         
         //4-2. 해당 몬스터 죽음 처리. thing들에서 제외시킴
-        
 
-        //4-2. 몬스터가 남아있는 경우 [전투], 끝난경우 [로드]로감.
-        if(IsAliveMP())
-            State = BattleState.전투;
-        else
+        //int index = num + knightCount;
+        //monsterTarget.Remove(index);
+        //thingTarget.Remove(index);
+        //thing.RemoveAt(index);
+
+        //4-2. 몬스터가 끝난경우 [로드]로감.
+        if(!IsAliveMonster())
             State = BattleState.로드;
         
     }
 
-    private bool IsAliveMP() //살아있는게 있으면 true 
+    private bool IsAliveMonster() //살아있는게 있으면 true 
     {
-        foreach (BattleMonsterPrefab mp in mps)
+        for(int i = 0 ; i < phaseInMonsterCnt; i++)
         {
-            if(mp.isMonster)
+            if(mps[i].s.alive == AliveType.생존)
                 return true;
         }
         return false;
     }
 
     //5. [죽음] 상태, 해당 기사의 정보를 직접 로드함.
-    private void DieKnight(KnightState ks)
+    public void DieKnight(int n)
     {
-
+        kps[n].Die();
+        Debug.Log("기사 주금");
     }
 
+    public GameObject winObj;
+    public Text winRewardText;
     //6. [승리] 상태, [로드] 상태에서 판별 후 호출됨.
     private void Win()
     {
-
+        winObj.SetActive(true);
+        winRewardText.text = string.Format("WE GET {0}G", GetReward());
     }
     //7. [패배] 상태
     private void Lose()
     {
-
+        
     }
     //8. [도망] 상태
     private void Escape()
@@ -448,43 +486,14 @@ public class BattleController : MonoBehaviour
         waitObj.SetActive(false);
         who++;
         State = BattleState.전투;
-        Debug.Log("대기 완료");
     }
 
-    public void FineDie(LifeType lt)
+    private int GetReward()
     {
-        isSpeed = true;//다음 턴 순서 변경 필요.
+        int gold = 0;
+        foreach(int index in Bdata.m)
+            gold += MonsterData.Instance.monsters[index].GetReward();
 
-        int num;
-        if(lt == LifeType.K)
-        {
-            for(int i = 0; i< knightTarget.Count;i ++)
-            {
-                if(kps[i].ks.s.alive == AliveType.생존)
-                {//생존 중에서만 찾는거니깐                
-                    if(kps[i].ks.s.Hp <= 0)
-                    {
-                        kps[i].Die();
-                        return;    
-                    }
-                }
-            }
-        }
-        else
-        {
-            for(int i = 0; i < monsterTarget.Count; i++)
-            {
-                BattleMonsterPrefab mps_ = mps[monsterTarget[i]-knightCount];
-                if(mps_.s.alive == AliveType.생존)
-                {
-                    if(mps_.s.Hp <= 0)
-                    {
-                        mps[i].Die();
-                        return;
-                    }
-                } 
-            }
-        }
-        Debug.Log("죽은 대상을 찾지못함 LifeType >> " + lt);
+        return gold;
     }
 }

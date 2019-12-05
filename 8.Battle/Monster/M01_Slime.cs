@@ -19,15 +19,16 @@ public class M01_Slime : MonoBehaviour
 
     public void SetData()
     {
-        state.SetData(10, 10, 5, 0, null, LifeType.M);
+        state.SetData(bmp.ms);
     }
 
     public void UseSkill()
     {
+        State targetState;
         switch (turn%2)
         {
             case 0 :
-                State targetState = battle.GetSingleTarget();
+                targetState = battle.GetSingleTarget();
                 targetState.AdDam(state.Power);
                 break;
             case 1 :
@@ -38,7 +39,6 @@ public class M01_Slime : MonoBehaviour
                 break;
         }
 
-        ColController.Instance.UpdateData();
     }
 
 }

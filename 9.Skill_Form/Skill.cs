@@ -21,22 +21,12 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
     public SkillType skillType;
     public DamType damType;
     public Target target;
-    public int cost;
-    public bool isElement;//ele속성을 사용하는 스킬인가?
-    public int cost_Element;
 
     public Image skillIconImg;
     public Text nameText;
-    public Text costText;
-    public GameObject eleCostObj;
-    public GameObject fillCostObj; //코스트 부족일때 활성
     public GameObject lockObj;//레벨부족일때 활성
 
     private bool isLevel; //레벨 부적합.
-    private bool isInvisible;
-
-    int knightCost;
-    int knightEleCost;
 
         
     private bool only_View;
@@ -53,15 +43,6 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
         name = skillInfo.name; explan = skillInfo.explan;
 
         nameText.text = name;
-        costText.text = cost == 0 ? "" : System.Convert.ToString(cost);
-        if(isElement)
-        {
-            eleCostObj.SetActive(true);
-            eleCostObj.GetComponentInChildren<Text>().text = System.Convert.ToString(cost_Element);
-        }
-        else eleCostObj.SetActive(false);
-
-        UpdateCost();
     }
 
 
@@ -74,53 +55,19 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
     {
         Lock(value);
     }
-    
-    //업데이트//버튼의 활성비활성
-    public void UpdateCost()
-    {
-        knightCost = ColController.Instance.formObj[ColController.Instance.who].GetComponent<Form>().Cost;
-        knightEleCost = ks.s.element.Cnt;
-        
-        isPush = false; //매 턴 false 해주어야한다. 이유는 안하면 조건불충족해도 드래그가됨.
-
-        CheckCost();
-        CheckEleCost();
-    }
-    //그냥 코스트
-    void CheckCost()
-    {
-        if(!isLevel ) return;
-        
-        Active(  knightCost >= cost ? true : false);
-    }
-    //엘레
-    public void CheckEleCost()
-    {
-        if(!isLevel || !isElement) return;
-        
-        Active( knightEleCost >= cost_Element ? true : false);
-    }
         
 
     //레벨딸려 비활 || 적의 공격으로 비활
     private void Lock(bool value)
     {
         lockObj.SetActive(value);
-        costText.gameObject.SetActive(!value);
         nameText.gameObject.SetActive(!value);
         isLevel = !value;
     }
-        
-        //Ele사용 스킬 cost충분 여부.
-        private void Active(bool value)
-        {
-            fillCostObj.SetActive(!value);
-            isInvisible = !value;
-        }
+    
+    #region 포인터이벤트
 
-        #region 포인터이벤트
-
-        public Timer_Skill timer;
+    public Timer_Skill timer;
 
         Vector3 resetPos = new Vector3();
         Sprite sprite;
@@ -134,7 +81,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
 
         public void OnPointerDown(PointerEventData data)
         {
-            if(!isLevel || isInvisible) return;
+            if(!isLevel) return;
             isPush = false;
             timer.SetData(this, 1f);
             timer.gameObject.SetActive(true);
@@ -189,9 +136,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
         void SamMod(bool isIcon)
         {
             transform.GetChild(1).gameObject.SetActive(!isIcon);
-            if(isElement) eleCostObj.SetActive(!isIcon);
             nameText.enabled = !isIcon;
-            costText.enabled = !isIcon;
         }
         #endregion
 }

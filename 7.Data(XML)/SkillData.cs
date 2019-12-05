@@ -128,51 +128,38 @@ public class Wizard
                     ColController.Instance.TurnEnd();
                     break;
                 case 3: //마나 차칭
-                    playerS.element.AddElement(ElementType.M);
+                    
                     break;
                 case 4: //마나 공격
-                    targetS.EleDam(playerS.element.type, playerS.Power);
-                    ele = 1;
+                    targetS.ApDam(playerS.Power);
                     break;
                 case 5: //마나 강화공격
-                    targetS.EleDam(playerS.element.type, playerS.Power * 2);
-                    ele = 2;
+                    targetS.ApDam(playerS.Power * 2);
                     break;
                 case 6: //매직샤워
-                    targetS.EleDam(playerS.element.type, playerS.Power * 0.5f);
-                    ele =2;
+                    targetS.ApDam(playerS.Power * 0.5f);
                     break;
                 case 7: //강화 매직샤워
-                    targetS.EleDam(playerS.element.type, playerS.Power);
-                    ele = 3;
+                    targetS.ApDam(playerS.Power);
                     break;
                 case 8: //매직커터
-                    targetS.EleDam(playerS.element.type, playerS.Power * 1.5f);
-                    //CC
-                    ele = 2;
+                    targetS.ApDam(playerS.Power * 1.5f);
                     break;
                 case 9: //잔상
-                    ele = 2;
                     break;
                 case 10: //외곡
-                    ele = 2;
                     break;
                 case 11: //슬로우
-                    ele = 2;
                     break;
                 case 12: //크러쉬
-                    ele = 2;
                     break;
                 case 13: //매직쉴드
-                    ele = 1;
                     break;
 
                 default :
                     break;
             }
         }
-        playerS.element.Cnt -= ele;
-        ColController.Instance.UpdateData();
     }
 }
 

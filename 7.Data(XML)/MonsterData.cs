@@ -20,7 +20,7 @@ public class Monster
     public int[] uni;
 
     public Monster(int _num, string _name, int[] _skills,
-                   int _hp, int _power, int _speed, int[] _uni)
+                   int _hp, int _power, int _speed, int[] _uni, int _gold)
     {
         num = _num;
         name = _name;
@@ -32,6 +32,14 @@ public class Monster
         power = _power;
         speed = _speed;
         uni = _uni;
+
+        gold = _gold;
+    }
+    //REWARD
+    int gold;
+    public int GetReward()
+    {
+        return gold;
     }
 }
 
@@ -39,14 +47,13 @@ public class Monster
 public class MonsterState
 {
     public Monster m{get;set;}
-    public State s;
+    public State s= new State();
     
     public MonsterState(Monster _m)
     {
         m = _m;
-        s = new State(m.hp, m.power, m.speed, m.stress, m.uni, LifeType.M);
+        s.SetData(this);
     }
-    
 }
 
 
@@ -86,9 +93,9 @@ public class MonsterData : MonoBehaviour
 
         //데이터 삽입
         #region 몬스터 리스트
-        monsters[0] = new Monster(0, "슬라임", new int[]{0,1}, 20, 6, 5, null);
-        monsters[1] = new Monster(1, "토끼슬라임", new int[]{0,1},40, 6, 5, null);
-        monsters[2] = new Monster(2, "킹슬라임", new int[]{0,1}, 200, 6, 5, null);
+        monsters[0] = new Monster(0, "슬라임", new int[]{0,1}, 20, 2, 5, null, 5);
+        monsters[1] = new Monster(1, "토끼슬라임", new int[]{0,1},40, 6, 5, null, 10);
+        monsters[2] = new Monster(2, "킹슬라임", new int[]{0,1}, 200, 6, 5, null, 10);
 
         #endregion
         //이미지로드

@@ -56,7 +56,7 @@ public class ColController : MonoBehaviour
     {
         Battle b = EventData.Instance.Bdata;
         formObj = new GameObject[b.p.k.Length];
-
+        Debug.Log(" >> " +formObj.Length);
         int index = 0;
 
         foreach(int kNum in b.p.k)
@@ -64,7 +64,7 @@ public class ColController : MonoBehaviour
             GameObject form = formList[UnitData.Instance.knights[kNum].job];
             formObj[index] = CodeBox.AddChildInParent(BattleUI.transform, form);
 
-            formObj[index].GetComponent<Form>().SetData(battle.kps[kNum]);
+            formObj[index].GetComponent<Form>().SetData(battle.kps[index]);
             formObj[index++].SetActive(false);
         }
     }
@@ -132,11 +132,12 @@ public class ColController : MonoBehaviour
     {
         bool[] array = new bool[5];
         
-        for(int i  = 0; i < 4; i++)
-            array[i] = battle.monsterTarget.Contains(i + battle.knightCount);    
-        
+        int i;
+        for(i = 0; i < battle.phaseInMonsterCnt; i++)
+            array[i] = battle.mps[i].isMonster ? true : false;   
+        for(;i<4;i++)
+            array[i] = false;
 
-        array[4] = false;
         return array;
     }
 
@@ -242,8 +243,6 @@ public class ColController : MonoBehaviour
         {
             //스킬의 사용
             SkillData.Instance.UseSkill(skill.job, skill.skillNum, GetMyState(), GetState(targetNum));
-            formObj[who].GetComponent<Form>().Cost -= skill.cost;
-            formObj[who].GetComponent<Form>().UpdateText();
         }
         
         ResetForm();
@@ -302,6 +301,7 @@ public class ColController : MonoBehaviour
     }
 
     //대상이 되었던 몬스터의 Text를 업데이트한다.
+    /*
     public void UpdateData()
     {
         if(targetNum >=0 && targetNum <=3)
@@ -323,5 +323,6 @@ public class ColController : MonoBehaviour
                 battle.msv[battle.monsterTarget[i]-battle.knightCount].UpdateText();
         }
     }
+    */
     #endregion
 }

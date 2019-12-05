@@ -8,25 +8,28 @@ public class BattleMonsterPrefab : MonoBehaviour
     public MonsterState ms;
     public State s;
     public SpriteRenderer img;
-    
+    public MonsterStateViewer msv;
+
+    public int index;
     //해당스크립트 활성화 여부임. SetData()를 통해 활성화됨.
     public bool isMonster;
     
     private void Start() {
         battle = BattleController.Instance;
-        isMonster = false;
     }
 
     public void Die()
     {
-        s.Die();
-        isMonster = false;
+        msv.gameObject.SetActive(false);
     }
     //BattleCon - MonsterSetting()에서 호출됨.
-    public void SetData(Monster m)
+    public void SetData(Monster m, int n, MonsterStateViewer _msv)
     {
         ms = new MonsterState(m);
         s = ms.s;
+        s.SetBMP(this);
+        index = n;
+        msv = _msv;
         
         img.sprite = m.img;
         isMonster = true;

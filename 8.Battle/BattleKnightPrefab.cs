@@ -8,13 +8,13 @@ public class BattleKnightPrefab : MonoBehaviour
     public KnightState ks;
 
     public KnightSkinPrefab skin;
-    
+    public int index;
     //해당스크립트 활성화 여부임. SetData()를 통해 활성화됨.
     public bool isKnight;
     
     
     //BattleCon - MonsterSetting()에서 호출됨.
-    public void SetData(KnightState _ks)
+    public void SetData(KnightState _ks, int n)
     {
         ks = _ks;
         
@@ -22,6 +22,7 @@ public class BattleKnightPrefab : MonoBehaviour
         isKnight = true;
         UpdateText();
         TurnEnd();
+        index = n;
     }
     
     public void Die()

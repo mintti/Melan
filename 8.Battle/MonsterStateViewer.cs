@@ -17,7 +17,7 @@ public class MonsterStateViewer : MonoBehaviour
     {
         HpText();
     }
-
+    
     //HP2
     public Text hpNowText;
     public Text hpTotalText;

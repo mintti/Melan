@@ -16,10 +16,7 @@ public class Form : MonoBehaviour
     private State state;
     public void MyTurn()
     {
-        Cost = 3;
         isMyTurn = true;
-        
-        UpdateText();
     }
     public void TurnEnd()
     {
@@ -39,21 +36,5 @@ public class Form : MonoBehaviour
         
         isOtherText = UnitData.Instance.useElementJob.Contains(bkp.ks.k.job) ? true : false;
         isMyTurn = false;
-    }
-
-    public void UpdateText()
-    {
-        costText.text = System.Convert.ToString(cost);
-        if(isOtherText) UpdateEleText();
-
-        for(int i  = 0; i < skill.Length; i++)
-            skill[i].UpdateCost();
-    }
-
-    public Text eleCostText;
-
-    void UpdateEleText()
-    {
-        eleCostText.text = System.Convert.ToString(transform.GetComponent<Form>().bkp.ks.s.element.Cnt);
     }
 }
