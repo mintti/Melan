@@ -1,18 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 #region Skill Class Info
-
+public enum SkillType{NONE, COMMON, DAM, SHD, BUF, DBUF, SUPPOSDAM}
+public enum Target{NONE, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
 public class SkillInfo
 {
-    public int num;
-    public string name;
-    public string explan;
+    public int job{get;set;}
+    public int num{get;set;}
+    public string name{get;set;}
+    public string explan{get;set;}
+    public SkillType type{get;set;}
+    public Target target{get;set;}
+    public Sprite img{get;set;}
 
-    public SkillInfo(int _num, string _name, string _explan)
+    public SkillInfo(int _job, int _num, Target _target, string _name, string _explan, Sprite _img)
     {
+        job = _job;
         num = _num; name = _name; explan = _explan;
+        target = _target;
+        img = _img;
     }
     
 }
@@ -39,202 +49,152 @@ public class SkillData : MonoBehaviour
             return _instance;
         }
     }
-
-    public Thief thief = new Thief();
-    public Warrior warrior = new Warrior();
-    public Wizard wizard = new Wizard();
     
+    private SkillInfo[,] skillInfos = new SkillInfo[4, 5];
+    public SkillInfo GetSkillInfo(int job, int index)
+    {
+        return skillInfos[job, index];
+    }
+    #region 스킬정보
     public void SetData()
     {
+        string path = "3.Skills/warrior";
+        Sprite[] sprites = Resources.LoadAll<Sprite>(path);
+        int i = 0;
 
+        skillInfos[0, 0] = new SkillInfo(0,0, Target.THAT, "타격", "검으로 타격", sprites[i++]);
+        skillInfos[0, 1] = new SkillInfo(0, 1, Target.THEY,"휘두르기", "전체 적에게 데미지를 준다.", sprites[i++]);
+        skillInfos[0, 2] = new SkillInfo(0, 2, Target.NONE, "방패막기", "다음 공격의 데미지를 낮춘다.", sprites[i++]);
+        skillInfos[0, 3] = new SkillInfo(0, 3, Target.NONE, "모으기", "본인의 파워가 3턴간 상승한다.",  sprites[i++]);
+        skillInfos[0, 4] = new SkillInfo(0, 4, Target.THAT, "처형", "일정 체력 이하의 적을 즉사시킨다.", sprites[i++]);
+        
+        path = "3.Skills/wizard_";
+        i = 0;
+        skillInfos[1, 0] = new SkillInfo(1, 0, Target.THAT, "매직", "마법으로 적을 공격한다.", Resources.Load<Sprite>(path+i++));
+        skillInfos[1, 1] = new SkillInfo(1, 1, Target.THEY, "매직샤워", "마법으로 전체 적을 공격한다", Resources.Load<Sprite>(path+i++));
+        skillInfos[1, 2] = new SkillInfo(1, 2, Target.NONE, "매직쉴드", "2턴간 받는 데미지를 낮춘다.", Resources.Load<Sprite>(path+i++));
+        skillInfos[1, 3] = new SkillInfo(1, 3, Target.THAT, "슬로우", "적의 속도를 늦춘다.", Resources.Load<Sprite>(path+i++));
+        skillInfos[1, 4] = new SkillInfo(1, 4, Target.NONE, "?", "?", Resources.Load<Sprite>(path+i));
+
+        path = "3.Skills/Thief";
+        sprites = Resources.LoadAll<Sprite>(path);
+        i = 0;
+        skillInfos[2, 0] = new SkillInfo(2, 0, Target.THAT,"타격", "단검으로 적을 타격", sprites[i++]);
+        skillInfos[2, 1] = new SkillInfo(2, 1, Target.MINE, "붕대", "아군의 출혈을 막고, 체력을 회복시킨다", sprites[i++]);
+        skillInfos[2, 2] = new SkillInfo(2, 2, Target.NONE, "바람", "본인의 속도를 올린다", sprites[i++]);
+        skillInfos[2, 3] = new SkillInfo(2, 3, Target.THEY,  "연막", "전체 적의 시야를 가린다", sprites[i++]);
+        skillInfos[2, 4] = new SkillInfo(2, 4, Target.NONE, "도망", "전투에서 도망친다", sprites[i++]);
+        
+        path = "3.Skills/healer";
+        sprites = Resources.LoadAll<Sprite>(path);
+        i = 0;
+        skillInfos[3, 0] = new SkillInfo(3, 0, Target.THAT, "타격", "적을 공격한다.", sprites[i++]);
+        skillInfos[3, 1] = new SkillInfo(3, 1, Target.MINE, "치유", "아군을 체력을 회복시킨다", sprites[i++]);
+        skillInfos[3, 2] = new SkillInfo(3, 2, Target.WE, "치유S", "전체 아군을 체력을 회복시킨다.", sprites[i++]);
+        skillInfos[3, 3] = new SkillInfo(3, 3, Target.MINE, "정화", "아군의 모든 상태이상을 없앤다", sprites[i++]);
+        skillInfos[3, 4] = new SkillInfo(3, 4, Target.MINE, "부활", "죽은 아군을 부활시킨다.", sprites[i++]);
+        
     }
-
-    
-    public SkillInfo GetSkillInfo(int job, int num)
-    {
-        switch(job)
-        {
-            case 0 : 
-                return warrior.skills[num];
-            case 1 :
-                return wizard.skills[num];
-            case 2 : 
-                return thief.skills[num];
-            default :
-                CodeBox.PrintError( string.Format("SkillData - GetSkill() 존재하지 않음, job - {0}, num - {1}", job, num));
-                return null;
-        }
-    }
-
+    #endregion
+    #region 스킬 사용
     public void UseSkill(int job, int num, State playerS, State[] targetsS)
     {
-        switch(job)
-        {
-            case 0 : 
-                //warrior.UseSkill(num, playerS, targetsS);
-                break;
-            case 1 :
-                wizard.UseSkill(num, playerS, targetsS);
-                break;
-            case 2 : 
-                //thief.UseSkill(num, playerS, targetsS);
-                break;
-            default :
-                CodeBox.PrintError( string.Format("SkillData - UseSkill() 존재하지 않음, job - {0}, num - {1}", job, num));
-                break;
-        }
-    }
-}
-
-//skills[0] = new Skill(0,,,,,,,,);
-public class Wizard
-{
-    public SkillInfo[] skills = new SkillInfo[14];
-    
-    public Wizard()
-    {
-        //COMMON
-        skills[0] = new SkillInfo(0, "타격", "한 대상을 시전자의 속성을 담은 마법");
-        skills[1] = new SkillInfo(1, "방어", "일정량을 방어");
-        skills[2] = new SkillInfo(2, "넘기기", "턴 넘기기");
-        //SKILL
-        skills[3] = new SkillInfo(3, "차칭", "마법 에너지를 모은다");
-        skills[4] = new SkillInfo(4, "매직", "한 대상에게 AP공격");
-        skills[5] = new SkillInfo(5, "강화매직", "한 대상에게 강화된 AP공격");
-        skills[6] = new SkillInfo(6, "매직샤워", "전체 대상에게 AP공격");
-        skills[7] = new SkillInfo(7, "강화매직샤워", "전체 대상에게 강화된 AP공격");
-        skills[8] = new SkillInfo(8, "매직커터", "AP커팅/절단효과");
-        skills[9] = new SkillInfo(9, "잔상", "2턴간 시전자에게 가하는 공격이 일정확률로 빗나간다.");
-        skills[10] = new SkillInfo(10, "외곡", "1턴간 아군 전체에게 가하는 공격이 빗나간다.");
-        skills[11] = new SkillInfo(11, "슬로우", "한 대상의 SPEED를 낮춘다.");
-        skills[12] = new SkillInfo(12, "크러쉬", "한 대상에게 AP데미지를 주고 1턴간 기절시킴. ");
-        skills[13] = new SkillInfo(13, "매직쉴드", "2턴간 피해를 감소시킴.");
-    }
-
-
-    public void UseSkill(int n, State playerS, State[] targetsS)
-    {
-        int ele = 0;
         foreach(State targetS in targetsS)
         {
-            switch(n)
+            switch (job)
             {
-                case 0: //타격
-                    targetS.AdDam(playerS.Power * 0.2f);
+                case 0 : //전사
+                    switch (num)
+                    {
+                        case 0 :
+                            break;
+                        case 1 :
+                            break;
+                        case 2 :
+                            break;
+                        case 3 :
+                            break;
+                        case 4 :
+                            break;
+                        default:
+                        break;
+                    }
                     break;
-                case 1: //방어
+                case 1 : //법사
+                    switch (num)
+                    {
+                        case 0 :
+                            break;
+                        case 1 :
+                            break;
+                        case 2 :
+                            break;
+                        case 3 :
+                            break;
+                        case 4 :
+                            break;
+                        default:
+                            break;
+                    }
                     break;
-                case 2: //턴넘기기
-                    ColController.Instance.TurnEnd();
+                case 2 : //방랑가
+                    switch (num)
+                    {
+                        case 0 :
+                            break;
+                        case 1 :
+                            break;
+                        case 2 :
+                            break;
+                        case 3 :
+                            break;
+                        case 4 :
+                            break;
+                        default:
+                            break;
+                    }
                     break;
-                case 3: //마나 차칭
-                    
+                case 3 : //힐러
+                    switch (num)
+                    {
+                        case 0 :
+                            break;
+                        case 1 :
+                            break;
+                        case 2 :
+                            break;
+                        case 3 :
+                            break;
+                        case 4 :
+                            break;
+                        default:
+                            break;
+                    }
                     break;
-                case 4: //마나 공격
-                    targetS.ApDam(playerS.Power);
-                    break;
-                case 5: //마나 강화공격
-                    targetS.ApDam(playerS.Power * 2);
-                    break;
-                case 6: //매직샤워
-                    targetS.ApDam(playerS.Power * 0.5f);
-                    break;
-                case 7: //강화 매직샤워
-                    targetS.ApDam(playerS.Power);
-                    break;
-                case 8: //매직커터
-                    targetS.ApDam(playerS.Power * 1.5f);
-                    break;
-                case 9: //잔상
-                    break;
-                case 10: //외곡
-                    break;
-                case 11: //슬로우
-                    break;
-                case 12: //크러쉬
-                    break;
-                case 13: //매직쉴드
-                    break;
-
-                default :
+                default:
                     break;
             }
         }
     }
-}
+    #endregion
 
-public class Thief
-{
-    public SkillInfo[] skills = new SkillInfo[4];
-
-    public Thief()
+    public bool Check(int job, Knight k)
     {
-        
-        skills[0] = new SkillInfo(0,"단검투척", "한 대상에게 단검을 던짐");
-        skills[1] = new SkillInfo(1,"약점찾기", "한 대상의 약점을 찾음");
-        skills[2] = new SkillInfo(2,"암살", "약점 찾기 후 사용가능");
-        skills[3] = new SkillInfo(3,"탈출", "현재 전투에서 도망친다.");
-    }
-
-    public void UseSkill(int n, State playerS, State targetS)
-    {
-        switch(n)
+        bool value = false;
+        switch (job)
         {
-            case 0 ://단검투척
-                targetS.AdDam(playerS.Power * 0.5f);
+            case 0 :
                 break;
-            case 1 ://약점찾기
-                
+            case 1 :
                 break;
-            case 2 ://암살
-                if(targetS.superCc.WeakPoint == true)
-                    targetS.DeathDam();
+            case 2 : 
                 break;
-            case 3 ://탈출
-                
+            case 3 : 
                 break;
-            default :
+            default:
                 break;
         }
-    }
-}
 
-public class Warrior
-{
-    public SkillInfo[] skills = new SkillInfo[4];
-
-    public Warrior()
-    {
-        skills[0] = new SkillInfo(0, "베기", "적을 벤다");
-        skills[1] = new SkillInfo(1, "다중베기", "전체 대상을 벤다");
-        skills[2] = new SkillInfo(2, "함성", "적 전체에게 허약을 시도한다");
-        skills[3] = new SkillInfo(3, "강화", "다음 공격을 강화");
-    }
-
-    public void UseSkill(int n, State playerS, State targetS)
-    {
-        switch(n)
-        {
-            case 0 ://베기
-            targetS.AdDam(playerS.Power);
-                break;
-            case 3 ://강화
-                break;
-            default :
-                break;
-        }
-    }
-    public void MultiSkill(int n, State playerS, State[] targetS)
-    {
-        switch(n)
-        {
-            case 1 : //다중베기
-                foreach (State s in targetS)  s.AdDam(playerS.Power * 0.3f);
-                break;
-             case 2 ://허약
-                break;
-            default :
-                break;
-        }
+        return value;
     }
 }

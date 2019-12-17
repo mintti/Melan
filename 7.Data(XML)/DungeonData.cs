@@ -8,7 +8,6 @@ public class Dungeon
     public int num;
     public string name{get;set;}
     public int level{get;set;}
-    public int day{get;set;}
 
     public int[] commonMonster;
     public int eliteMonster;
@@ -19,8 +18,6 @@ public class Dungeon
         name = _name;
         level = _level;
         boss = _boss;
-
-        day = 3 * level; 
     }
 
     public void SetData(int _num, string _name, int _level, int _boss)
@@ -29,8 +26,7 @@ public class Dungeon
         name = _name;
         level = _level;
         boss = _boss;
-
-        day = 3 * level; 
+        
         SetMonster();
     }
     
@@ -45,7 +41,7 @@ public class Dungeon
         int[] array = new int[size];
         int m = 0;
         
-        DungeonProgress dp = DungeonData.Instance.GetDungoenProgress(num);
+        DungeonProgress dp = DungeonData.Instance.GetDungeonProgress(num);
         //M은 몬스터로.. dp에 의거하여 해당하는 몬스터정보를 Dungeon에서 가져옴.
         
         int difficulty = dp.GetDifficulty();
@@ -71,6 +67,8 @@ public class DungeonProgress
 {
     public Dungeon d;
     
+    #region 개략적인 정보
+
     public bool isClear; //보스를 잡았는가~
     private double saturation;//포화도
     public double Saturation
@@ -84,7 +82,9 @@ public class DungeonProgress
         get{return searchP;}
         set{searchP = value; if(searchP > 100) searchP = 100f;}
     }
-
+    private int reward;
+    public double Reward{get;set;}
+    
     public DungeonProgress(Dungeon _d)
     {
         d = _d;
@@ -102,13 +102,54 @@ public class DungeonProgress
         isClear = false;
         Saturation = 50;
         searchP = 0;
-    }
+        Reward = 0;
+        ResetEvent();
+    }   
 
     public int GetDifficulty()
     {
         return searchP < 50 ? 0 : searchP < 90 ? 1 : 2;
     }
+    #endregion
 
+    #region DungeonEvent
+    public int eventType;//WorkList참조.
+    public Party p;//컨넥으로 등록됨.
+
+    public void ResetEvent()
+    {
+        eventType = 0;
+        isParty = false;
+    }
+    
+    //출전한 여부
+    public bool isParty; //eventType이 0이 아닌경우 해당됨.
+    public void Connect_Party(Party _p)
+    {
+        p = _p;
+        isParty = true;
+    }
+
+    //type에 따른 선택
+    public int[] m;
+    
+    public void SetData(int n)
+    {
+        eventType = n;
+    }
+    public void SendDungeon(Party _p)
+    {
+        eventType = 8;
+        p = _p;
+        isParty = true;
+    }
+    public void Battle(int[] arr)
+    {
+        eventType = 1;
+        m = arr;
+    }
+
+    #endregion
 }
 
 public class DungeonData : MonoBehaviour
@@ -165,7 +206,7 @@ public class DungeonData : MonoBehaviour
     }
 
     //해당하는 던전NUM의 던전진행의 인덱스를 출력
-    public DungeonProgress GetDungoenProgress(Dungeon d)
+    public DungeonProgress GetDungeonProgress(Dungeon d)
     {
         for(int i = 0 ;i < dungeon_Progress.Length; i++)
         {
@@ -174,9 +215,16 @@ public class DungeonData : MonoBehaviour
         }
         return null;
     }
-    public DungeonProgress GetDungoenProgress(int dNum)
+    public int GetDungeonProgressIndex(DungeonProgress dp)
     {
-        return GetDungoenProgress(dungeons[dNum]);
+        for(int i = 0 ;i < dungeon_Progress.Length; i++)
+            if(dp == dungeon_Progress[i])
+                return i;
+        return 0;
+    }
+    public DungeonProgress GetDungeonProgress(int dNum)
+    {
+        return GetDungeonProgress(dungeons[dNum]);
     }
 
     //DataController에서 호출됨.
@@ -203,11 +251,11 @@ public class DungeonData : MonoBehaviour
             }
         }
 
-        ConnectDungoen(array);
+        ConnectDungeon(array);
         DataController.Instance.SaveDungeon(array);
     }
 
-    private void ConnectDungoen(int[] array)
+    private void ConnectDungeon(int[] array)
     {
         for(int i = 0 ; i < 8; i++)
         {

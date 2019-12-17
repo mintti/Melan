@@ -96,7 +96,7 @@ public class State
     private int stress;
     public int Stress{get{return stress;} set{stress = value;}}
     public int[] uni;
-    public int gage;
+
     //배수 변수
     private float powerMultiple;
     private float speedMultiple;
@@ -117,8 +117,6 @@ public class State
 
         LifeType = LifeType.K;
 
-        impact = new Del(선언);
-
         powerMultiple = 1;
         speedMultiple = 1;
     }
@@ -133,8 +131,6 @@ public class State
         uni = ms.m.uni;
 
         LifeType = LifeType.M;
-
-        impact = new Del(선언);
 
         powerMultiple = 1;
         speedMultiple = 1;
@@ -167,7 +163,7 @@ public class State
         alive = AliveType.죽음;
         if(lifeType == LifeType.K)
         {
-            BattleController.Instance.DieKnight(bkp.index);
+            //BattleController.Instance.DieKnight(bkp.index);
         }
         else
         {
@@ -179,49 +175,16 @@ public class State
     {
 
     }
+    public void MyTurn()
+    {
+        if(stun);//턴넘김
+        
+    }
     #region 상태이상 효과 관련
-    private Del impact;
-
-    private bool changeImpact;//변경되면 재계산해야함. 추후 설정되게 해주어야함.
-
-    public AfterDil afterDil = new AfterDil();
-    private bool pass; //스턴같은 경우.
-
-    public class AfterDil
-    {
-        public int pois{get;set;}
-        public int blo{get;set;}
-
-        public AfterDil()
-        {
-            pois = 0;
-            blo = 0;
-        }
-        public int Sum()
-        {
-            return pois + blo;
-        }
-    }
-
-    /*
-        Impact()는 Player 턴을 넘길경우 false를 보낸다.
-                         */
-    public bool Impact(bool type) //type = false : 시작, true : 종료
-    {
-        impact();
-        //if(changeImpact){} *이 안에 impact()가 오게..
-        //스턴 등 의 여부.
-        if(pass) return false;
-        return true;
-    }
-    public void 선언()
-    {
-        powerMultiple = 1;
-        speedMultiple = 1;
-        changeImpact = false;
-        afterDil = new AfterDil();
-        pass = false;
-    }
+    
+    bool stun;
+    int blood;
+    int poison;
     //좋은 영향
     public void 강화()
     {   
@@ -233,15 +196,14 @@ public class State
         stress += v;
     }
 
-    
-    public CC cc = new CC();
-    public SuperCC superCc = new SuperCC();
-    //후딜
-    public void 출혈()
-    {   afterDil.blo++; }
-    public void 중독()
-    {   afterDil.pois++; }
-    
+    private void PoisonDam()
+    {
+        
+    }
+    private void BloodDam()
+    {
+
+    }
     #endregion
 
 

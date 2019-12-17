@@ -4,52 +4,37 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-    public enum SkillType{NONE, COMMON, DAM, SHD, BUF, DBUF, SUPPOSDAM}
-    public enum DamType{NONE, AD, AP}
-    public enum Target{NONE, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
-
 public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {   
     private KnightState ks;
-    public int job{get;set;}
-    public int skillNum{get;set;}
-        
-    private string name;
-    private string explan;
-
-    public int level;
-    public SkillType skillType;
-    public DamType damType;
-    public Target target;
-
+    private Form form;
+    public SkillInfo skillInfo;
+    
     public Image skillIconImg;
     public Text nameText;
-    public GameObject lockObj;//레벨부족일때 활성
-
-    private bool isLevel; //레벨 부적합.
+    public GameObject lockObj;//조건 부적합일때 활성
 
         
     private bool only_View;
     
-    public void SetData(KnightState _ks, SkillInfo skillInfo)
+    public void SetData(Form _form, KnightState _ks, SkillInfo _skillInfo)
     {
+        form = _form;
         //기본정보
         ks = _ks;
-        job = ks.k.job;
-        SetLock(ks.k.level);
 
         //스킬정보
-        skillNum = skillInfo.num;
-        name = skillInfo.name; explan = skillInfo.explan;
+        skillInfo = _skillInfo;
+        skillIconImg.sprite = skillInfo.img;
 
-        nameText.text = name;
+        nameText.text = skillInfo.name;
     }
 
 
-        //Lock의 여부
+    //Lock의 여부
     public void SetLock(int knightLevel)
     {
-        Lock(knightLevel >= level ? false : true);
+        Lock(SkillData.Instance.Check(skillInfo.job, ks.k));  
     }
     public void SetLock(bool value)
     {
@@ -62,7 +47,6 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
     {
         lockObj.SetActive(value);
         nameText.gameObject.SetActive(!value);
-        isLevel = !value;
     }
     
     #region 포인터이벤트
@@ -81,7 +65,8 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
 
         public void OnPointerDown(PointerEventData data)
         {
-            if(!isLevel) return;
+            form.SetInfoText(skillInfo.explan);
+
             isPush = false;
             timer.SetData(this, 1f);
             timer.gameObject.SetActive(true);
@@ -135,7 +120,6 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
 
         void SamMod(bool isIcon)
         {
-            transform.GetChild(1).gameObject.SetActive(!isIcon);
             nameText.enabled = !isIcon;
         }
         #endregion

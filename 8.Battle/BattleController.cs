@@ -57,7 +57,7 @@ public class BattleController : MonoBehaviour
         도망
     }
 
-    private Battle Bdata;
+    private DungeonProgress dp;
     private BattleState state;
     public BattleState State{
         get{return state;}
@@ -142,14 +142,14 @@ public class BattleController : MonoBehaviour
         //1-1 . 데이타 로드.
         //      -  몬스터 위치 지정은 그냥 순서대로 4명 씩 Load함. 
         //      -  모든 기사와 몬스터의 요소를 Thing(ArrayList)에 집어넣음
-        Bdata = EventData.Instance.Bdata;
-        knightCount = Bdata.p.k.Length;
+        dp = EventData.Instance.battle_dp;
+        knightCount = dp.p.k.Length;
         
-        int cnt = Bdata.p.k.Length;
+        int cnt = dp.p.k.Length;
         thing.Clear();
         for(int i = 0; i < cnt; i++)
         {
-            KnightState ks = Bdata.p.knightStates[i]; 
+            KnightState ks = dp.p.knightStates[i]; 
             
             if(ks.s.Hp > 0)
             {
@@ -166,12 +166,12 @@ public class BattleController : MonoBehaviour
         //1-1-2 스킬 폼을 세팅해줌.
         ColController.Instance.SetForm();
         
-        //1-1-3 Bdata(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
-        int size = Bdata.m.Length;
+        //1-1-3 dp(Battle)에서 m은 int로 저장되있다. monsterArr를 생성해 직접 Monster를 삽입한다.
+        int size = dp.m.Length;
         Monster[] monsterArr = new Monster[size];
         for(int i = 0 ; i < size; i ++)
         {
-            monsterArr[i] = MonsterData.Instance.monsters[Bdata.m[i]];
+            monsterArr[i] = MonsterData.Instance.monsters[dp.m[i]];
         }
         foreach(Monster m in monsterArr)
             monsterList.Add(m);
@@ -421,7 +421,9 @@ public class BattleController : MonoBehaviour
     private void Win()
     {
         winObj.SetActive(true);
-        winRewardText.text = string.Format("WE GET {0}G", GetReward());
+        int reward =  GetReward();
+        winRewardText.text = string.Format("WE GET {0}G", reward);
+        dp.Reward += reward;
     }
     //7. [패배] 상태
     private void Lose()
@@ -481,7 +483,7 @@ public class BattleController : MonoBehaviour
     IEnumerator Wait1Sec()
     {
         waitObj.SetActive(true);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         
         waitObj.SetActive(false);
         who++;
@@ -491,9 +493,17 @@ public class BattleController : MonoBehaviour
     private int GetReward()
     {
         int gold = 0;
-        foreach(int index in Bdata.m)
+        foreach(int index in dp.m)
             gold += MonsterData.Instance.monsters[index].GetReward();
 
         return gold;
     }
+
+    public SceneController sceneController; 
+    public void EndBattle()
+    {
+        dp.SetData(8);
+        sceneController.MoveToMain();
+    }
+    
 }

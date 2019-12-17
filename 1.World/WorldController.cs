@@ -20,24 +20,16 @@ public class WorldController : MonoBehaviour
     }
 
     private DungeonData dungeon;
+    public WorkListController workListController;
     //1-2. 던전 선택 후, 출전 클릭 시 : 변수 선언
     public GameObject selectKnighObj;
     public Transform selectKnightListTr;
     private Dungeon d; //col에서 호출된 d.
     
-    //1-3.던전 선택 후, 출전 시, 용병 List관련. : 변수 선언
-    public GameObject knightList;
-    public GameObject knightPrefab;
-
-    public Transform selectView;
-    public GameObject knightPrefabSelect;
     //텍스쳐
     public KnightSkinPrefab[] SkinObjs = new KnightSkinPrefab[4];
     public Texture[] textures = new Texture[4];
     public List<int> txrArr = new List<int>();
-
-    //출전 시 이벤트 
-    public EventManager event_;
 
     //초기 유닛데이타 컨넥팅
     private void Start()
@@ -55,39 +47,53 @@ public class WorldController : MonoBehaviour
             GameObject obj = CodeBox.AddChildInParent(dungeonPos[i], dungeon.dungoenObjArray[dungeon.dungeon_Progress[i].d.num]);
             obj.GetComponentInChildren<WorldDungeonPrefab>().SetData(dungeon.dungeon_Progress[i], i);
         }
+
+        DungeonUpdate();
     }
 
     #region 1-3. 던전 선택 후, 출전 용병 List 생성 : 코드
+    public GameObject knightList;
+    public GameObject knightPrefab;
+
+    public Transform selectView;
+    public GameObject knightPrefabSelect;
+    
     public void SelectDungeon(int n)
     {
         if(dungeon.CanGo(n) == false)
             return;
         
         d = dungeon.dungeon_Progress[n].d;
-        selectKnighObj.SetActive(true);
-        MakeKnightList(selectKnightListTr);
 
+        workListController.SelectDungeon(n);
+       
     }
     
-    public void MakeKnightList(Transform list)
+    //출전가능한 기사 생성 및 창 true
+    public SelectDayList selectDayList;
+    public void MakeKnightList()
     {
-        CodeBox.ClearList(list);
+        selectKnighObj.SetActive(true);
+
+        CodeBox.ClearList(selectKnightListTr);
 
         foreach(Knight k in unit.knights)
         {
             if(k.teaming == true)
                 continue;
-            GameObject obj = CodeBox.AddChildInParent(list, knightPrefab);
+            GameObject obj = CodeBox.AddChildInParent(selectKnightListTr, knightPrefab);
             
             obj.GetComponent<WorldKnightPrefab>().SetData(k);
         }
 
         //초기화.
+        selectDayList.SetData();
         CodeBox.ClearList(selectView);
         txrArr.Clear();
         Cnt = 0;
     }
-
+    public int day;
+    
     //파티 List & 오브젝트(Select View)에 요소 추가
     public void AddKnightInParty(Knight k)
     {
@@ -155,14 +161,16 @@ public class WorldController : MonoBehaviour
         //배열의 마지막에 Dungeon정보 저장.
         arr[arr.Length - 1] = d.num;
         //UnitData - Partys 리스트에 추가
-        unit.AddParty(arr);
+        DungeonData.Instance.dungeon_Progress[workListController.index].SendDungeon(unit.AddParty(arr, day));
         
         //작업 종료.
         selectKnighObj.SetActive(false);
+        DungeonUpdate();
+
+        workListController.SelectDungeon();
     }
 
     #endregion
-
 
     //게임 시작 시, 화면 초기화.
     public void Click()
@@ -170,7 +178,40 @@ public class WorldController : MonoBehaviour
         _bt.onClick.Invoke();
     }
 
+    //던전 화면 업데이트. (퀘스트가 있으면 !가뜨게한다.)
+    //이벤트용버튼, 
+    public void DungeonUpdate()
+    {
+        for(int i= 0 ; i < 8; i ++)
+        {
+            int type = DungeonData.Instance.dungeon_Progress[i].eventType;
+            dungeonPos[i].GetComponentInChildren<WorldDungeonPrefab>().SetEvent(type == 0 || type == 8 ? false : true);
+        }
+    }
 
+    #region Texture Finder
 
+    public void ResetTexture()
+    {
+        txrArr.Clear();
+        Cnt = 0;
+    }
+    public Texture TextureFinder(Knight k)
+    {
+        int i;
+        for(i = 0 ; i < 4 ; i ++)
+        {
+            if(txrArr.Contains(i) == false)
+                break;
+        }
+        
+        txrArr.Add(i);
+        SkinObjs[i].SetData(k.skin);
+        
+        Cnt++;
+
+        return(textures[i]);
+    }
+    #endregion
 
 }

@@ -51,8 +51,8 @@ public class WorldKnightPrefab : MonoBehaviour
     {
         if(isType == 0)
         {
-            check.SetActive(check.activeSelf ? false : true);
-
+            check.SetActive(check.activeSelf ? false : world.Cnt == 4 ? false : true);
+        
             if(check.activeSelf)    world.AddKnightInParty(k);
             else    world.RemoveKnightInParty(k);
         }

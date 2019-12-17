@@ -62,9 +62,9 @@ public class DataController : MonoBehaviour
                 }
                 
                 skin.LoadResource();
-                text.setTextData();
                 MonsterData.Instance.InsertData();
                 dungeon.SetData();
+                SkillData.Instance.SetData();
 
                 LoadDataProcess(1);
                 break;
@@ -214,6 +214,17 @@ public class DataController : MonoBehaviour
                 System.Convert.ToDouble(_node.SelectSingleNode("Saturation").InnerText),
                 System.Convert.ToDouble(_node.SelectSingleNode("SearchP").InnerText)
             );
+            
+            XmlNode info = _node.SelectSingleNode("Info");
+            switch (System.Convert.ToInt32(_node.SelectSingleNode("Type").InnerText))
+            {
+                case 1 :
+                    d.Battle(CodeBox.StringSplit(info.SelectSingleNode("Monsters").InnerText));
+                    break;
+                default:
+                    d.eventType = 0;
+                    break;
+            }
             dungeon.dungeon_Progress[index++] = d;
         }
 
@@ -268,15 +279,13 @@ public class DataController : MonoBehaviour
         }
 
         //4-2. GameTurn - PartyEvent
-        nodes = xmlDoc.SelectNodes("PlayerData/EventInfo/Evnet");
+        nodes = xmlDoc.SelectNodes("PlayerData/EventInfo/Event");
         foreach (XmlNode _node in nodes)
         {
             switch(_node.SelectSingleNode("Type").InnerText)
             {
                 case "BATTLE" :
-                    EventData.Instance.battles.Add(new Battle(
-                        unit.partys[System.Convert.ToInt32(_node.SelectSingleNode("PartyNum").InnerText)],
-                        CodeBox.StringSplit(_node.SelectSingleNode("Monsters").InnerText)));
+
                     break;
                 case "다른" :
                     break;
@@ -306,6 +315,46 @@ public class DataController : MonoBehaviour
     }
 
     
+    public void SaveOverlapXml()
+    {
+
+
+        Debug.Log("전체데이터 저장.");
+        if(platform == "pc")
+        {
+            xmlDoc.Save("./Assets/StreamingAssets/PlayerData.xml");
+        }
+        else if(platform == "android")
+        {
+            string filePath = Application.persistentDataPath + "/PlayerData.xml";
+            
+            File.WriteAllText( filePath, xmlDoc.OuterXml, Encoding.Default);
+        }
+    }
+    
+    public void SaveXml()
+    {
+        StartCoroutine("SaveXml_");
+    }
+
+    IEnumerator SaveXml_()
+    {
+        ObjectController.Instance.saveObj.SetActive(true);
+        
+        if(platform == "pc")
+        {
+            xmlDoc.Save("./Assets/StreamingAssets/PlayerData.xml");
+        }
+        else if(platform == "android")
+        {
+            string filePath = Application.persistentDataPath + "/PlayerData.xml";
+            
+            File.WriteAllText( filePath, xmlDoc.OuterXml, Encoding.Default);
+        }
+        
+        ObjectController.Instance.saveObj.SetActive(false);
+        yield return null;
+    }
     
     #region COMMON
 
@@ -363,12 +412,19 @@ public class DataController : MonoBehaviour
             child.AppendChild(isClear);
 
             XmlElement saturation = xmlDoc.CreateElement("Saturation");
-            saturation.InnerText = "0";
+            saturation.InnerText = "50";
             child.AppendChild(saturation);
 
             XmlElement search = xmlDoc.CreateElement("SearchP");
             search.InnerText = "0";
             child.AppendChild(search);
+
+            XmlElement type = xmlDoc.CreateElement("Type");
+            type.InnerText = "0";
+            child.AppendChild(type);
+
+            XmlNode info = xmlDoc.CreateNode(XmlNodeType.Element, "Info", string.Empty);
+            child.AppendChild(info);
         }
 
         SaveOverlapXml("던전생성");
@@ -376,13 +432,29 @@ public class DataController : MonoBehaviour
 
     public void UpdateDungeon(int num)
     {
-        DungeonProgress d = DungeonData.Instance.dungeon_Progress[num];
+        DungeonProgress dp = DungeonData.Instance.dungeon_Progress[num];
         XmlNodeList nodes = xmlDoc.SelectNodes("PlayerData/DungeonInfo/Dungeon");
         XmlNode dungeon = nodes[num];
 
-        dungeon.SelectSingleNode("IsClear").InnerText = System.Convert.ToString(d.isClear);
-        dungeon.SelectSingleNode("Saturation").InnerText = System.Convert.ToString(d.Saturation);
-        dungeon.SelectSingleNode("SearchP").InnerText = System.Convert.ToString(d.SearchP);
+        dungeon.SelectSingleNode("IsClear").InnerText = System.Convert.ToString(dp.isClear);
+        dungeon.SelectSingleNode("Saturation").InnerText = System.Convert.ToString(dp.Saturation);
+        dungeon.SelectSingleNode("SearchP").InnerText = System.Convert.ToString(dp.SearchP);
+        dungeon.SelectSingleNode("Type").InnerText = System.Convert.ToString(dp.eventType);
+
+        dungeon.RemoveChild(dungeon.SelectSingleNode("Info"));
+        XmlNode info = xmlDoc.CreateNode(XmlNodeType.Element, "Info", string.Empty);
+        dungeon.AppendChild(info);
+        
+        switch (dp.eventType)
+        {
+            case 1: //전투 이벤트
+                XmlElement monsters = xmlDoc.CreateElement("Monsters");
+                monsters.InnerText = IntArrayToString(dp.m);
+                info.AppendChild(monsters);
+                break;
+            default:
+                break;
+        }
 
         SaveOverlapXml("던전업데이트");
     }
@@ -557,37 +629,6 @@ public class DataController : MonoBehaviour
 
         node.SelectSingleNode("Employ").InnerText = "true";
         SaveOverlapXml("고용정보 업데이트");
-    }
-    #endregion
-
-    #region EVENT
-    
-    //01. 배틀
-    public void AddEvent(Battle b)
-    {
-        XmlNode root = xmlDoc.SelectSingleNode("PlayerData/EventInfo");
-
-        XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Event", string.Empty);
-        root.AppendChild(child);
-
-        XmlElement type = xmlDoc.CreateElement("Type");
-        type.InnerText = "BATTLE";
-        child.AppendChild(type);
-
-        XmlElement partyNum = xmlDoc.CreateElement("PartyNum");
-        partyNum.InnerText = System.Convert.ToString(b.p);
-        child.AppendChild(partyNum);
-
-        XmlElement monsters = xmlDoc.CreateElement("Monsters");
-        monsters.InnerText = IntArrayToString(b.m);
-        child.AppendChild(monsters);
-        
-        SaveOverlapXml("전투이벤트 추가");
-    }
-
-    public void RemoveEvent()
-    {
-    
     }
     #endregion
 

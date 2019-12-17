@@ -185,7 +185,6 @@ public class UnitData : MonoBehaviour
     public SkinData skins;
 
     public List<Knight> knights = new List<Knight>(); //기사리스트
-    public List<int> heroList = new List<int>(); //영웅 리스트
     public List<Party> partys = new List<Party>();
 
     /*
@@ -203,31 +202,8 @@ public class UnitData : MonoBehaviour
 
     public List<int> useElementJob = new List<int>(){1};
 
-    
-    #region 데이터세팅.추후 설정.
-    //데이터 load 함수. 로직참고.
-    void AdminDataLoad(){
-        //Xml load
 
-        //Data Setting
-        /* 
-        foreach(knight k in unit.knights)
-        {
-            //영웅을 관리 할 떄, 추가 탐색을 줄이기 위해 미리 List에 넣어둔다.
-            if(k.job >= 100) 
-                unit.heroList.Add(k.num);
-
-            //스킬탐색
-        }
-        */
-    }
-    void SkillSearching()
-    {
-
-    }
-    #endregion
-
-    public void AddParty(int[] list) //list[0~n : Knight, n +1 : dungeon]
+    public Party AddParty(int[] list, int day) //list[0~n : Knight, n +1 : dungeon]
     {
         int size = list.Length -1;
         int[] Karr = new int[size];
@@ -236,12 +212,13 @@ public class UnitData : MonoBehaviour
             Karr[i] = list[i];
             
         int dungeon = list[size];
-        int day = CodeBox.DungoenReturn(dungeon).day;
 
         Party p = new Party(dungeon, Karr, day);
         partys.Add(p);
+
         DataController.Instance.AddParty(p);
         
+        return p;
     }
 
     //해당 인덱스 찾기
@@ -255,6 +232,11 @@ public class UnitData : MonoBehaviour
 
     }
 
+    public void NextDay()
+    {
+        foreach(Party p in partys)
+            p.NextDay();
+    }
 
     #region 용병 고용 관련
 

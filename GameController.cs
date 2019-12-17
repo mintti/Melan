@@ -28,21 +28,21 @@ public class GameController : MonoBehaviour
     public DataController data;
     public WorldController world;
     public AdminController admin;
-    public EventManager event_;
 
-    public EventData eventData;
+    public EventData event_;
     public PlayerData player;
 
     //DataController - LoadDataProcess(2)에서 호출됨.
     public void ConnectData()
     {
         data = DataController.Instance;
-        eventData = EventData.Instance;
+        event_ = EventData.Instance;
         player = data.player;
 
         world.Click(); //초기 화면
         PlayerDataUpdate();
         world.CreateDungeonInWorld();
+        event_.Connect_DungeonEvent_And_Party();
     }
 
     #region  Player Data
@@ -78,7 +78,6 @@ public class GameController : MonoBehaviour
                 SceneManager.LoadScene("1.Main");
                 break;
             case 2: 
-                eventData.SetBattleData(event_.selectWork);
                 SceneManager.LoadScene("2.Battle");
                 break;
             case 3:
@@ -90,23 +89,21 @@ public class GameController : MonoBehaviour
 
     //Castle Click
     public Button bt;
-    public void ClickCastle()
-    {
-        bt.interactable  = EventData.Instance.todayWork.Count == 0 ?  true : false;
-    }
 
-     public void NextDay()
+    public void NextDay()
     {
+        if(event_.Check_RemainingEvent())
+            return;
+        UnitData.Instance.NextDay();
         //이벤트 재생성
-        event_.CreateWork();
-        //버블 텍스트 변경.
-        event_.SetText();
+        event_.CreateEvent();
 
-        //Day추가.        
+        //다음 시간.  
         player.NextDay();
         
         //해당 데이터 저장
         //data.SaveOverlapXml();
-
+        data.SaveXml();
+        world.DungeonUpdate();
     }
 }

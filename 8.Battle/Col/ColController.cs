@@ -44,7 +44,7 @@ public class ColController : MonoBehaviour
     Skill skill;
 
     //Form 관련 
-    public GameObject[] formList = new GameObject[10];
+    public GameObject basicForm;
     public GameObject[] formObj;
 
     //Battle진행2
@@ -54,15 +54,14 @@ public class ColController : MonoBehaviour
     
     public void SetForm()
     {
-        Battle b = EventData.Instance.Bdata;
-        formObj = new GameObject[b.p.k.Length];
-        Debug.Log(" >> " +formObj.Length);
+        DungeonProgress dp = EventData.Instance.battle_dp;
+        formObj = new GameObject[dp.p.k.Length];
+        
         int index = 0;
 
-        foreach(int kNum in b.p.k)
+        foreach(int kNum in dp.p.k)
         {
-            GameObject form = formList[UnitData.Instance.knights[kNum].job];
-            formObj[index] = CodeBox.AddChildInParent(BattleUI.transform, form);
+            formObj[index] = CodeBox.AddChildInParent(BattleUI.transform, basicForm);
 
             formObj[index].GetComponent<Form>().SetData(battle.kps[index]);
             formObj[index++].SetActive(false);
@@ -72,13 +71,11 @@ public class ColController : MonoBehaviour
     public void TurnStart(int _who)
     {
         who = _who;
-        
+        formObj[who].GetComponent<Form>().SetInfoText(" ");
         formObj[who].SetActive(true);
-        formObj[who].GetComponent<Form>().MyTurn();
     }
     public void TurnEnd()
     {
-        formObj[who].GetComponent<Form>().TurnEnd();
         formObj[who].SetActive(false);
 
         BattleController.Instance.NextTurn();
@@ -105,7 +102,7 @@ public class ColController : MonoBehaviour
     public void ChangeColForm()
     {
         ResetForm();
-        switch(skill.target)
+        switch(skill.skillInfo.target)
         {
             case Target.NONE :
                 SetColForm_Knight();
@@ -242,7 +239,7 @@ public class ColController : MonoBehaviour
         else
         {
             //스킬의 사용
-            SkillData.Instance.UseSkill(skill.job, skill.skillNum, GetMyState(), GetState(targetNum));
+            SkillData.Instance.UseSkill(skill.skillInfo.job, skill.skillInfo.num, GetMyState(), GetState(targetNum));
         }
         
         ResetForm();

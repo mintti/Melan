@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class KnightSkinPrefab : MonoBehaviour
 {
+    //변경되는...
     public GameObject frontHair;
     public GameObject backHair;
     public GameObject topBrow;
@@ -13,6 +14,13 @@ public class KnightSkinPrefab : MonoBehaviour
     public GameObject pupil;
     public Skin skin;
 
+    //픽스된..
+    public GameObject closeEye;
+
+    private KnightMotion motion;
+    private void Awake() {
+        motion = GetComponent<KnightMotion>();
+    }
     public void SetData(Skin _skin)
     {
         skin = _skin;
@@ -25,6 +33,8 @@ public class KnightSkinPrefab : MonoBehaviour
         SetMask( back, skin.back);
 
         pupil.GetComponent<SpriteRenderer>().sprite = skin.pupil;
+        
+        motion.StartAction();
     }
     
     void SetMask(GameObject obj, Sprite sprite)

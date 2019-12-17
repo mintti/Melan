@@ -60,7 +60,8 @@ public class PlayerData : MonoBehaviour
         Day++;
         UnitData.Instance.CreateRandomKnight(3);
     }
-
+    
     private int level; //1~3
     public int Level{get{return level;} set{level = value;}}
+
 }

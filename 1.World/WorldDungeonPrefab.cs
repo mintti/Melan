@@ -25,6 +25,7 @@ public class WorldDungeonPrefab : MonoBehaviour
     }
 
     #region 그래픽
+    public GameObject isEvent;
     public GameObject cloude10;
     public GameObject cloude30;
     public GameObject common50;
@@ -39,9 +40,16 @@ public class WorldDungeonPrefab : MonoBehaviour
         searchPText.text =  string.Format("{0}%",dp.SearchP );
     
         cloude10.SetActive(dp.SearchP < 10 ? true : false);
+        if(cloude10.active) cloude10.GetComponent<Image>().color =  DungeonData.Instance.CanGo(DungeonData.Instance.GetDungeonProgressIndex(dp)) ? new Color32(123, 115,115 ,255) : new Color32(0, 0,0 ,255);
         cloude30.SetActive(dp.SearchP < 30 ? true : false);
         common50.SetActive(dp.SearchP < 50 ? true : false);
         boss80.SetActive(dp.SearchP < 80 ? true : false);
+    }
+
+    //월컨 - DungeonUpdate()
+    public void SetEvent(bool value)
+    {
+        isEvent.SetActive(value);
     }
     #endregion
     
