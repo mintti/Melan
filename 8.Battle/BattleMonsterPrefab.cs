@@ -31,7 +31,6 @@ public class BattleMonsterPrefab : MonoBehaviour
         index = n;
         msv = _msv;
         
-        img.sprite = m.img;
         isMonster = true;
 
         TargetOff();

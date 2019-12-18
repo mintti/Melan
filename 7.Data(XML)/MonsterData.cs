@@ -10,7 +10,6 @@ public class Monster
     public int num;
     public string name;
     public int[] skills;
-    public Sprite img;
 
     public int hp;
     public int power;
@@ -98,13 +97,7 @@ public class MonsterData : MonoBehaviour
         monsters[2] = new Monster(2, "킹슬라임", new int[]{0,1}, 200, 6, 5, null, 10);
 
         #endregion
-        //이미지로드
-        for(int i = 0 ; i < size; i ++)
-        {
-            string path =  string.Format("2.Monster/" + i);
-            Sprite sprite =  Resources.Load <Sprite>(path);
-            monsters[i].img = sprite;
-        }
+        
     }
 
 

@@ -64,6 +64,27 @@ public class SuperCC
         weakPoint = false;
     }
 }
+
+public enum BuffType
+{
+    POWER, SPEED, SHILD
+}
+class Buff
+{
+    public int turn{get;set;}
+    public float factor{get;set;}
+    BuffType type{get;set;}
+    public Buff(BuffType _type, int _turn, float _factor)
+    {
+        turn = _turn; factor = _factor; type = _type;
+    }
+
+    public void NextTurn()
+    {
+        turn --;
+    }
+}
+
 [System.Serializable]
 public class State
 {
@@ -146,6 +167,7 @@ public class State
 
     #endregion
 
+    #region  게임진행관련
     private void UpdateDataUI()
     {
         if(lifeType == LifeType.K)
@@ -173,27 +195,37 @@ public class State
     }
     public void NextTurn()
     {
-
+        foreach(Buff buff in buffs)
+            buff.NextTurn();
     }
     public void MyTurn()
     {
         if(stun);//턴넘김
         
     }
-    #region 상태이상 효과 관련
+    #endregion
     
+    #region 스킬 사용 관련
+ 
     bool stun;
-    int blood;
-    int poison;
-    //좋은 영향
-    public void 강화()
+    int slow;
+    private int blood;
+    public int Blood{get{return blood;}set{blood = value;}}
+    private int poison;
+    private int special_Skill_Up;
+    public int Special_Skill_Up{get{return special_Skill_Up;}set{special_Skill_Up = value;}}
+
+    private List<Buff> buffs = new List<Buff>();
+    private List<Buff> debuffs = new List<Buff>();
+    
+    public void AddBuff(BuffType type, int turn, float factor)
     {   
-        powerMultiple *=2;
+        buffs.Add(new Buff(type, turn, factor));
     }
-    //안좋은영향
-    public void 스트레스(int v)
-    {
-        stress += v;
+
+    public void AddDebuff(BuffType type, int turn, float factor)
+    {   
+        debuffs.Add(new Buff(type, turn, factor));
     }
 
     private void PoisonDam()
@@ -202,11 +234,11 @@ public class State
     }
     private void BloodDam()
     {
-
     }
-    #endregion
-
-
+    public void Purify()
+    {
+        debuffs.Clear();
+    }
     //공격 받음
     public void AdDam(float v)
     {
@@ -219,7 +251,12 @@ public class State
 
     public void Heal(float v)
     {
-        Hp += System.Convert.ToInt32(v);
+        Hp += (int)v;
+    }
+
+    public void EleDam(float v)
+    {
+        Hp -= System.Convert.ToInt32(v);
     }
 
     //즉사
@@ -229,13 +266,14 @@ public class State
         Hp = 0;
     }
 
-
-    #region 속성공격
-    public void EleDam(float v)
+    public void RunBattle()
     {
-        Hp -= System.Convert.ToInt32(v);
+
     }
 
-    #endregion
+    public void Resurrection()
+    {
 
+    }
+    #endregion
 }

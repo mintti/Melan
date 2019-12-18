@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 #region Skill Class Info
 public enum SkillType{NONE, COMMON, DAM, SHD, BUF, DBUF, SUPPOSDAM}
-public enum Target{NONE, MINE, WE, THAT, THEY} //MANE 우리팀 중 한명
+public enum Target{NONE, MINE, WE, THAT, THEY} //MINE 우리팀 중 한명
 public class SkillInfo
 {
     public int job{get;set;}
@@ -107,14 +107,20 @@ public class SkillData : MonoBehaviour
                     switch (num)
                     {
                         case 0 :
+                            targetS.AdDam(playerS.Power);
                             break;
                         case 1 :
+                            targetS.AdDam(playerS.Power * 0.3f);
                             break;
                         case 2 :
+                            playerS.AddBuff(BuffType.SHILD, 2, 0.5f);
                             break;
                         case 3 :
+                            playerS.AddBuff(BuffType.POWER, 3, 1.5f);
                             break;
                         case 4 :
+                            if(targetS.Hp <= targetS.maxHp)
+                                targetS.DeathDam();
                             break;
                         default:
                         break;
@@ -124,12 +130,16 @@ public class SkillData : MonoBehaviour
                     switch (num)
                     {
                         case 0 :
+                            targetS.ApDam(playerS.Power);
                             break;
                         case 1 :
+                            targetS.ApDam(playerS.Power * 0.3f);
                             break;
                         case 2 :
+                            playerS.AddBuff(BuffType.SHILD, 2, 0.7f);
                             break;
                         case 3 :
+                            targetS.AddDebuff(BuffType.SPEED, 3, 0.5f);
                             break;
                         case 4 :
                             break;
@@ -141,14 +151,20 @@ public class SkillData : MonoBehaviour
                     switch (num)
                     {
                         case 0 :
+                            targetS.AdDam(playerS.Power);
                             break;
                         case 1 :
+                            targetS.Heal(playerS.Power * 0.2f);
+                            targetS.Blood = 0;
                             break;
                         case 2 :
+                            playerS.AddBuff(BuffType.SPEED, 2, 1.5f);
                             break;
                         case 3 :
+                            playerS.Special_Skill_Up++;
                             break;
                         case 4 :
+                            playerS.RunBattle();
                             break;
                         default:
                             break;
@@ -158,14 +174,19 @@ public class SkillData : MonoBehaviour
                     switch (num)
                     {
                         case 0 :
+                            targetS.AdDam(playerS.Power);
                             break;
                         case 1 :
+                            targetS.Heal(playerS.Power);
                             break;
                         case 2 :
+                            targetS.Heal(playerS.Power * 0.2f);
                             break;
                         case 3 :
+                            targetS.Purify();
                             break;
                         case 4 :
+                            targetS.Resurrection();
                             break;
                         default:
                             break;
@@ -175,6 +196,7 @@ public class SkillData : MonoBehaviour
                     break;
             }
         }
+        BattleController.Instance.NextTurn();
     }
     #endregion
 
