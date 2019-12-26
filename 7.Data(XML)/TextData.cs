@@ -28,7 +28,7 @@ public class TextData : MonoBehaviour
         "지급하지 않을 경우 계약이 해지됩니다."};
 
 
-    public string[] job_lan = new string[11]{"전사" , "마법사", "도적" , "미정", 
+    public string[] job_Lan = new string[11]{"전사" , "마법사", "도적" , "치유사", 
                                             "미정", "미정", "미정", "미정",
                                             "미정", "미정", "미정"};
 

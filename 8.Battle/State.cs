@@ -98,8 +98,10 @@ public class State
     public int Hp{get{return hp;}
         set{
             hp = value;
-            if(hp> maxHp)
-                hp = maxHp;
+            if(hp > maxHp)
+            {
+                hp = maxHp; 
+            }
             else if(hp<=0)
             {
                 hp =0;
@@ -131,10 +133,12 @@ public class State
     public void SetData(KnightState ks)
     {
         hp = ks.k.hp;
+        maxHp = ks.k.maxHp;
         Power = ks.k.power;
         Speed = ks.k.speed;
         Stress = ks.k.stress;
         uni = ks.k.uni;
+        
 
         LifeType = LifeType.K;
 
@@ -146,6 +150,7 @@ public class State
     public void SetData(MonsterState ms)
     {
         hp = ms.m.hp;
+        maxHp = hp;
         Power = ms.m.power;
         Speed = ms.m.speed;
         Stress = ms.m.stress;
@@ -242,7 +247,7 @@ public class State
     //공격 받음
     public void AdDam(float v)
     {
-        Hp -= System.Convert.ToInt32(v);
+        Hp -= (int)v;
     }
     public void ApDam(float v)
     {

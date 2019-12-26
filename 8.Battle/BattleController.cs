@@ -324,6 +324,8 @@ public class BattleController : MonoBehaviour
         //3-2-1 기사 혹은 몬스터의 공격
         //      해당 턴이 기사일 경우, (사용자에게 입력받는) 해당 기사의 Skill셋으로 변경해줌.
 
+        try
+        {
         if(thing[n].LifeType == LifeType.K)
         {
             int num = thingTarget[sequence[who]];
@@ -341,6 +343,11 @@ public class BattleController : MonoBehaviour
             }
             int num = thingTarget[sequence[who]];
             mps[n-knightCount].MyTurn();
+        }
+        }
+        catch(ArgumentOutOfRangeException ex)
+        {
+            Debug.Log("오류가 발생햇지만 넘어간당");
         }
 
     }
@@ -483,7 +490,7 @@ public class BattleController : MonoBehaviour
     IEnumerator Wait1Sec()
     {
         waitObj.SetActive(true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         
         waitObj.SetActive(false);
         who++;

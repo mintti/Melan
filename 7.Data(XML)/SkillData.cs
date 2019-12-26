@@ -110,7 +110,7 @@ public class SkillData : MonoBehaviour
                             targetS.AdDam(playerS.Power);
                             break;
                         case 1 :
-                            targetS.AdDam(playerS.Power * 0.3f);
+                            targetS.AdDam((float)playerS.Power * 0.3f);
                             break;
                         case 2 :
                             playerS.AddBuff(BuffType.SHILD, 2, 0.5f);
@@ -133,7 +133,7 @@ public class SkillData : MonoBehaviour
                             targetS.ApDam(playerS.Power);
                             break;
                         case 1 :
-                            targetS.ApDam(playerS.Power * 0.3f);
+                            targetS.ApDam((float)playerS.Power * 0.3f);
                             break;
                         case 2 :
                             playerS.AddBuff(BuffType.SHILD, 2, 0.7f);
@@ -154,7 +154,7 @@ public class SkillData : MonoBehaviour
                             targetS.AdDam(playerS.Power);
                             break;
                         case 1 :
-                            targetS.Heal(playerS.Power * 0.2f);
+                            targetS.Heal((float)playerS.Power * 0.2f);
                             targetS.Blood = 0;
                             break;
                         case 2 :
@@ -180,7 +180,7 @@ public class SkillData : MonoBehaviour
                             targetS.Heal(playerS.Power);
                             break;
                         case 2 :
-                            targetS.Heal(playerS.Power * 0.2f);
+                            targetS.Heal((float)playerS.Power * 0.3f);
                             break;
                         case 3 :
                             targetS.Purify();
@@ -196,7 +196,7 @@ public class SkillData : MonoBehaviour
                     break;
             }
         }
-        BattleController.Instance.NextTurn();
+        ColController.Instance.TurnEnd();
     }
     #endregion
 

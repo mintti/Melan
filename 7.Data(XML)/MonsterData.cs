@@ -9,7 +9,6 @@ public class Monster
 {
     public int num;
     public string name;
-    public int[] skills;
 
     public int hp;
     public int power;
@@ -18,12 +17,11 @@ public class Monster
 
     public int[] uni;
 
-    public Monster(int _num, string _name, int[] _skills,
+    public Monster(int _num, string _name,
                    int _hp, int _power, int _speed, int[] _uni, int _gold)
     {
         num = _num;
         name = _name;
-        skills = _skills;
 
         stress = 0;
 
@@ -88,13 +86,16 @@ public class MonsterData : MonoBehaviour
     }
     public void InsertData()
     {
-         monsters = new Monster[size];
+        size = 5;
+        monsters = new Monster[size];
 
         //데이터 삽입
         #region 몬스터 리스트
-        monsters[0] = new Monster(0, "슬라임", new int[]{0,1}, 20, 2, 5, null, 5);
-        monsters[1] = new Monster(1, "토끼슬라임", new int[]{0,1},40, 6, 5, null, 10);
-        monsters[2] = new Monster(2, "킹슬라임", new int[]{0,1}, 200, 6, 5, null, 10);
+        monsters[0] = new Monster(0, "슬라임", 20, 3, 6, null, 5);
+        monsters[1] = new Monster(1, "동물슬라임",  20, 2, 12, null, 5);
+        monsters[2] = new Monster(2, "포이즌슬라임",  30, 5, 8, null, 5);
+        monsters[3] = new Monster(3, "기사슬라임", 40, 10, 15, null, 10);
+        monsters[4] = new Monster(4, "킹슬라임", 200, 20, 10, null, 10);
 
         #endregion
         

@@ -31,7 +31,7 @@ public class MonsterStateViewer : MonoBehaviour
 
     public float GetHpWidthSize()
     {
-        float value = 100 * ((float)bmp.ms.s.Hp/(float)bmp.ms.m.hp);
+        float value = 100f * ((float)bmp.ms.s.Hp/(float)bmp.ms.m.hp);
         
         return value;
     }

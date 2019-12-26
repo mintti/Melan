@@ -40,7 +40,7 @@ public class WorldKnightPrefab : MonoBehaviour
         k = _k;
 
         nameText.text = k.name;
-        jobText.text = TextData.Instance.job_lan[k.job];
+        jobText.text = TextData.Instance.job_Lan[k.job];
         levelText.text = string.Format("{0}{1}", k.level, TextData.Instance.levelTail);
         hpText.text = string.Format("{0}/{1}", k.hp, k.maxHp);
         stressText.text = string.Format("{0}%", k.stress);

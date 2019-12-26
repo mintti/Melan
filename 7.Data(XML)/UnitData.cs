@@ -88,16 +88,10 @@ public class RandomKnight
 
     public void CreateRandomKnight()
     {
-        /*
-        player UnitLevel별 허용 직업군
-        1. 0~2
-        2. 3~5
-        3. 6~8
-        */
         int playerLevel = PlayerData.Instance.Level;
         
         name = "테스트";
-        job = Random.Range(0, playerLevel == 0 ? 3 : playerLevel == 1 ? 6 : 9);
+        job = PlayerData.Instance.jobs[Random.Range(0, PlayerData.Instance.jobs.Count)];
         level = Random.Range(1, playerLevel + 2); 
 
         skinNum = SkinData.Instance.RandomSkin();
@@ -116,7 +110,7 @@ public class Party
     public KnightState[] knightStates;
 
     public int day{get;set;}
-
+    public int maxDayIndex{get;set;}
     public Party()
     {
         
@@ -136,7 +130,8 @@ public class Party
             k.teaming = true;
             knightStates[i] = new KnightState(k);
         }
-        day = _day;
+        day = DungeonData.Instance.day_Array[_day];
+        maxDayIndex = _day;
     }
 
     //Day갱신.
@@ -144,6 +139,7 @@ public class Party
     {
         day--;
     }
+
 }
 
 //전투 시 Knight정보
@@ -189,13 +185,15 @@ public class UnitData : MonoBehaviour
 
     /*
         기본스텟 : hp/power/speed 순
-        0.전사  1.마법사  2.시프
-                 */
-    public int[,,] stateList = new int[3,5,3]
+    */
+    public int[,,] stateList = new int[4,5,3]
     {
-        {{20, 10, 15}, {35, 15, 15}, {40, 20, 20}, {50, 25, 20}, {60, 30, 20}},
-        {{15, 20, 5}, {25, 15, 15}, {40, 20, 20}, {50, 25, 20}, {60, 30, 20}},
-        {{15, 5, 20}, {20, 10, 25}, {20, 20, 30}, {25, 25, 40}, {30, 30, 50}}
+        //Basic 4 : 전사 / 법사 / 도적 / 치유사
+        {{30, 7, 10}, {30, 9, 13}, {35, 12, 17}, {35, 15, 20}, {40, 18, 20}},
+        {{15, 8, 6}, {17, 11, 8}, {20, 15, 10}, {23, 21, 12}, {30, 26, 15}},
+        {{15, 4, 15}, {20, 6, 17}, {20, 8, 20}, {25, 11, 23}, {30, 14, 25}},
+        {{20, 5, 8}, {20, 8, 10}, {25, 10, 10}, {25, 13, 12}, {30, 16, 12}}
+
     };
     public int[] knightPay = new int[5]
     {10, 20, 30, 40, 50};
