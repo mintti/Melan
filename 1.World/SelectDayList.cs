@@ -8,7 +8,6 @@ public class SelectDayList : MonoBehaviour
     public GameObject[] objs = new GameObject[5];
     public Text ment;
     
-    private int[] array = new int[5]{4, 8, 12, 16, 20};
     public void SetData()
     {
         SelectDay(0);
@@ -19,7 +18,7 @@ public class SelectDayList : MonoBehaviour
             ObjSetting(objs[i], i==index);
         ment.text = TextData.Instance.select_Day_Ment[index];
 
-        GameController.Instance.world.day = array[index];
+        GameController.Instance.world.dayIndex = index;
     }
     private void ObjSetting(GameObject obj, bool value)
     {

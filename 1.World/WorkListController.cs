@@ -61,6 +61,9 @@ public class WorkListController : MonoBehaviour
             case 1 :
                 workTypeObj[type].GetComponentInChildren<Text>().text = string.Format("X {0}", dp.m.Length);
                 break;
+            case 7 :
+                
+                break;
             case 8 :
                 party_Gold_Text.text = string.Format("{0}G", dp.Reward);
                 party_Turn_Text.text = string.Format("{0}T", dp.p.day);
@@ -90,6 +93,9 @@ public class WorkListController : MonoBehaviour
             case 1 : 
                 EventData.Instance.SetBattleData(index);
                 GameController.Instance.LoadScene(2);
+                break;
+            case 7 :
+                EventData.Instance.Dungeon_Clear(index);
                 break;
             default:
                 break;

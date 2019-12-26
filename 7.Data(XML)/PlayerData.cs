@@ -64,4 +64,5 @@ public class PlayerData : MonoBehaviour
     private int level; //1~3
     public int Level{get{return level;} set{level = value;}}
 
+    public List<int> jobs = new List<int>(){0, 1, 2, 3};
 }

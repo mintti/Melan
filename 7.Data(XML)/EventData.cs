@@ -82,7 +82,7 @@ public class EventData : MonoBehaviour
                 if(dp.p.day >= 0)
                     CreateBattle(dp);
                 else
-                    Clear_Dungeon(dp);
+                    dp.SetData(7);
             }
         }
     }
@@ -101,9 +101,25 @@ public class EventData : MonoBehaviour
         //생성된 배틀데이타 저장.
         dp.Battle(arr);
     }
-    private void Clear_Dungeon(DungeonProgress dp)
+
+    //던전 클리어_ WorkListController _ 7 번에서 호출.
+    public void Dungeon_Clear(int dpNum)
     {
-        dp.SetData(7);
+        DungeonProgress dp = DungeonData.Instance.dungeon_Progress[dpNum];
+        
+        //보상등록
+        Dungeon_Reward dr = DungeonData.Instance.dungeon_Rewards[dp.p.maxDayIndex];
+        PlayerData.Instance.Gold += (int)((float)dp.Reward * (1.0f * dr.gold));
+        dp.SearchP += (int)dr.search;
+
+        //파티해제
+        foreach(int k in dp.p.k)
+            UnitData.Instance.knights[k].teaming = false;
+        UnitData.Instance.partys.Remove(dp.p);
+
+        //모드 변경
+        dp.Dungeon_Reset();
+        GameController.Instance.world.WorkList_Update();//화면 업뎃
     }
     #endregion
 }

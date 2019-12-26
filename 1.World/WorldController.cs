@@ -44,7 +44,7 @@ public class WorldController : MonoBehaviour
         dungeon = DungeonData.Instance;
         for(int i =0 ;i < 8; i ++)
         {
-            GameObject obj = CodeBox.AddChildInParent(dungeonPos[i], dungeon.dungoenObjArray[dungeon.dungeon_Progress[i].d.num]);
+            GameObject obj = CodeBox.AddChildInParent(dungeonPos[i], dungeon.dungeonObjArray[dungeon.dungeon_Progress[i].d.num]);
             obj.GetComponentInChildren<WorldDungeonPrefab>().SetData(dungeon.dungeon_Progress[i], i);
         }
 
@@ -92,7 +92,7 @@ public class WorldController : MonoBehaviour
         txrArr.Clear();
         Cnt = 0;
     }
-    public int day;
+    public int dayIndex;
     
     //파티 List & 오브젝트(Select View)에 요소 추가
     public void AddKnightInParty(Knight k)
@@ -161,15 +161,18 @@ public class WorldController : MonoBehaviour
         //배열의 마지막에 Dungeon정보 저장.
         arr[arr.Length - 1] = d.num;
         //UnitData - Partys 리스트에 추가
-        DungeonData.Instance.dungeon_Progress[workListController.index].SendDungeon(unit.AddParty(arr, day));
+        DungeonData.Instance.dungeon_Progress[workListController.index].SendDungeon(unit.AddParty(arr, dayIndex));
         
         //작업 종료.
         selectKnighObj.SetActive(false);
         DungeonUpdate();
 
+        WorkList_Update();
+    }
+    public void WorkList_Update()
+    {
         workListController.SelectDungeon();
     }
-
     #endregion
 
     //게임 시작 시, 화면 초기화.

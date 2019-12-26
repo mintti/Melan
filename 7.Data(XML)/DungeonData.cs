@@ -86,7 +86,7 @@ public class DungeonProgress
     public double Reward{get;set;}
     
     public DungeonProgress(Dungeon _d)
-    {
+    {//첫 데이터.
         d = _d;
         Reset();
     }
@@ -103,7 +103,8 @@ public class DungeonProgress
         Saturation = 50;
         searchP = 0;
         Reward = 0;
-        ResetEvent();
+
+        Dungeon_Reset();
     }   
 
     public int GetDifficulty()
@@ -116,12 +117,6 @@ public class DungeonProgress
     public int eventType;//WorkList참조.
     public Party p;//컨넥으로 등록됨.
 
-    public void ResetEvent()
-    {
-        eventType = 0;
-        isParty = false;
-    }
-    
     //출전한 여부
     public bool isParty; //eventType이 0이 아닌경우 해당됨.
     public void Connect_Party(Party _p)
@@ -149,9 +144,27 @@ public class DungeonProgress
         m = arr;
     }
 
+    //ClearReset. WorldCon - Dungeon_Clear()
+    public void Dungeon_Reset()
+    {
+        eventType = 0;
+        isParty = false;
+        p = null;
+    }
     #endregion
 }
 
+public class Dungeon_Reward
+{
+    public float search;
+    public float gold;
+
+    public Dungeon_Reward(float s, float g)
+    {
+        search = s;
+        gold = g;
+    }
+}
 public class DungeonData : MonoBehaviour
 {
     private static DungeonData _instance = null;
@@ -173,11 +186,15 @@ public class DungeonData : MonoBehaviour
         }
     }
 
-    public GameObject[] dungoenObjArray = new GameObject[16];
+    public GameObject[] dungeonObjArray = new GameObject[16];
 
     public Dungeon[] dungeons = new Dungeon[16];
     public DungeonProgress[] dungeon_Progress = new DungeonProgress[8];
-    
+    //보상
+    public Dungeon_Reward[] dungeon_Rewards = new Dungeon_Reward[5]{new Dungeon_Reward(5, 0), new Dungeon_Reward(10, 5), new Dungeon_Reward(15, 8), new Dungeon_Reward(20, 15), new Dungeon_Reward(30, 25)};
+    //데이
+    public int[] day_Array = new int[5]{4, 8, 12, 16, 20};
+
     public void SetData()
     {
         /*   level 1  */
