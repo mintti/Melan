@@ -152,6 +152,19 @@ public class DungeonProgress
         p = null;
     }
     #endregion
+
+    //Reward
+    public int Get_Dungeon_Reward_SearchPer()
+    {
+        return (int)DungeonData.Instance.dungeon_Rewards[p.maxDayIndex].search;
+    }
+
+    public int Get_Dungeon_Reward_Gold()
+    {
+        double gold = Reward * (1 + 0.01 * DungeonData.Instance.dungeon_Rewards[p.maxDayIndex].gold); 
+
+        return (int)gold;
+    }
 }
 
 public class Dungeon_Reward
@@ -311,4 +324,5 @@ public class DungeonData : MonoBehaviour
             return true;
         else return false;
     }
+    
 }

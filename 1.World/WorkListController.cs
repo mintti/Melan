@@ -20,7 +20,9 @@ public class WorkListController : MonoBehaviour
 
     public Button button;
     public int index;
-
+    //#7 탐색완료 화면
+    public Text reward_Gold_Text;
+    public Text reward_SearchPer_Text;
     //#8 귀환가능 화면
     public Text party_Gold_Text;
     public Text party_Turn_Text;
@@ -62,7 +64,8 @@ public class WorkListController : MonoBehaviour
                 workTypeObj[type].GetComponentInChildren<Text>().text = string.Format("X {0}", dp.m.Length);
                 break;
             case 7 :
-                
+                reward_Gold_Text.text = string.Format("{0}G", dp.Get_Dungeon_Reward_Gold());
+                reward_SearchPer_Text.text = string.Format("+{0}%", dp.Get_Dungeon_Reward_SearchPer());
                 break;
             case 8 :
                 party_Gold_Text.text = string.Format("{0}G", dp.Reward);

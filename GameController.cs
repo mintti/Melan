@@ -106,4 +106,9 @@ public class GameController : MonoBehaviour
         data.SaveXml();
         world.DungeonUpdate();
     }
+
+    public void ResetData()
+    {
+        DataController.Instance.ResetData();
+    }
 }
