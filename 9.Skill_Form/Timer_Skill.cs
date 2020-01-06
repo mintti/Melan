@@ -18,7 +18,7 @@ public class Timer_Skill : MonoBehaviour
 
     private void Update () {
         time += Time.deltaTime;
-        if(goalTime < time)
+        if(goalTime <= time)
         {
             skill.IsPush = true;
             skill.PushComplete();

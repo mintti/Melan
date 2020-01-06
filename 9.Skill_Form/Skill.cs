@@ -68,7 +68,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
             form.SetInfoText(skillInfo.explan);
 
             isPush = false;
-            timer.SetData(this, 1f);
+            timer.SetData(this, 0.5f);
             timer.gameObject.SetActive(true);
             
             resetPos = transform.position;
@@ -78,6 +78,7 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
 
         public void OnPointerUp(PointerEventData data)
         {
+            timer.TimerEnd();
             if(isPush)
             {
                 ColController.Instance.EndDrag(transform);
