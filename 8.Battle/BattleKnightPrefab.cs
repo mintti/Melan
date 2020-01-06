@@ -112,8 +112,11 @@ public class BattleKnightPrefab : MonoBehaviour
     }
     #endregion
 
-
-    #region 모션
-
+    public Bubble bubble;
+    #region 모션, 말풍선
+    public void SentBubble(string ment)
+    {
+        bubble.SetBubble(ment);
+    }
     #endregion
 }
