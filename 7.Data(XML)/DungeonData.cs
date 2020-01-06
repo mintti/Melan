@@ -115,6 +115,7 @@ public class DungeonProgress
 
     #region DungeonEvent
     public int eventType;//WorkList참조.
+    public int choice_Event_Type;
     public Party p;//컨넥으로 등록됨.
 
     //출전한 여부
@@ -142,6 +143,11 @@ public class DungeonProgress
     {
         eventType = 1;
         m = arr;
+    }
+    public void Choice(int n)
+    {
+        eventType = 3;
+        choice_Event_Type = n;
     }
 
     //ClearReset. WorldCon - Dungeon_Clear()

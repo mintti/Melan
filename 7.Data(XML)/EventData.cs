@@ -73,21 +73,52 @@ public class EventData : MonoBehaviour
         }
     }
     //생성 (GameController NextDay?)
+    private DungeonProgress dp;
     public void CreateDungeonEvents()
     {
-        foreach(DungeonProgress dp in DungeonData.Instance.dungeon_Progress)
+        int value;
+        foreach(DungeonProgress dp_ in DungeonData.Instance.dungeon_Progress)
         {
+            dp = dp_;
             if(dp.isParty == true)
             {
                 if(dp.p.day >= 0)
-                    CreateBattle(dp);
-                else
+                {
+                    value = UnityEngine.Random.Range(0, dp.SearchP < 30 ? 3 : 4);
+                    Create_Event(value);
+                }
+                else//Day가 -1 이니 탐색완료.
                     dp.SetData(7);
             }
         }
     }
 
-    void CreateBattle(DungeonProgress dp)
+
+    private void Create_Event(int value)
+    {
+        switch (value)
+        {
+            case 0 ://NON Event
+                dp.SetData(2);
+                break;
+            case 1 : //Battle Event
+                Create_Event_Battle();
+                break;
+            case 2 ://Choice Event
+                Create_Event_Choice();
+                break;
+            case 3 ://Boss Event?
+                break;
+            case 4 :
+                break;
+            default:
+                Debug.Log("예외발생");
+                break;
+        }
+    }
+
+    //Battle 생성
+    void Create_Event_Battle()
     {
         Dungeon d = dp.d;
         int[] cntList = new int[4]{5, 9, 13 ,17};
@@ -100,6 +131,14 @@ public class EventData : MonoBehaviour
 
         //생성된 배틀데이타 저장.
         dp.Battle(arr);
+    }
+
+    //Choice 생성
+    private void Create_Event_Choice()
+    {
+        //test : 0_길선택지    1_행운의 샘물   2_보물상자
+        int value = UnityEngine.Random.Range(0, 3);
+        dp.Choice(value);
     }
 
     //던전 클리어_ WorkListController _ 7 번에서 호출.

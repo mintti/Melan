@@ -20,6 +20,8 @@ public class WorkListController : MonoBehaviour
 
     public Button button;
     public int index;
+    //#3 선택 이벤트
+    public ChoiceEvent choiceEvent;
     //#7 탐색완료 화면
     public Text reward_Gold_Text;
     public Text reward_SearchPer_Text;
@@ -47,12 +49,15 @@ public class WorkListController : MonoBehaviour
         //화면 세팅
         /* 0 : none(출전가능한)
            1 : 전투
-           2 : 자연지형에 의한 선택지
-           3 : 동료간 대화에 의한 선택지
-           4 : 기록의 발견(SearchPer 첫달성시)
+           2 : NON Event (그냥 탐색.)
+           3 : Choice Event(선택지 이벤트, dp - choice_Event_Type 값 참조)
+
+           n : 자연지형에 의한 선택지
+           n : 동료간 대화에 의한 선택지
+           n : 기록의 발견(SearchPer 첫달성시)
            
            7 : 일정대로 진행 후 귀환함.
-           8 : 0의 제외한 이벤트 후 귀환 요청.
+           8 : 0의 제외한 이벤트 후 귀환 요청이 가능한 화면
         */
         for(int i = 0 ;i < 9 ;i ++) workTypeObj[i].SetActive(false);
         
@@ -90,12 +95,18 @@ public class WorkListController : MonoBehaviour
     {
         switch (type)
         {
-            case 0 :
+            case 0 ://x 
                 GameController.Instance.world.MakeKnightList();
                 break;
-            case 1 : 
+            case 1 : //battle
                 EventData.Instance.SetBattleData(index);
                 GameController.Instance.LoadScene(2);
+                break;
+            case 2 ://non
+                gameObject.SetActive(false);
+                break;
+            case 3 ://Choice
+                choiceEvent.SetData(index);
                 break;
             case 7 :
                 EventData.Instance.Dungeon_Clear(index);

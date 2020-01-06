@@ -188,7 +188,7 @@ public class WorldController : MonoBehaviour
         for(int i= 0 ; i < 8; i ++)
         {
             int type = DungeonData.Instance.dungeon_Progress[i].eventType;
-            dungeonPos[i].GetComponentInChildren<WorldDungeonPrefab>().SetEvent(type == 0 || type == 8 ? false : true);
+            dungeonPos[i].GetComponentInChildren<WorldDungeonPrefab>().SetEvent(type == 0 || type == 8 || type == 2 ? false : true);
         }
     }
 
