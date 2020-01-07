@@ -33,6 +33,7 @@ public class BattleKnightPrefab : MonoBehaviour
     public void TurnStart()
     {
         myTurnObj.SetActive(true);
+        SendBubble("나의 턴이군~");
     }
 
     public void TurnEnd()
@@ -114,7 +115,7 @@ public class BattleKnightPrefab : MonoBehaviour
 
     public Bubble bubble;
     #region 모션, 말풍선
-    public void SentBubble(string ment)
+    public void SendBubble(string ment)
     {
         bubble.SetBubble(ment);
     }
