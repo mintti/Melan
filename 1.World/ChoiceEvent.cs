@@ -10,6 +10,8 @@ public class ChoiceEvent : MonoBehaviour
     public GameObject bt1;
     public GameObject bt2;
 
+    //결과찰
+    public GameObject result_Obj;
 
     public Sprite[] event_Sprite_Array = new Sprite[4];
     
@@ -30,36 +32,64 @@ public class ChoiceEvent : MonoBehaviour
         if(answer_1.Contains(type))
         {
             bt2.SetActive(false);
-            bt1.GetComponent<Text>().text = TextData.Instance.choice_Event_Answer[type, 0];
+            bt1.GetComponentInChildren<Text>().text = TextData.Instance.choice_Event_Answer[type, 0];
         }
         else//답변이 두개임
         {
-            bt1.GetComponent<Text>().text = TextData.Instance.choice_Event_Answer[type, 0];
-            bt2.GetComponent<Text>().text = TextData.Instance.choice_Event_Answer[type, 1];
+            bt1.GetComponentInChildren<Text>().text = TextData.Instance.choice_Event_Answer[type, 0];
+            bt2.GetComponentInChildren<Text>().text = TextData.Instance.choice_Event_Answer[type, 1];
         }
     }
 
     public void Choice(int value)
     {
+        bool result = Random.Range(0, answer_1.Contains(type) ? 1 : 2 ) == 0 ? true : false;
+        int answer = 0;
+        int dp_Evnet_Type_Num = 8;
         switch (type)
         {
-            case 0 :
-
+            case 0 ://Left_Or_Right
+                int day = DungeonData.Instance.day_Array[dp.p.maxDayIndex] / 2;
+                dp.p.Day += result ? -day : day/2 ;
+                answer = result ? 0 : 1;
                 break;
-            case 1 :
-
+            case 1 ://Lucky_Lake
+                foreach(int k in dp.p.k)
+                    UnitData.Instance.knights[k].Lucky_Lake();
+                answer = 2;
                 break;
-            case 2 :
-                
+            case 2 ://Treasure_Chest
+                if(value == 1 )
+                {
+                    answer = 5;
+                    break;
+                }
+                if(result)
+                    dp.Reward += 100;
+                /*
+                else// 이건 미믹 전투화면이된다. 
+                    {
+                        //dp_Evnet_Type_Num = 5;
+                    }
+                */
+                answer = result ? 3 : 4 ;
                 break;
-            case 3 :
-                
+            case 3 ://Gamble
                 break;
             default:
-                
                 break;
         }
+        //표시
+        result_Obj.SetActive(true);
+        result_Obj.GetComponentInChildren<Text>().text = TextData.Instance.choice_Event_Result[answer];
+
+        dp.SetData(dp_Evnet_Type_Num);
     }
 
-    
+    public void Close()
+    {
+        result_Obj.SetActive(false);
+        gameObject.SetActive(false);
+    }
+
 }

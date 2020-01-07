@@ -30,11 +30,12 @@ public class EventData : MonoBehaviour
     }
 
     //수행해야할 이벤트가 남아있으면 true  없으면 false임
+    private List<int> pass_Event_Type_List = new List<int>(){0, 2, 8};
     public bool Check_RemainingEvent()
     {
         foreach(DungeonProgress dp in DungeonData.Instance.dungeon_Progress)
         {
-            if(!(dp.eventType == 0 || dp.eventType == 8))
+            if(!( pass_Event_Type_List.Contains(dp.eventType)))
                 return true; 
         }
         return false;

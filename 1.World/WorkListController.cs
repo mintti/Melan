@@ -8,7 +8,6 @@ public class WorkListController : MonoBehaviour
     public WorldController world;
 
     public GameObject[] workTypeObj = new GameObject[9];
-    public GameObject partyInfo_Button;
     static int type;
 
     public Text dungeon_Name_Text;
@@ -20,14 +19,17 @@ public class WorkListController : MonoBehaviour
 
     public Button button;
     public int index;
+
     //#3 선택 이벤트
     public ChoiceEvent choiceEvent;
     //#7 탐색완료 화면
     public Text reward_Gold_Text;
     public Text reward_SearchPer_Text;
     //#8 귀환가능 화면
+    public GameObject partyInfo_Obj;
     public Text party_Gold_Text;
     public Text party_Turn_Text;
+
     public void SelectDungeon()
     { SelectDungeon(index);}
     public void SelectDungeon(int _index)
@@ -72,20 +74,23 @@ public class WorkListController : MonoBehaviour
                 reward_Gold_Text.text = string.Format("{0}G", dp.Get_Dungeon_Reward_Gold());
                 reward_SearchPer_Text.text = string.Format("+{0}%", dp.Get_Dungeon_Reward_SearchPer());
                 break;
-            case 8 :
-                party_Gold_Text.text = string.Format("{0}G", dp.Reward);
-                party_Turn_Text.text = string.Format("{0}T", dp.p.day);
-                break;
             default:
                 break;
         }
         workTypeObj[type].SetActive(true);
         //멘트
+        
         button_Ment_Text.text = TextData.Instance.workList_Button_Ment_Text[type];
         info_Ment_Text.text = TextData.Instance.workList_Info_Ment_Text[type];
         // button.Interactable = n ==
         
         CodeBox.ClearList(partyInfo_ListTr);
+        partyInfo_Obj.SetActive(type!=0);
+        if(type!=0)
+        {
+            party_Gold_Text.text = string.Format("{0}G", dp.Reward);
+            party_Turn_Text.text = string.Format("{0}T", dp.p.day);
+        }
         if(type!=0 && type !=7) PartyInfoViewer();
     }
     
@@ -140,6 +145,8 @@ public class WorkListController : MonoBehaviour
     {
 
     }
+
+    //List에 표시되는 파티원들의 모습
     public void PartyInfoViewer()
     {
         Party p = DungeonData.Instance.dungeon_Progress[index].p;

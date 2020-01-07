@@ -19,7 +19,9 @@ public class Knight
 
     public bool isAlive;
     public int hp;
+    public int Hp{get{return hp;}set{hp = value > maxHp ? maxHp : value < 0 ? 0 : value;}}
     public int stress;
+    public int Stress{get{return stress;}set{stress = value > 100 ? 100 : value < 0 ? 0 : value;}}
     
     public int[] uni;
     //추후 Array로 바꾸기.
@@ -57,6 +59,13 @@ public class Knight
         maxHp = stateList[job, level-1 , 0];
         power = stateList[job, level-1, 1];
         speed = stateList[job, level-1, 2];
+    }
+
+    //ChoiceEvnet 에서 호출됨.
+    public void Lucky_Lake()
+    {
+        hp = maxHp;
+        stress -= 30;
     }
 }
 [System.Serializable]
@@ -110,6 +119,7 @@ public class Party
     public KnightState[] knightStates;
 
     public int day{get;set;}
+    public int Day{get{return day;}set{day = value; if(day < 0) day = 0;}}
     public int maxDayIndex{get;set;}
     public Party()
     {

@@ -192,6 +192,12 @@ public class WorldController : MonoBehaviour
         }
     }
 
+    //Choice Evnet. 화면닫기
+    public void Choice_Event_Close()
+    {
+        workListController.choiceEvent.Close();
+        workListController.gameObject.SetActive(false);
+    }
     #region Texture Finder
 
     public void ResetTexture()

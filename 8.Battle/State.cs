@@ -117,7 +117,19 @@ public class State
     private int speed;
     public int Speed{get{int value = System.Convert.ToInt32(speed* speedMultiple); return value;} set{speed = value;}}
     private int stress;
-    public int Stress{get{return stress;} set{stress = value;}}
+    public int Stress{get{return stress;}
+        set{
+            stress = value;
+            if(stress > 100)
+            {
+                stress = 100; 
+            }
+            else if(stress<0)
+            {
+                stress =0;
+            }
+            UpdateDataUI();
+        }}
     public int[] uni;
 
     //배수 변수
@@ -136,7 +148,7 @@ public class State
         maxHp = ks.k.maxHp;
         Power = ks.k.power;
         Speed = ks.k.speed;
-        Stress = ks.k.stress;
+        stress = ks.k.stress;
         uni = ks.k.uni;
         
 
@@ -153,7 +165,7 @@ public class State
         maxHp = hp;
         Power = ms.m.power;
         Speed = ms.m.speed;
-        Stress = ms.m.stress;
+        stress = ms.m.stress;
         uni = ms.m.uni;
 
         LifeType = LifeType.M;
@@ -280,5 +292,7 @@ public class State
     {
 
     }
+
+    
     #endregion
 }
