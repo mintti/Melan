@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
+public class Skill : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {   
     private KnightState ks;
     private Form form;
@@ -51,77 +51,50 @@ public class Skill : MonoBehaviour, IPointerExitHandler, IPointerDownHandler, IP
     
     #region 포인터이벤트
 
-    public Timer_Skill timer;
+    Vector3 resetPos = new Vector3();
+    Sprite sprite;
 
-        Vector3 resetPos = new Vector3();
-        Sprite sprite;
+    public void OnPointerDown(PointerEventData data)
+    {
+        form.SetInfoText(skillInfo.explan);
+        sprite = skillIconImg.sprite;
 
-        private bool isPush;
-        public bool IsPush{get{return isPush;} 
-            set {
-                isPush = value;
-                if(isPush) ColController.Instance.BeginDrag(transform);
-        }}
+        ColController.Instance.BeginDrag(transform);
+        SetIconMod();
+        ColController.Instance.SetData(this);
 
-        public void OnPointerDown(PointerEventData data)
-        {
-            form.SetInfoText(skillInfo.explan);
+        resetPos = transform.position;
+    }
 
-            isPush = false;
-            timer.SetData(this, 0.5f);
-            timer.gameObject.SetActive(true);
-            
-            resetPos = transform.position;
-            
-            sprite = skillIconImg.sprite;
-        }
-
-        public void OnPointerUp(PointerEventData data)
-        {
-            timer.TimerEnd();
-            if(isPush)
-            {
-                ColController.Instance.EndDrag(transform);
-                SetSkillMod();
-            }
-            
-        }
+    public void OnPointerUp(PointerEventData data)
+    {
+        ColController.Instance.EndDrag(transform);
+        SetSkillMod();
+    }
         
-        public void OnPointerExit(PointerEventData data)
-        {
-            timer.TimerEnd();
-        }
-        
-        //Timer에서 호출됨.
-        public void PushComplete()
-        {
-            SetIconMod();
-            ColController.Instance.SetData(this);
-        }
        
-        //드래그 이벤트
-        public void OnDrag(PointerEventData eventData)
-        {
-            if(isPush)
-                transform.position = eventData.position;
-        }
-        //아이콘 <-> 스킬모양
-        private void SetIconMod()
-        {
-            skillIconImg.sprite = ColController.Instance.testSkillspr;
-            SamMod(true);
-        }
+    //드래그 이벤트
+    public void OnDrag(PointerEventData eventData)
+    {
+        transform.position = eventData.position;
+    }
+    //아이콘 <-> 스킬모양
+    private void SetIconMod()
+    {
+        skillIconImg.sprite = ColController.Instance.testSkillspr;
+        SamMod(true);
+    }
 
-        private void SetSkillMod()
-        {
-            transform.position = resetPos;
-            skillIconImg.sprite = sprite;
-            SamMod(false);
-        }
+    private void SetSkillMod()
+    {
+        transform.position = resetPos;
+        skillIconImg.sprite = sprite;
+        SamMod(false);
+    }
 
-        void SamMod(bool isIcon)
-        {
-            nameText.enabled = !isIcon;
-        }
-        #endregion
+    void SamMod(bool isIcon)
+    {
+        nameText.enabled = !isIcon;
+    }
+    #endregion
 }

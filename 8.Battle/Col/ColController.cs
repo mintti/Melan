@@ -96,7 +96,6 @@ public class ColController : MonoBehaviour
     public void SetData(Skill _skill)
     {   
         skill  = _skill; //인자 저장.
-        BattleUI.SetActive(false);
         ChangeColForm();
     }
 
@@ -245,7 +244,6 @@ public class ColController : MonoBehaviour
         }
         
         ResetForm();
-        BattleUI.SetActive(true);
         SwapSkillHierarchy(invisibleSkill, _skill);
     }
     private State GetMyState()
