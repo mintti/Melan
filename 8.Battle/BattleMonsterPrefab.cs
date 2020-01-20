@@ -27,9 +27,9 @@ public class BattleMonsterPrefab : MonoBehaviour
     {
         ms = new MonsterState(m);
         s = ms.s;
+        msv = _msv;
         s.SetBMP(this);
         index = n;
-        msv = _msv;
         
         isMonster = true;
 

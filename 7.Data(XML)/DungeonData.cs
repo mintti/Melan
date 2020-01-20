@@ -212,7 +212,7 @@ public class DungeonData : MonoBehaviour
     //보상
     public Dungeon_Reward[] dungeon_Rewards = new Dungeon_Reward[5]{new Dungeon_Reward(5, 0), new Dungeon_Reward(10, 5), new Dungeon_Reward(15, 8), new Dungeon_Reward(20, 15), new Dungeon_Reward(30, 25)};
     //데이
-    public int[] day_Array = new int[5]{4, 8, 12, 16, 20};
+    public int[] day_Array = new int[5]{2, 3, 4, 5, 6};//4, 8, 12, 16, 20
 
     public void SetData()
     {

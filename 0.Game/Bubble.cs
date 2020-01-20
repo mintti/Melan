@@ -6,17 +6,23 @@ using UnityEngine.UI;
 
 public class Bubble : MonoBehaviour
 {
+    float time;
+    float[] time_Array = new float[2]{1, 2};
+
     public void SetBubble(string _text)
     {
         gameObject.SetActive(true);
         GetComponentInChildren<Text>().text =_text;
 
-        StartCoroutine("Close");
+        time = _text.Length < 20 ? time_Array[0] : time_Array[1];
+        
+        Destroy(gameObject, time);
+        //StartCoroutine("Close");
     }
 
     IEnumerator Close()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(time);
         gameObject.SetActive(false);
     }
     

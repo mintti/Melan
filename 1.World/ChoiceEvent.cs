@@ -88,6 +88,7 @@ public class ChoiceEvent : MonoBehaviour
 
     public void Close()
     {
+        GameController.Instance.world.DungeonUpdate();
         result_Obj.SetActive(false);
         gameObject.SetActive(false);
     }

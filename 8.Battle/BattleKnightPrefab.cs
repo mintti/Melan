@@ -18,7 +18,7 @@ public class BattleKnightPrefab : MonoBehaviour
     {
         ks = _ks;
         
-        skin.SetData(ks.k.skin);
+        skin.SetData(ks.k);
         isKnight = true;
         UpdateText();
         TurnEnd();
@@ -33,7 +33,7 @@ public class BattleKnightPrefab : MonoBehaviour
     public void TurnStart()
     {
         myTurnObj.SetActive(true);
-        SendBubble("나의 턴이군~");
+        transform.SendMessage("SendBubble", "나의 턴이군~");
     }
 
     public void TurnEnd()
@@ -53,14 +53,14 @@ public class BattleKnightPrefab : MonoBehaviour
     public Text stressText;
 
     //HP2
-    public Text hpNowText;
-    public Text hpTotalText;
-    public RectTransform hpTr;
+    
 
     //Text 관련
     public void UpdateText()
     {
         HpText();
+        SetStressText();
+
         PowerText();
         SpeedText();
         StressText();
@@ -100,24 +100,36 @@ public class BattleKnightPrefab : MonoBehaviour
         targetObj.SetActive(false);
 
     }
+
     //체력바
+    public Text hpNowText;
+    public Text hpTotalText;
+    public RectTransform hpTr;
     public void HpText()
     {   hpText.text = string.Format("{0}/{1}", ks.s.Hp, ks.k.hp);
         hpNowText.text  = System.Convert.ToString(ks.s.Hp); hpTotalText.text =  string.Format("/{0}", ks.k.hp);
         hpTr.sizeDelta = new Vector2(GetHpWidthSize() , hpTr.rect.height);
     }
-    public float GetHpWidthSize()
+    private float GetHpWidthSize()
     {
         float value = 160 * ((float)ks.s.Hp/(float)ks.k.hp);
         return value;
     }
-    #endregion
-
-    public Bubble bubble;
-    #region 모션, 말풍선
-    public void SendBubble(string ment)
+    
+    public Text stressNowText;
+    public RectTransform stressTr;
+    public void SetStressText()
     {
-        bubble.SetBubble(ment);
+        stressNowText.text = string.Format("{0}%", ks.s.Stress);
+        stressTr.sizeDelta = new Vector2(GetStressWidthSize() , stressTr.rect.height);
+    }
+    
+    private float GetStressWidthSize()
+    {
+        float vlaue = 160 * ((float)ks.s.Stress / 100f);
+        return vlaue;
     }
     #endregion
+
+    
 }

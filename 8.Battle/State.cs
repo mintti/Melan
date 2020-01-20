@@ -90,6 +90,7 @@ public class State
 {
     BattleKnightPrefab bkp;
     BattleMonsterPrefab bmp;
+    BubbleController bubble;
 
     delegate void Del();
 
@@ -150,7 +151,6 @@ public class State
         Speed = ks.k.speed;
         stress = ks.k.stress;
         uni = ks.k.uni;
-        
 
         LifeType = LifeType.K;
 
@@ -176,10 +176,12 @@ public class State
     public void SetBMP(BattleMonsterPrefab bmp_)
     {
         bmp = bmp_;
+        bubble = bmp.msv.transform.GetComponent<BubbleController>();
     }
     public void SetBKP(BattleKnightPrefab bkp_)
     {
         bkp = bkp_;
+        bubble = bkp.transform.GetComponent<BubbleController>();
     }
 
     #endregion
@@ -222,6 +224,20 @@ public class State
     }
     #endregion
     
+    
+    private void Dam(float value)
+    {
+        Hp += (int)value;
+
+        bubble.SendHpText((int)value);
+    }
+    private void SetStress(int value)
+    {
+        Stress += (int)value;
+
+        bubble.SendStressText((int)value);
+    }
+    
     #region 스킬 사용 관련
  
     bool stun;
@@ -259,23 +275,24 @@ public class State
     //공격 받음
     public void AdDam(float v)
     {
-        Hp -= (int)v;
+        Dam(-v);
     }
     public void ApDam(float v)
     {
-        Hp -= System.Convert.ToInt32(v);
+        Dam(-v);
     }
 
     public void Heal(float v)
     {
-        Hp += (int)v;
+        Dam(v);
     }
 
     public void EleDam(float v)
     {
-        Hp -= System.Convert.ToInt32(v);
+        Dam(-v);
     }
 
+    
     //즉사
 
     public void DeathDam()
