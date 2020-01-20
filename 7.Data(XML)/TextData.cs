@@ -31,7 +31,7 @@ public class TextData : MonoBehaviour
     public string[] job_Lan = new string[11]{"전사" , "마법사", "도적" , "치유사", 
                                             "미정", "미정", "미정", "미정",
                                             "미정", "미정", "미정"};
-
+    public string[] job_Lan_Common = new string[11]{"warrior", "wizard" , "thief", "healer", "a", "a", "a", "a", "a", "a", "a"};
     #region WORLD
     public string[] workList_Button_Ment_Text = new string[9]{"탐색", "전투", "확인", "확인", "test", "test", "test", "수령", "귀환"};
     public string[] workList_Info_Ment_Text = new string[9]{
@@ -71,5 +71,9 @@ public class TextData : MonoBehaviour
     public string[,] knight_Message_World_Choice_Event = new string[4, 2]
     {{"왼쪽!", "오른쪽!"}, {"야호!",""}, {"열자!", "지나치자!"}, {"당연히 해야지~!", "위험을 감수할 필요 업지"}};
 
+    #endregion
+
+    #region Battle Sample
+    
     #endregion
 }

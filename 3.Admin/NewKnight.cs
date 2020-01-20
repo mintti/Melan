@@ -27,7 +27,7 @@ public class NewKnight : MonoBehaviour
         knight = rk;
 
         nameText.text = knight.name;
-        Debug.Log(knight.job);
+        
         jobText.text = string.Format("{0}", TextData.Instance.job_Lan[knight.job]);
         levelText.text = string.Format("{0}급" , knight.level);
 

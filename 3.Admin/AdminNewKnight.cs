@@ -17,7 +17,7 @@ public class AdminNewKnight : MonoBehaviour
         for(int i = 0; i < 3; i ++)
         {
             newKnights[i].SetData(randomKnights[i] ,i);
-            knightSkinPrefab[i].SetData(new Skin(randomKnights[i].skinNum));
+            knightSkinPrefab[i].SetData(new Knight(randomKnights[i]));
         }
 
         employBt.interactable = false;

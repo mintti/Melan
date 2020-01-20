@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class KnightSkinPrefab : MonoBehaviour
 {
@@ -21,9 +22,10 @@ public class KnightSkinPrefab : MonoBehaviour
     private void Awake() {
         motion = GetComponent<KnightMotion>();
     }
-    public void SetData(Skin _skin)
+    //캐릭터 바디 세팅
+    public void SetData(Knight knight)
     {
-        skin = _skin;
+        skin = knight.skin;
 
         frontHair.GetComponent<SpriteRenderer>().sprite = skin.frontHair;
         backHair.GetComponent<SpriteRenderer>().sprite = skin.backHair;
@@ -34,6 +36,7 @@ public class KnightSkinPrefab : MonoBehaviour
 
         pupil.GetComponent<SpriteRenderer>().sprite = skin.pupil;
         
+        SetClothes(knight.job);
         motion.StartAction();
     }
     
@@ -43,6 +46,38 @@ public class KnightSkinPrefab : MonoBehaviour
         obj.GetComponent<SpriteMask>().sprite = sprite;
     }
 
+    #region 의상
+    public GameObject front_Hat;
+    public GameObject back_Hat;
+
+    public GameObject body_Clothes;
+    public GameObject arm_Left1_Clothes;
+    public GameObject arm_Left2_Clothes;
+    public GameObject arm_Right1_Clothes;
+    public GameObject arm_Right2_Clothes;
+    
+    public GameObject leg_Clothes;
+    private Sprite[] clothes;
+    public void SetClothes(int job)
+    {
+        string path = "1.Skin/10.Clothes/" +  TextData.Instance.job_Lan_Common[job];
+        clothes = Resources.LoadAll<Sprite>(path);
+        
+        Debug.Log(path);
+        Debug.Log(clothes.Length);
+        SetClothes(body_Clothes, "body");
+        SetClothes(arm_Left1_Clothes, "arm1");
+        SetClothes(arm_Right1_Clothes, "arm1");
+        SetClothes(arm_Left2_Clothes, "arm2");
+        SetClothes(arm_Right2_Clothes, "arm2");
+        SetClothes(leg_Clothes, "leg");
+    }
+
+    private void SetClothes(GameObject obj, string name)
+    {
+        obj.GetComponent<SpriteRenderer>().sprite  = clothes.Single( s => s.name == name);
+    }
+    #endregion
     #region 모션
 
     #endregion

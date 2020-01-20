@@ -52,8 +52,14 @@ public class Knight
 
         GetState();
     }
+    //RandomKnight -> KnightSkinPrefab.SetData() 컨버팅용
+    public Knight(RandomKnight randomKnight)
+    {
+        job = randomKnight.job;
+        skin = new Skin(randomKnight.skinNum);
+        }
 
-    public void GetState()
+    private void GetState()
     {
         int[,,] stateList = UnitData.Instance.stateList; 
         maxHp = stateList[job, level-1 , 0];

@@ -110,7 +110,7 @@ public class WorldController : MonoBehaviour
         }
         
         txrArr.Add(i);
-        SkinObjs[i].SetData(k.skin);
+        SkinObjs[i].SetData(k);
         obj.SetData(k.num, textures[i], i);
         
         Cnt++;
@@ -215,7 +215,7 @@ public class WorldController : MonoBehaviour
         }
         
         txrArr.Add(i);
-        SkinObjs[i].SetData(k.skin);
+        SkinObjs[i].SetData(k);
         
         Cnt++;
 
