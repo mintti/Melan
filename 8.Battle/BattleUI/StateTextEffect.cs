@@ -31,10 +31,10 @@ public class StateTextEffect : MonoBehaviour
 
     private void SetText(bool per)
     {
-        text.text = string.Format("{0}{1}{2}", n < 0 ? "" : "+" , n, per ? "%" : " ");
+        text.text = string.Format("{0}{1}{2}", n < 0 ? "" : "+" , n, per ? "%" : "");
 
         StartCoroutine("Effect");
-        Destroy(gameObject, 1);
+        Destroy(gameObject, 0.7f);
     }
 
     IEnumerator Effect()

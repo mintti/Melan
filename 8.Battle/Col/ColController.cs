@@ -82,6 +82,12 @@ public class ColController : MonoBehaviour
         
         BattleController.Instance.NextTurn();
     }
+    public void BattleEnd()
+    {
+        formObj[who].SetActive(false);
+        foreach(BattleKnightPrefab kp in battle.kps)
+            kp.TurnEnd();
+    }
     
     #endregion
     #region COL SETTING

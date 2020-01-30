@@ -361,20 +361,7 @@ public class BattleController : MonoBehaviour
         }
         Debug.Log(text);
     }
-    //스킬 유효성 검사
-    private void IsSkill()
-    {
-
-    }
-    //스킬 선택(사용)
-    private void SelectSkill()
-    {
-
-    }
-    #region PlayerUI 세팅
-
-
-    #endregion
+    
     //턴을 넘긴 상태.
     public void NextTurn()
     {
@@ -427,6 +414,8 @@ public class BattleController : MonoBehaviour
     //6. [승리] 상태, [로드] 상태에서 판별 후 호출됨.
     private void Win()
     {
+        ColController.Instance.BattleEnd();
+
         winObj.SetActive(true);
         int reward =  GetReward();
         winRewardText.text = string.Format("WE GET {0}G", reward);
