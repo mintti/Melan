@@ -208,7 +208,7 @@ public class State
         }
         else
         {
-            bmp.Die();
+            bmp.StartCoroutine("Die");
             BattleController.Instance.KillMonster(bmp.index);
         }
     }
@@ -224,7 +224,7 @@ public class State
     }
     #endregion
     
-    
+    #region UI관련
     private void Dam(float value)
     {
         Hp += (int)value;
@@ -237,6 +237,18 @@ public class State
 
         bubble.SendStressText((int)value);
     }
+
+    public void Action(string text)
+    {
+        if(lifeType == LifeType.K)
+        {
+            bkp.skin.transform.SendMessage("OrderAction" ,text);
+        }
+        else
+        {
+        }
+    }
+    #endregion
     
     #region 스킬 사용 관련
  

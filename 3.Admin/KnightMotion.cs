@@ -30,4 +30,9 @@ public class KnightMotion : MonoBehaviour
             animator.Play("EyesMotion.CloseEyes");
         }
     }
+
+    public void OrderAction(string name)
+    {
+        animator.Play("Action." + name);
+    }
 }
