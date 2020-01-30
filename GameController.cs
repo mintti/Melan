@@ -111,4 +111,8 @@ public class GameController : MonoBehaviour
     {
         DataController.Instance.ResetData();
     }
+
+    #region 스토리이벤트
+    public Transform story_Tr;
+    #endregion
 }

@@ -196,6 +196,7 @@ public class SkillData : MonoBehaviour
                     break;
             }
         }
+        playerS.Action("SlashHand");
         ColController.Instance.TurnEnd();
     }
     #endregion

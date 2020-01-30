@@ -314,7 +314,10 @@ public class DataController : MonoBehaviour
         return arr;
     }
 
-    
+    public void Save()
+    {
+        
+    }
     public void SaveOverlapXml()
     {
 
@@ -451,6 +454,14 @@ public class DataController : MonoBehaviour
                 XmlElement monsters = xmlDoc.CreateElement("Monsters");
                 monsters.InnerText = IntArrayToString(dp.m);
                 info.AppendChild(monsters);
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
                 break;
             default:
                 break;
@@ -632,6 +643,34 @@ public class DataController : MonoBehaviour
     }
     #endregion
 
+    #region 시나리오 데이타
+    
+    public XmlDocument LoadStory(string fileName)
+    {
+        string filePath_Story;
+
+        XmlDocument xmlDoc_Story = new XmlDocument();
+        if(platform == "pc")
+        {
+            filePath_Story = "Assets/StreamingAssets/ExternalData/Story/" + fileName + ".xml";
+            xmlDoc_Story.Load(filePath_Story);
+        }
+        else
+        {
+            filePath_Story =  "jar:file://" + Application.dataPath + "!/assets/ExternalData/Story/" + fileName + ".xml";
+
+            WWW www = new WWW(filePath_Story);
+
+            while(!www.isDone){};
+
+            StringReader stringReader = new StringReader(www.text);
+            xmlDoc_Story.LoadXml(stringReader.ReadToEnd());
+        }
+        
+        return xmlDoc_Story;
+    }
+
+    #endregion
     #region SYSTEM
 
     #endregion

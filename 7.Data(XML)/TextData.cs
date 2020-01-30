@@ -74,6 +74,7 @@ public class TextData : MonoBehaviour
     #endregion
 
     #region Battle Sample
-    
+
+    //public string[] battle_Lines = new string[]
     #endregion
 }
