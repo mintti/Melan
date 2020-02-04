@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Xml;
@@ -688,4 +689,39 @@ public class DataController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+
+    public void DataSave()
+    {
+        XmlNode playerData = xmlDoc.SelectSingleNode("PlayerData");
+
+        //0 dataSave
+        playerData.SelectSingleNode("DataSave").InnerText = "Saving";
+        
+        //1 Player day,gold, stress
+        playerData.SelectSingleNode("Player/Day").InnerText = System.Convert.ToString(player.Day);
+        playerData.SelectSingleNode("Player/Gold").InnerText = System.Convert.ToString(player.Gold);
+        playerData.SelectSingleNode("Player/Stress").InnerText = System.Convert.ToString(player.Stress);
+
+        //2 KnightInfo - Knight -상세
+        //  2-1 기존Knight 업데이트
+        foreach(XmlNode node in playerData.SelectNodes("KnightInfo/Knight"))
+        {
+            
+        }
+        foreach(Knight k in UnitData.Instance.knights)
+        {
+
+        }
+        //  2-2 신규Knight 등록
+
+        //3 Party
+        //4 EventInfo (Admin, Office)
+        //5 Info
+        //  5-1 RandomKnightInfo - Knight
+        //6 DungeonInfo Dungeon - 여러개, Type(유동)
+        //7 Office - 정책, OfficeGage, Point
+        
+        //n-1 Game - Retry, Dungeon, Challenge(도전과제)
+        //n dataSave-Done
+    }
 }

@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//disposition 기질들..
+public class Type
+{
+    public int type;
+    public int level;
+}
 #region Unit, Knight Class Info
-
 [System.Serializable]
 public class Knight
 {
@@ -13,17 +18,21 @@ public class Knight
     public int level;
     public int exper; //경험치
     
-    public int[] skill; //보유한 스킬
     public int favor;
     public int day;
 
+    //data
     public bool isAlive;
     public int hp;
     public int Hp{get{return hp;}set{hp = value > maxHp ? maxHp : value < 0 ? 0 : value;}}
     public int stress;
     public int Stress{get{return stress;}set{stress = value > 100 ? 100 : value < 0 ? 0 : value;}}
-    
-    public int[] uni;
+
+    //특수정보    
+    public int[] uni; //개성
+    public int mentalLevel; //멘탈레벨
+    public int personality; //성격
+    public Type disposition;
     //추후 Array로 바꾸기.
     public int[] skinArr;
     public Skin skin; //Unit.skins.closet[skinNum]으로 호출됨.
@@ -41,11 +50,11 @@ public class Knight
 
     //xml로드 값
     public Knight(int _num, string _name, int _job, int _level, int _exper,
-                  int[] _skill, int _favor, int _day, int[] _skinArr, 
-                  bool _isAlive, int _hp, int _stress, int[] _uni)
+                int _favor, int _day, int[] _skinArr, 
+                bool _isAlive, int _hp, int _stress, int[] _uni)
     {
         num = _num; name = _name; job = _job; level = _level; exper = _exper;
-        skill = _skill; favor = _favor; day = _day;  skinArr = _skinArr;
+        favor = _favor; day = _day;  skinArr = _skinArr;
         isAlive = _isAlive; hp = _hp; stress = _stress;  uni = _uni;
 
         skin = new Skin(skinArr);
