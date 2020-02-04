@@ -239,6 +239,8 @@ public class DungeonData : MonoBehaviour
         /*   level 4   */
         dungeons[14].SetData(14, "마왕성", 4, 0);
         dungeons[15].SetData(15, "이형의 땅", 4, 0);
+
+        day_Array = new int[5]{2, 3, 4, 5, 6};
     }
 
     //해당하는 던전NUM의 던전진행의 인덱스를 출력

@@ -201,6 +201,8 @@ public class State
     //사망처리
     public void Die()
     {
+        if(alive == AliveType.죽음) return;
+
         alive = AliveType.죽음;
         if(lifeType == LifeType.K)
         {
@@ -227,14 +229,16 @@ public class State
     #region UI관련
     private void Dam(float value)
     {
-        Hp += (int)value;
+        if(alive == AliveType.죽음) return;
 
+        Hp += (int)value;
         bubble.SendHpText((int)value);
     }
     private void SetStress(int value)
     {
-        Stress += (int)value;
+        if(alive == AliveType.죽음) return;
 
+        Stress += (int)value;
         bubble.SendStressText((int)value);
     }
 
