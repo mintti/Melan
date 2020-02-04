@@ -40,6 +40,7 @@ public class EventData : MonoBehaviour
         }
         return false;
     }
+
     #region 전투관련
     public DungeonProgress battle_dp;//이멘트 보내기 전투 데이타.
 
@@ -160,6 +161,9 @@ public class EventData : MonoBehaviour
         //모드 변경
         dp.Dungeon_Reset();
         GameController.Instance.world.WorkList_Update();//화면 업뎃
+
+        GameController.Instance.EventCheck();
     }
     #endregion
+
 }

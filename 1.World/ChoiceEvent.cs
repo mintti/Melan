@@ -84,6 +84,8 @@ public class ChoiceEvent : MonoBehaviour
         result_Obj.GetComponentInChildren<Text>().text = TextData.Instance.choice_Event_Result[answer];
 
         dp.SetData(dp_Evnet_Type_Num);
+        
+        GameController.Instance.EventCheck();
     }
 
     public void Close()

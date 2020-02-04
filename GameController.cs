@@ -43,6 +43,8 @@ public class GameController : MonoBehaviour
         PlayerDataUpdate();
         world.CreateDungeonInWorld();
         event_.Connect_DungeonEvent_And_Party();
+
+        EventCheck();//세이브창
     }
 
     #region  Player Data
@@ -90,10 +92,24 @@ public class GameController : MonoBehaviour
     //Castle Click
     public Button bt;
 
-    public void NextDay()
+    public TurnEnd turnEnd;
+    /* 매 이벤트 완료할때 마다 호출해줌.
+        EvnetData에서 호출되지 않는 것.
+        ChoiceEvent - Choice(), DataController - 
+    */
+    public void EventCheck()
     {
         if(event_.Check_RemainingEvent())
+        {
+            turnEnd.Off();
             return;
+        }
+        turnEnd.On();
+    }
+
+    
+    public void NextDay()
+    {
         UnitData.Instance.NextDay();
         //이벤트 재생성
         event_.CreateEvent();
@@ -105,8 +121,11 @@ public class GameController : MonoBehaviour
         //data.SaveOverlapXml();
         data.SaveXml();
         world.DungeonUpdate();
-    }
 
+        //이벤트 체크 후 세이브창 표시
+        EventCheck();
+    }
+    
     public void ResetData()
     {
         DataController.Instance.ResetData();
