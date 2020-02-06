@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //disposition 기질들..
-public class Type
+public class Personality
 {
     public int type;
-    public int level;
+    //type별 레벨
+    public int despair;
+    public int positive;
 }
 #region Unit, Knight Class Info
 [System.Serializable]
@@ -31,8 +33,8 @@ public class Knight
     //특수정보    
     public int[] uni; //개성
     public int mentalLevel; //멘탈레벨
-    public int personality; //성격
-    public Type disposition;
+    public Personality personality;//성격
+
     //추후 Array로 바꾸기.
     public int[] skinArr;
     public Skin skin; //Unit.skins.closet[skinNum]으로 호출됨.
@@ -49,6 +51,9 @@ public class Knight
    
 
     //xml로드 값
+    public Knight(){}
+    public void Load(){skin = new Skin(skinArr); GetState();}
+
     public Knight(int _num, string _name, int _job, int _level, int _exper,
                 int _favor, int _day, int[] _skinArr, 
                 bool _isAlive, int _hp, int _stress, int[] _uni)
@@ -93,7 +98,7 @@ public class RandomKnight
     public int[] skill;
 
     public bool isEmploy;
-
+    public RandomKnight(){}
     public RandomKnight(bool b)
     {
         if(b)
@@ -133,14 +138,11 @@ public class Party
     public int[] k;
     public KnightState[] knightStates;
 
-    public int day{get;set;}
+    public int day{get;set;}//남은 Day
+    public int dayIndex{get;set;}//DungoenDayIndex
     public int Day{get{return day;}set{day = value; if(day < 0) day = 0;}}
-    public int maxDayIndex{get;set;}
-    public Party()
-    {
-        
-    }
-    public Party(int _d, int[] _kNum, int _day)
+    public Party(){}
+    public Party(int _d, int[] _kNum, int _day, int _dayIndex)
     {  
         dungeonNum = _d;
         
@@ -155,8 +157,8 @@ public class Party
             k.teaming = true;
             knightStates[i] = new KnightState(k);
         }
-        day = DungeonData.Instance.day_Array[_day];
-        maxDayIndex = _day;
+        dayIndex = _dayIndex;
+        day = DungeonData.Instance.day_Array[dayIndex];
     }
 
     //Day갱신.
@@ -226,7 +228,7 @@ public class UnitData : MonoBehaviour
     public List<int> useElementJob = new List<int>(){1};
 
 
-    public Party AddParty(int[] list, int day) //list[0~n : Knight, n +1 : dungeon]
+    public Party AddParty(int[] list, int dayIndex) //list[0~n : Knight, n +1 : dungeon]
     {
         int size = list.Length -1;
         int[] Karr = new int[size];
@@ -236,7 +238,8 @@ public class UnitData : MonoBehaviour
             
         int dungeon = list[size];
 
-        Party p = new Party(dungeon, Karr, day);
+        int day = DungeonData.Instance.day_Array[dayIndex];
+        Party p = new Party(dungeon, Karr, day, dayIndex);
         partys.Add(p);
 
         DataController.Instance.AddParty(p);
@@ -285,7 +288,7 @@ public class UnitData : MonoBehaviour
         int num = knights.Count;
         knights.Add(new Knight(
             num, rn.name, rn.job, rn.level, 0,
-            arr, 0, PlayerData.Instance.Day, rn.skinNum,
+            0, PlayerData.Instance.Day, rn.skinNum,
             true, hp, 0, arr
         ));
         

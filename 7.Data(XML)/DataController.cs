@@ -36,7 +36,7 @@ public class DataController : MonoBehaviour
     public SkillData skill;
     public DungeonData dungeon;
     public PlayerData player;
-
+    public OfficeData office;
     public SkinData skin;
 
     public TextData text;
@@ -66,7 +66,8 @@ public class DataController : MonoBehaviour
                 MonsterData.Instance.InsertData();
                 dungeon.SetData();
                 SkillData.Instance.SetData();
-
+                TextData.Instance.SetData();
+                
                 LoadDataProcess(1);
                 break;
             
@@ -197,11 +198,9 @@ public class DataController : MonoBehaviour
         //1. PlayerData
         XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
         
-        
-        player.Day = System.Convert.ToInt32(node.SelectSingleNode("Day").InnerText);
-        player.Gold = System.Convert.ToInt32(node.SelectSingleNode("Gold").InnerText);
-        player.Stress = System.Convert.ToInt32(node.SelectSingleNode("Stress").InnerText);
-
+        LoadNode(player.Day, node, "Day");
+        LoadNode(player.Gold, node, "Gold");
+        LoadNode(player.Stress, node, "Stress");
 
         //2. DungeonProgress;
         XmlNodeList nodes = xmlDoc.SelectNodes("PlayerData/DungeonInfo/Dungeon");
@@ -209,46 +208,57 @@ public class DataController : MonoBehaviour
         
         foreach (XmlNode _node in nodes)
         {
-            DungeonProgress d = new DungeonProgress(
-                dungeon.dungeons[System.Convert.ToInt32(_node.SelectSingleNode("Num").InnerText)],
-                System.Convert.ToBoolean(_node.SelectSingleNode("IsClear").InnerText),
-                System.Convert.ToDouble(_node.SelectSingleNode("Saturation").InnerText),
-                System.Convert.ToDouble(_node.SelectSingleNode("SearchP").InnerText)
-            );
+            DungeonProgress dp = new DungeonProgress();
             
-            XmlNode info = _node.SelectSingleNode("Info");
-            switch (System.Convert.ToInt32(_node.SelectSingleNode("Type").InnerText))
+            dp.d = dungeon.dungeons[LoadNode<int>(_node, "Num")];
+            LoadNode(dp.isClear, _node, "IsClear");
+            LoadNode(dp.Saturation, _node, "Saturation");
+            LoadNode(dp.SearchP, _node, "SearchP");
+            LoadNode(dp.eventType, _node, "Type");
+            switch (dp.eventType)
             {
                 case 1 :
-                    d.Battle(CodeBox.StringSplit(info.SelectSingleNode("Monsters").InnerText));
+                    LoadNodeArray(dp.m, _node, "Info");
                     break;
-                default:
-                    d.eventType = 0;
+                case 3 :
+                    LoadNode(dp.choice_Event_Type, _node, "Info");
                     break;
+                default:    break;
             }
-            dungeon.dungeon_Progress[index++] = d;
+            LoadNode(dp.Reward, _node, "Reward");
+            LoadNode(dp.experPoint, _node, "ExperPoint");
+
+            dungeon.dungeon_Progress[index++] = dp;
         }
 
         //3-1. Unit - Knight
-        
         nodes = xmlDoc.SelectNodes("PlayerData/KnightInfo/Knight");
         foreach (XmlNode _node in nodes)
         {
-            Knight k = new Knight(
-                 System.Convert.ToInt32(_node.SelectSingleNode("Num").InnerText),
-                _node.SelectSingleNode("Name").InnerText, 
-                System.Convert.ToInt32(_node.SelectSingleNode("Job").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Level").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Exper").InnerText),
-                CodeBox.StringSplit(_node.SelectSingleNode("Skill").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Favor").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Day").InnerText),
-                CodeBox.StringSplit(_node.SelectSingleNode("Skin").InnerText),
-                System.Convert.ToBoolean(_node.SelectSingleNode("IsAlive").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Hp").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Stress").InnerText),
-                CodeBox.StringSplit(_node.SelectSingleNode("Uni").InnerText)
-            );
+            Knight k = new Knight();
+
+            LoadNode(k.num, _node, "Num");
+            LoadNode(k.name, _node, "Name");
+            LoadNode(k.job, _node, "Job");
+            LoadNode(k.level, _node, "Level");
+            LoadNode(k.exper, _node, "Exper");
+            LoadNode(k.favor, _node, "Favor");
+            LoadNode(k.day, _node, "Day");
+            LoadNodeArray(k.skinArr, _node, "Skin");
+
+            LoadNode(k.isAlive, _node, "IsAlive");
+            LoadNode(k.hp, _node, "Hp");
+            LoadNode(k.stress, _node, "Stress");
+            LoadNodeArray(k.uni, _node, "Uni");
+
+            int[] array = new int[3];
+            LoadNodeArray(array, _node, "Personality");
+            k.personality.type = array[0];
+            k.personality.despair = array[1];
+            k.personality.positive = array[2];
+            LoadNode(k.mentalLevel, _node, "MentalLevel");
+
+            k.Load();
             unit.knights.Add(k);
         }
 
@@ -256,46 +266,68 @@ public class DataController : MonoBehaviour
         nodes = xmlDoc.SelectNodes("PlayerData/PartyInfo/Party");
         foreach (XmlNode _node in nodes)
         {
-            UnitData.Instance.partys.Add(new Party(
-                System.Convert.ToInt32(_node.SelectSingleNode("Dungeon").InnerText),
-                CodeBox.StringSplit(_node.SelectSingleNode("Knight").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Day").InnerText)
-            ));
+            Party p = new Party();
+            LoadNode(p.dungeonNum, _node, "Dungeon");
+            LoadNodeArray(p.k, _node, "Knight");
+            LoadNode(p.day, _node, "Day");
+            LoadNode(p.dayIndex, _node, "DayIndex");
+            UnitData.Instance.partys.Add(p);
         }
+        //4 EventInfo(Admin, Office)
 
-        //4-1. GameTurn - (고용등록된)Knight
+        //5 Info
+        //  5-1 RandomKnightInfo - Knight
         nodes = xmlDoc.SelectNodes("PlayerData/Info/RandomKnightInfo/Knight");
         index = 0;
         foreach (XmlNode _node in nodes)
         {
-            unit.randomKnightList[index++] = new RandomKnight
-            (
-                _node.SelectSingleNode("Name").InnerText,
-                System.Convert.ToInt32(_node.SelectSingleNode("Job").InnerText),
-                System.Convert.ToInt32(_node.SelectSingleNode("Level").InnerText),
-                System.Convert.ToBoolean(_node.SelectSingleNode("Employ").InnerText),
-                CodeBox.StringSplit(_node.SelectSingleNode("Skin").InnerText)
-            );
-        
+            RandomKnight rk = new RandomKnight();
+            
+            LoadNode(rk.name, _node, "Name");
+            LoadNode(rk.job, _node, "Job");
+            LoadNode(rk.level, _node, "Level");
+            LoadNodeArray(rk.skinNum, _node, "Skin");
+
+            unit.randomKnightList[index++] = rk;
         }
 
-        //4-2. GameTurn - PartyEvent
-        nodes = xmlDoc.SelectNodes("PlayerData/EventInfo/Event");
-        foreach (XmlNode _node in nodes)
+        //6 DungeonInfo
+        nodes = xmlDoc.SelectNodes("PlayerData/DungeonInfo/Dungeon");
+        index = 0;
+        foreach(XmlNode _node in nodes)
         {
-            switch(_node.SelectSingleNode("Type").InnerText)
+            DungeonProgress dp = DungeonData.Instance.dungeon_Progress[index];
+            dp.d = DungeonData.Instance.dungeons[LoadNode<int>(_node, "Dungeon")];
+            LoadNode(dp.isClear, _node, "IsClear");
+            LoadNode(dp.Saturation, _node, "Saturation");
+            LoadNode(dp.SearchP, _node, "SearchP");
+            LoadNode(dp.eventType, _node, "Type");
+
+            switch (dp.eventType)
             {
-                case "BATTLE" :
-
-                    break;
-                case "다른" :
-                    break;
-                default : 
-                    break;
+                case 0: // 로드할 이벤트가 없음. 로드안해도 되는 값들임.
+                    dp.isParty = false;
+                    index++;
+                    continue;
+                case 1: 
+                    LoadNodeArray(dp.m, _node, "Info");
+                    break;    
+                case 3:
+                    LoadNode(dp.choice_Event_Type, _node, "Info");
+                    break;            
+                default:break;
             }
-        }
-        //4-3. GameTurn - KnightEvent
+            dp.isParty = true;
 
+            LoadNode(dp.Reward, _node, "Reward");
+            LoadNode(dp.experPoint, _node, "ExperPoint");
+            index++;
+        }
+        //7 Office
+        node = xmlDoc.SelectSingleNode("PlayerData/Office");
+        LoadNode(office.officePoint, node, "OfficePoint");
+        LoadNode(office.officeGage, node, "OfficeGage");
+        
         if(isNew) CreateData();
         else LoadDataProcess(2);
     }
@@ -360,41 +392,7 @@ public class DataController : MonoBehaviour
         yield return null;
     }
     
-    #region COMMON
 
-    #endregion
-    
-    #region PLAYER
-    public void UpdateGold()
-    {
-        XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
-        
-        node.SelectSingleNode("Gold").InnerText =  System.Convert.ToString(player.Gold);
-
-        SaveOverlapXml("골드업데이트");
-    }
-
-    public void UpdateDay()
-    {
-        XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
-        
-        node.SelectSingleNode("Day").InnerText =  System.Convert.ToString(player.Day);
-
-        SaveOverlapXml("Day업데이트");
-    }
-
-    public void UpdateStress()
-    {
-        XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
-        
-        node.SelectSingleNode("Stress").InnerText =  System.Convert.ToString(player.Stress);
-
-        SaveOverlapXml("Player Stress 업데이트");
-    }
-
-    #endregion
-
-    #region WORLD
     public void SaveDungeon(int[] array)
     {
         XmlNode main = xmlDoc.SelectSingleNode("PlayerData");
@@ -427,167 +425,12 @@ public class DataController : MonoBehaviour
             type.InnerText = "0";
             child.AppendChild(type);
 
-            XmlNode info = xmlDoc.CreateNode(XmlNodeType.Element, "Info", string.Empty);
-            child.AppendChild(info);
+            CreateNode("Info", child, "0");
+            CreateNode("Reward", child, "0");
+            CreateNode("ExperPoint", child, "0");
         }
 
         SaveOverlapXml("던전생성");
-    }
-
-    public void UpdateDungeon(int num)
-    {
-        DungeonProgress dp = DungeonData.Instance.dungeon_Progress[num];
-        XmlNodeList nodes = xmlDoc.SelectNodes("PlayerData/DungeonInfo/Dungeon");
-        XmlNode dungeon = nodes[num];
-
-        dungeon.SelectSingleNode("IsClear").InnerText = System.Convert.ToString(dp.isClear);
-        dungeon.SelectSingleNode("Saturation").InnerText = System.Convert.ToString(dp.Saturation);
-        dungeon.SelectSingleNode("SearchP").InnerText = System.Convert.ToString(dp.SearchP);
-        dungeon.SelectSingleNode("Type").InnerText = System.Convert.ToString(dp.eventType);
-
-        dungeon.RemoveChild(dungeon.SelectSingleNode("Info"));
-        XmlNode info = xmlDoc.CreateNode(XmlNodeType.Element, "Info", string.Empty);
-        dungeon.AppendChild(info);
-        
-        switch (dp.eventType)
-        {
-            case 1: //전투 이벤트
-                XmlElement monsters = xmlDoc.CreateElement("Monsters");
-                monsters.InnerText = IntArrayToString(dp.m);
-                info.AppendChild(monsters);
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            default:
-                break;
-        }
-
-        SaveOverlapXml("던전업데이트");
-    }
-    #endregion
-
-    #region ADMIN
-    //UnitData - Employment(). 기사 고용에 해당. 
-    public void AddKnight(Knight k)
-    {
-        XmlNode root = xmlDoc.SelectSingleNode("PlayerData/KnightInfo");
-        
-        XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Knight", string.Empty);
-        root.AppendChild(child);
-
-        // * 기본적인 인포
-        XmlElement num = xmlDoc.CreateElement("Num");
-        num.InnerText = System.Convert.ToString(k.num);
-        child.AppendChild(num);
-
-        XmlElement name = xmlDoc.CreateElement("Name");
-        name.InnerText = k.name;
-        child.AppendChild(name);
-
-        XmlElement job = xmlDoc.CreateElement("Job");
-        job.InnerText = System.Convert.ToString(k.job);
-        child.AppendChild(job);
-
-        XmlElement level = xmlDoc.CreateElement("Level");
-        level.InnerText = System.Convert.ToString(k.level);
-        child.AppendChild(level);
-
-        XmlElement exper = xmlDoc.CreateElement("Exper");
-        exper.InnerText = System.Convert.ToString(k.exper);
-        child.AppendChild(exper);
-
-        XmlElement skill = xmlDoc.CreateElement("Skill");
-        skill.InnerText = IntArrayToString(k.skill);
-        child.AppendChild(skill);
-
-        XmlElement favor = xmlDoc.CreateElement("Favor");
-        favor.InnerText = System.Convert.ToString(k.favor);
-        child.AppendChild(favor);
-
-        XmlElement day = xmlDoc.CreateElement("Day");
-        day.InnerText = System.Convert.ToString(k.day);
-        child.AppendChild(day);
-
-        XmlElement skin = xmlDoc.CreateElement("Skin");
-        skin.InnerText = IntArrayToString(k.skinArr);;
-        child.AppendChild(skin);
-
-        // * 전투관련 정보
-        XmlElement isAlive = xmlDoc.CreateElement("IsAlive");
-        isAlive.InnerText = System.Convert.ToString(k.isAlive);
-        child.AppendChild(isAlive);
-
-        XmlElement hp = xmlDoc.CreateElement("Hp");
-        hp.InnerText = System.Convert.ToString(k.hp);
-        child.AppendChild(hp);
-
-        XmlElement stress = xmlDoc.CreateElement("Stress");
-        stress.InnerText = System.Convert.ToString(k.stress);
-        child.AppendChild(stress);
-
-        XmlElement uni = xmlDoc.CreateElement("Uni");
-        uni.InnerText = IntArrayToString(k.uni);;
-        child.AppendChild(uni);
-
-        SaveOverlapXml("새로운 기사!");
-    }
-
-    private string IntArrayToString(int[] array)
-    {
-        if(array == null)
-            return "";
-
-        string text = "";
-        for(int i = 0 ; i < array.Length; i++)
-            text+= array[i] + ",";
-        text = text.Substring(0, text.Length -1);
-        
-        return text;
-    }
-
-
-    public void UpdateKnight(Knight k, string type)
-    {
-        switch(type)
-        {
-            case "" :
-                break;
-            default :
-                break;
-        }
-        SaveOverlapXml("기사업데이트(" + type + ")");
-    }
-
-    public void AddParty(Party p)
-    {
-        XmlNode root = xmlDoc.SelectSingleNode("PlayerData/PartyInfo");
-
-        XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Party", string.Empty);
-        root.AppendChild(child);
-
-        XmlElement dungeon = xmlDoc.CreateElement("Dungeon");
-        dungeon.InnerText = System.Convert.ToString(p.dungeonNum);
-        child.AppendChild(dungeon);
-
-        XmlElement knight = xmlDoc.CreateElement("Knight");
-        knight.InnerText = IntArrayToString(p.k);
-        child.AppendChild(knight);
-        
-        XmlElement day = xmlDoc.CreateElement("Day");
-        day.InnerText = System.Convert.ToString(p.day);
-        child.AppendChild(day);
-
-        SaveOverlapXml("파티추가");
-    }
-    public void UpdateParty()
-    {
-
     }
 
     public void AddRandomKnight(RandomKnight[] k)
@@ -626,23 +469,13 @@ public class DataController : MonoBehaviour
             child.AppendChild(employ);
 
             XmlElement skin = xmlDoc.CreateElement("Skin");
-            skin.InnerText = IntArrayToString(k[i].skinNum);;
+            skin.InnerText = ToStringArray<int>(k[i].skinNum);;
             child.AppendChild(skin);
         }
 
         SaveOverlapXml("고용기사생성");
     }
 
-    //고용정보 업데이트(대부분)
-    public void UpdateRandomKnight(int index)
-    {
-        XmlNodeList nodes = xmlDoc.SelectNodes("PlayerData/Info/RandomKnightInfo/Knight");
-        XmlNode node = nodes[index];
-
-        node.SelectSingleNode("Employ").InnerText = "true";
-        SaveOverlapXml("고용정보 업데이트");
-    }
-    #endregion
 
     #region 시나리오 데이타
     
@@ -689,39 +522,247 @@ public class DataController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-
+    
     public void DataSave()
     {
-        XmlNode playerData = xmlDoc.SelectSingleNode("PlayerData");
+        XmlNode playerDataNode = xmlDoc.SelectSingleNode("PlayerData");
+        XmlNode node;
+        XmlNodeList nodes;
 
         //0 dataSave
-        playerData.SelectSingleNode("DataSave").InnerText = "Saving";
+        UpdateNode("DataSave", playerDataNode, "Saving");
         
+        node = playerDataNode.SelectSingleNode("Player");
         //1 Player day,gold, stress
-        playerData.SelectSingleNode("Player/Day").InnerText = System.Convert.ToString(player.Day);
-        playerData.SelectSingleNode("Player/Gold").InnerText = System.Convert.ToString(player.Gold);
-        playerData.SelectSingleNode("Player/Stress").InnerText = System.Convert.ToString(player.Stress);
+        UpdateNode("Day", node, ToString(player.Day));
+        UpdateNode("Gold", node, ToString(player.Gold));
+        UpdateNode("Stress", node, ToString(player.Stress));
 
         //2 KnightInfo - Knight -상세
         //  2-1 기존Knight 업데이트
-        foreach(XmlNode node in playerData.SelectNodes("KnightInfo/Knight"))
+        int index = 0;
+        foreach(XmlNode node_ in playerDataNode.SelectNodes("KnightInfo/Knight"))
         {
-            
-        }
-        foreach(Knight k in UnitData.Instance.knights)
-        {
+            if( System.Convert.ToInt32(node_.SelectSingleNode("Num").InnerText) != index ++) 
+            {
+                Debug.Log("Knight 번호 매칭 오류");
+                return;
+            }
+            Knight k = UnitData.Instance.knights[index];
+            UpdateNode("Job", node_, ToString<int>(k.job));
+            UpdateNode("Level", node_, ToString<int>(k.level));
+            UpdateNode("Exper", node_, ToString<int>(k.exper));
+            UpdateNode("Favor", node_, ToString<int>(k.favor));
+            UpdateNode("Day", node_, ToString<int>(k.day));
+            UpdateNode("Skin", node_, ToStringArray<int>(k.skinArr));
 
+            UpdateNode("IsAlive", node_, ToString<bool>(k.isAlive));
+            UpdateNode("Hp", node_, ToString<int>(k.Hp));
+            UpdateNode("Stress", node_, ToString<int>(k.Stress));
+            UpdateNode("Uni", node_, ToStringArray<int>(k.uni));
+            
+            UpdateNode("Personality", node_, string.Format( "{0},{1},{2}", k.personality.type, k.personality.despair, k.personality.positive));
+            UpdateNode("MentalLevel", node_, ToString<int>(k.mentalLevel));
         }
         //  2-2 신규Knight 등록
+        node = playerDataNode.SelectSingleNode("KnightInfo");
+        for(int i = index ; i < UnitData.Instance.knights.Count; i++ )
+        {
+            Knight k = UnitData.Instance.knights[i];
+            XmlNode child = CreateNode("Knight", node);
 
-        //3 Party
+            // * 기본적인 인포
+            CreateNode("Num", child, ToString<int>(k.num));
+            CreateNode("Name", child, k.name);
+            CreateNode("Job", child, ToString<int>(k.job));
+            CreateNode("Level", child, ToString<int>(k.level));
+            CreateNode("Exper", child, ToString<int>(k.exper));
+            CreateNode("Favor", child, ToString<int>(k.favor));
+            CreateNode("Day", child, ToString<int>(k.day));
+            CreateNode("Skin", child, ToStringArray<int>(k.skinArr));
+            //  ---- 전투관련정보
+            CreateNode("IsAlive", child, ToString<bool>(k.isAlive));
+            CreateNode("Hp", child, ToString<int>(k.hp));
+            CreateNode("Stress", child, ToString<int>(k.stress));
+            CreateNode("Uni", child, ToStringArray<int>(k.uni));
+            //  ---- 성격관련정보
+            CreateNode("Personality", child, string.Format("{0},{1},{2}", k.personality.type, k.personality.despair, k.personality.positive));
+            CreateNode("MentalLevel", child, ToString<int>(k.mentalLevel));
+        }
+        
+        nodes = playerDataNode.SelectNodes("PartyInfo/Party");
+        //3 Party -- Dungeon정보를 기반으로 기존정보 생성 및 업데이트 후 이외는 삭제
+        for(int i = 0; i < 8; i++)
+        {
+            DungeonProgress dp = dungeon.dungeon_Progress[i];
+            int value = Check_InValue(nodes, "Dungeon", System.Convert.ToString(i));
+            if(dp.isParty)
+            {
+                // 3-1 ---- Node생성 _ Xml에 데이타 없어서 신규 Node 생성 필요
+                if(value == -1) 
+                {
+                    XmlNode child = CreateNode("Party", xmlDoc.SelectSingleNode("PlayerData/PartyInfo"));
+
+                    CreateNode("Dungeon", child, ToString<int>(dp.p.dungeonNum));
+                    CreateNode("Knight", child, ToStringArray<int>(dp.p.k));
+                    CreateNode("Day", child, ToString<int>(dp.p.day));
+                    CreateNode("DayIndex", child, ToString<int>(dp.p.dayIndex));
+
+                }
+                // 3-2 ---- Node업데이트
+                else
+                {
+                    UpdateNode("Day", nodes[value], ToString<int>(dp.p.day));
+                    UpdateNode("DayIndex", nodes[value], ToString<int>(dp.p.dayIndex));
+                    UpdateNode("Knight", nodes[value], ToStringArray<int>(dp.p.k));
+                }
+            }
+            else
+            {
+                // 3-3 ---- Node삭제
+                if(value != -1)
+                {
+                    RemoveNode(nodes[value], playerDataNode.SelectSingleNode("PartyInfo"));
+                }
+            }
+        }           
         //4 EventInfo (Admin, Office)
         //5 Info
         //  5-1 RandomKnightInfo - Knight
+        RandomKnight[] rk = unit.randomKnightList;
+        node = playerDataNode.SelectSingleNode("Info/RandomKnightInfo");
+
+        nodes =  node.SelectNodes("Knight");
+        if(nodes != null)
+        {
+            foreach(XmlNode node_ in nodes)
+            {
+                node.RemoveChild(node_);
+            }
+        }
+        for(int i = 0 ; i < rk.Length; i++)
+        {
+            XmlNode child = CreateNode("Knight", node);
+            CreateNode("Name", child, rk[i].name);
+            CreateNode("Job", child, ToString<int>(rk[i].job));
+            CreateNode("Level", child, ToString<int>(rk[i].level));
+            CreateNode("Skin", child, ToStringArray<int>(rk[i].skinNum));
+        }
+
         //6 DungeonInfo Dungeon - 여러개, Type(유동)
+        index = 0;
+        nodes = playerDataNode.SelectNodes("DungeonInfo/Dungeon");
+        foreach(DungeonProgress dp in DungeonData.Instance.dungeon_Progress)
+        {
+            UpdateNode("IsClear",  nodes[index], ToString<bool>(dp.isClear));
+            UpdateNode("Saturation", nodes[index], ToString<double>(dp.Saturation));
+            UpdateNode("SearchP", nodes[index], ToString<double>(dp.SearchP));
+            UpdateNode("Type", nodes[index], ToString<int>(dp.eventType));
+            switch (dp.eventType)
+            {
+                case 1 ://배틀
+                    UpdateNode("Info", nodes[index], ToStringArray(dp.m));
+                    break;
+                case 3 ://선택이벤트
+                    UpdateNode("Info", nodes[index], ToString<int>(dp.choice_Event_Type));
+                    break;
+                default:
+                    break;
+            }
+            UpdateNode("Reward", nodes[index], ToString<int>(dp.Reward));
+            UpdateNode("ExperPoint", nodes[index], ToString<int>(dp.experPoint));
+        }
         //7 Office - 정책, OfficeGage, Point
-        
+        node = playerDataNode.SelectSingleNode("Office");
+        UpdateNode("OfficePoint", node.SelectSingleNode("OfficePoint"), ToString(OfficeData.Instance.officePoint));
+        UpdateNode("OfficePoint", node.SelectSingleNode("OfficeGage"), ToString(OfficeData.Instance.OfficeGage));
+
         //n-1 Game - Retry, Dungeon, Challenge(도전과제)
+
         //n dataSave-Done
+        UpdateNode("DataSave", playerDataNode, "Done");
     }
+
+    #region DataController 보조 함수
+    //기존에 있는지 Xml 데이터 체크
+    private int Check_InValue(XmlNodeList nodes, string root, string value)
+    {
+        int index = 0;
+        foreach(XmlNode node in nodes)
+        {
+            if(node.SelectSingleNode(root).InnerText == value) return index;
+            index++;    
+        }
+        return -1;
+    }
+
+    //새로Element생성
+    private void CreateNode(string name, XmlNode parent, string value)
+    {
+        XmlElement child = xmlDoc.CreateElement(name);
+        child.InnerText = value;
+        parent.AppendChild(child);
+    }
+    
+    //Node생성 
+    private XmlNode CreateNode(string name, XmlNode parent)
+    {
+        XmlNode node = xmlDoc.CreateNode(XmlNodeType.Element, name, string.Empty);
+        parent.AppendChild(node);
+
+        return node;
+    }
+
+    //Node값 업데이트
+    private void UpdateNode(string name, XmlNode node, string value)
+    {
+        node.SelectSingleNode(name).InnerText = value;
+    }
+
+    //Node삭제
+    private void RemoveNode(XmlNode node, XmlNode parent)
+    {
+        parent.RemoveChild(node);
+    }
+
+    //Node값 Load
+    private void LoadNode<T>(T value, XmlNode node, string name)
+    {
+        value = (T)Convert.ChangeType(node.SelectSingleNode(name).InnerText, typeof(T));
+    }
+    private T LoadNode<T>(XmlNode node, string name)
+    {
+        return (T)Convert.ChangeType(node.SelectSingleNode(name).InnerText, typeof(T));
+    }
+    private void LoadNodeArray<T>(T[] array, XmlNode node, string name)
+    {
+        int[] split = CodeBox.StringSplit(node.SelectSingleNode(name).InnerText);
+        array = new T[split.Length];
+
+        for(int index = 0; index < array.Length; index++)
+        {
+            array[index] = (T)Convert.ChangeType(split[index], typeof(T));
+        }
+    }
+    
+    //ToString
+    private string ToString<T>(T value)
+    {
+        return System.Convert.ToString(value);
+    }
+
+    //Int배열을 String으로
+    private string ToStringArray<T>(T[] array)
+    {
+        if(array == null)
+            return "";
+
+        string text = "";
+        for(int i = 0 ; i < array.Length; i++)
+            text+= array[i] + ",";
+        text = text.Substring(0, text.Length -1);
+        
+        return text;
+    }
+    #endregion
 }

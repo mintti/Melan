@@ -23,7 +23,7 @@ public class EventData : MonoBehaviour
             return _instance;
         }
     }
-    
+
     public void CreateEvent()
     {
         CreateDungeonEvents();
@@ -149,7 +149,7 @@ public class EventData : MonoBehaviour
         DungeonProgress dp = DungeonData.Instance.dungeon_Progress[dpNum];
         
         //보상등록
-        Dungeon_Reward dr = DungeonData.Instance.dungeon_Rewards[dp.p.maxDayIndex];
+        Dungeon_Reward dr = DungeonData.Instance.dungeon_Rewards[dp.p.dayIndex];
         PlayerData.Instance.Gold += (int)((float)dp.Reward * (1.0f * dr.gold));
         dp.SearchP += (int)dr.search;
 

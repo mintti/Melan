@@ -49,7 +49,7 @@ public class ChoiceEvent : MonoBehaviour
         switch (type)
         {
             case 0 ://Left_Or_Right
-                int day = DungeonData.Instance.day_Array[dp.p.maxDayIndex] / 2;
+                int day = DungeonData.Instance.day_Array[dp.p.dayIndex] / 2;
                 dp.p.Day += result ? -day : day/2 ;
                 answer = result ? 0 : 1;
                 break;

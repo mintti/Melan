@@ -83,8 +83,10 @@ public class DungeonProgress
         set{searchP = value; if(searchP > 100) searchP = 100f;}
     }
     private int reward;
-    public double Reward{get;set;}
-    
+    public int Reward{get{return reward;} set{reward = (int)value;}}
+    public int experPoint{get;set;}
+
+    public DungeonProgress(){}
     public DungeonProgress(Dungeon _d)
     {//첫 데이터.
         d = _d;
@@ -162,12 +164,12 @@ public class DungeonProgress
     //Reward
     public int Get_Dungeon_Reward_SearchPer()
     {
-        return (int)DungeonData.Instance.dungeon_Rewards[p.maxDayIndex].search;
+        return (int)DungeonData.Instance.dungeon_Rewards[p.dayIndex].search;
     }
 
     public int Get_Dungeon_Reward_Gold()
     {
-        double gold = Reward * (1 + 0.01 * DungeonData.Instance.dungeon_Rewards[p.maxDayIndex].gold); 
+        double gold = Reward * (1 + 0.01 * DungeonData.Instance.dungeon_Rewards[p.dayIndex].gold); 
 
         return (int)gold;
     }
