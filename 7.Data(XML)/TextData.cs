@@ -73,8 +73,21 @@ public class TextData : MonoBehaviour
 
     #endregion
 
-    #region Battle Sample
-
-    //public string[] battle_Lines = new string[]
-    #endregion
+    public void SetData()
+    {
+        //world
+        workList_Button_Ment_Text = new string[9]{"탐색", "전투", "확인", "확인", "test", "test", "test", "수령", "귀환"};
+        workList_Info_Ment_Text = new string[9]{
+            "원하는 기사들로 파티를 이뤄 던전으로 탐색을 보냅니다",
+            "전투가 발생했습니다",
+            "별다른 문제없이 탐색을 하고 있습니다",
+            "문제가 발생했습니다",
+            "test",
+            "test",
+            "test",
+            "일정대로 탐색완료했습니다. 보상을 수령하세요", "파티를 강제귀환시킬 수 있습니다"};
+        select_Day_Ment = new string[5]{
+        "탐색률 + 5%", "탐색률 + 10%, 추가 골드 + 5%", "탐색률 + 15%, 추가골드 +8%", "탐색률 + 20%, 추가골드 15%", "탐색률 + 30%, 추가골드 + 25%"
+    };
+    }
 }
