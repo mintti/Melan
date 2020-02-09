@@ -241,8 +241,6 @@ public class UnitData : MonoBehaviour
         int day = DungeonData.Instance.day_Array[dayIndex];
         Party p = new Party(dungeon, Karr, day, dayIndex);
         partys.Add(p);
-
-        DataController.Instance.AddParty(p);
         
         return p;
     }
@@ -291,10 +289,6 @@ public class UnitData : MonoBehaviour
             0, PlayerData.Instance.Day, rn.skinNum,
             true, hp, 0, arr
         ));
-        
-        //등록 및 전산처리
-        DataController.Instance.AddKnight(knights[num]);
-        DataController.Instance.UpdateRandomKnight(i);
         
         PlayerData.Instance.Gold -= knightPay[rn.level -1];
         randomKnightList[i].isEmploy = true;

@@ -182,7 +182,10 @@ public class DataController : MonoBehaviour
     #endregion
 
     #region  새로운 데이타(던전, 용병 등)를 생성하는 부분
-
+    private void FirstData()
+    {
+        
+    }
     private void CreateData()
     {
         dungeon.DungeonMake();
@@ -326,7 +329,7 @@ public class DataController : MonoBehaviour
         //7 Office
         node = xmlDoc.SelectSingleNode("PlayerData/Office");
         LoadNode(office.officePoint, node, "OfficePoint");
-        LoadNode(office.officeGage, node, "OfficeGage");
+        LoadNode(office.OfficeGage, node, "OfficeGage");
         
         if(isNew) CreateData();
         else LoadDataProcess(2);
