@@ -45,159 +45,109 @@ public class DataController : MonoBehaviour
     public string platform;
     private void Awake()
     {
-       LoadDataProcess(0);    
+       LoadResource();
     }
 
-    public void LoadDataProcess(int i)
+    private void LoadResource()
     {
-        switch(i)
+        if(_instance != null)
         {
-            //0. 첫씬일 경우 기본데이타(리소스) 삽입. 
-            //      아닐경우 본인 삭제.
-            case 0 :
-                if(_instance != null)
-                {
-                    Destroy(this.gameObject);
-                    LoadDataProcess(2);
-                    return;
-                }
+            Destroy(this.gameObject);
+            ConnectData();
+            return;
+        }
                 
-                skin.LoadResource();
-                MonsterData.Instance.InsertData();
-                dungeon.SetData();
-                SkillData.Instance.SetData();
-                TextData.Instance.SetData();
-                
-                LoadDataProcess(1);
-                break;
-            
-            //1. 플랫폼 검사 후.
-            //   이전 플레이가 존재하는지 검사 후 xml 로드
-            //   (존재하지 않을 경우, 새 데이터를 만듦.)
-            case 1 : 
-                xmlDoc = new XmlDocument();
+        skin.LoadResource();
+        MonsterData.Instance.InsertData();
+        dungeon.SetData();
+        SkillData.Instance.SetData();
+        TextData.Instance.SetData();
 
-                if(Application.platform == RuntimePlatform.Android) LoadDataAndroid();
-                else    LoadDataPC();
-
-                _instance = this;
-                DontDestroyOnLoad(this);
-                break;
-
-            //2. World에서 Load된(혹은 있떤) 데이터에 맞게 씬구성(GameController)
-            //   1과정 종료 혹은 0과정 후(기존데이터 존재) 로드됨.
-            case 2 :
-                GameController.Instance.ConnectData();
-                break;
-            default :
-                break;
-        }
+        LoadXmlDocument();
     }
 
-    private void LoadDataPC()
-    {
-        platform = "pc";
-
-        string file = "PlayerData.xml";
-        string filePath = "Assets/StreamingAssets/";
-        if(File.Exists(filePath + file))
-        {
-            TextViewer("파일존재.");
-            Debug.Log( "파일잇음.");
-            xmlDoc.Load(filePath + file);
-            LoadXml(false);
-        }
-        else
-        {
-            TextViewer("신규데이타 생성.");
-            Debug.Log("신규데이타 생성");
-            file = "FirstData.xml";
-            xmlDoc.Load(filePath + file);
-            LoadXml(true);
-        }
-    }
-    
-    private void LoadDataAndroid()
-    {
-        platform = "android";
-
-        TextViewer("안드로이드로 실행됩니다.");
-        
-        string filePath = Application.persistentDataPath + "/PlayerData.xml";
-
-        bool isFirst = false;
-        if(!File.Exists(filePath))
-        {
-            TextViewer("FirstData 로드..");
-
-            filePath = "jar:file://" + Application.dataPath + "!/assets/FirstData.xml";
-            WWW www = new WWW(filePath);
-
-            while(!www.isDone) {};
-
-            StringReader stringReader = new StringReader(www.text);
-            xmlDoc.LoadXml(stringReader.ReadToEnd());
-            isFirst = true;
-        }
-        else
-        {
-            TextViewer("PlayerData 로딩성공");
-            xmlDoc.Load(filePath);
-        }
-
-        LoadXml(isFirst);
-    }
-    
-    #region dataSave
-    /*
-    모든 행동에 따른 TextAsset을 저장한다.
-    */
     public XmlDocument xmlDoc; //첫 데이터 로드 시 지정됨.
-    public GameObject dataUpdateText;
-    public Transform TextPos;
-    public void TextViewer(string msg)
+    private void LoadXmlDocument()
     {
-        GameObject obj =  CodeBox.AddChildInParent(TextPos, dataUpdateText);
-        DataUpdateText dut = obj.GetComponent<DataUpdateText>();
+        xmlDoc = new XmlDocument();
 
-        dut.TextUpdate(msg);
+        //Platform Check
+        string filePath;
+        if(Application.platform == RuntimePlatform.Android)
+        {
+            platform = "android";
+            filePath = Application.persistentDataPath + "/PlayerData.xml";
+        }
+        else
+        {
+            platform = "pc";
+            filePath = "Assets/StreamingAssets/PlayerData.xml";
+        }
+
+        //PlayerData 존재시 로드, 없을 경우 신규데이타 작성.
+        if(!File.Exists(filePath))
+        {       //신규데이타 로드
+            if(platform =="pc")
+            {
+                filePath = "Assets/StreamingAssets/FirstData.xml";
+                xmlDoc.Load(filePath);
+            }
+            else
+            {   //Android
+                filePath = "jar:file://" + Application.dataPath + "!/assets/FirstData.xml";
+                WWW www = new WWW(filePath);
+
+                while(!www.isDone) {};
+
+                StringReader stringReader = new StringReader(www.text);
+                xmlDoc.LoadXml(stringReader.ReadToEnd());
+            }
+            FirstData();
+        }
+        else
+        {       //기존데이타 로드
+            Debug.Log( "PlayerData 로딩성공.");
+            xmlDoc.Load(filePath);
+
+            LoadXml();
+        }
+
+        _instance = this;
+        DontDestroyOnLoad(this);
     }
-    public void SaveOverlapXml(string info)
+
+    private void ConnectData()
     {
-        if(platform == "pc")
-        {
-            xmlDoc.Save("./Assets/StreamingAssets/PlayerData.xml");
-        }
-        else if(platform == "android")
-        {
-            string filePath = Application.persistentDataPath + "/PlayerData.xml";
-            
-            File.WriteAllText( filePath, xmlDoc.OuterXml, Encoding.Default);
-        }
-        string msg = info + " Save Complete.";
-
-        TextViewer(msg);
-        Debug.Log( msg);
+        GameController.Instance.ConnectData();
     }
-    #endregion
 
     #region  새로운 데이타(던전, 용병 등)를 생성하는 부분
     private void FirstData()
     {
-        
-    }
-    private void CreateData()
-    {
-        dungeon.DungeonMake();
+        player.Day = 1;
+        player.Gold = 100;
+        player.Stress = 0;
+
         unit.CreateRandomKnight(3);
-        LoadDataProcess(2);
+        dungeon.DungeonMake();
+
+        //생성후 한번 저장
+        while(!SaveXml());
+
+        ConnectData();
     }
 
     #endregion
 
     #region 데이타 로드
-    public void LoadXml(bool isNew)
+    public void LoadXml()
     {
+        //0. Check
+        string text = xmlDoc.SelectSingleNode("PlayerData/DataSave").InnerText;
+        if(! (text == "Done"))
+        {
+            Debug.Log("이 전 Save에서 비정상적인 종료 확인됨.");
+        }
         //1. PlayerData
         XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
         
@@ -254,13 +204,14 @@ public class DataController : MonoBehaviour
             LoadNode(k.stress, _node, "Stress");
             LoadNodeArray(k.uni, _node, "Uni");
 
+            /*
             int[] array = new int[3];
             LoadNodeArray(array, _node, "Personality");
             k.personality.type = array[0];
             k.personality.despair = array[1];
             k.personality.positive = array[2];
             LoadNode(k.mentalLevel, _node, "MentalLevel");
-
+            */
             k.Load();
             unit.knights.Add(k);
         }
@@ -300,7 +251,7 @@ public class DataController : MonoBehaviour
         foreach(XmlNode _node in nodes)
         {
             DungeonProgress dp = DungeonData.Instance.dungeon_Progress[index];
-            dp.d = DungeonData.Instance.dungeons[LoadNode<int>(_node, "Dungeon")];
+            dp.d = DungeonData.Instance.dungeons[LoadNode<int>(_node, "Num")];
             LoadNode(dp.isClear, _node, "IsClear");
             LoadNode(dp.Saturation, _node, "Saturation");
             LoadNode(dp.SearchP, _node, "SearchP");
@@ -331,185 +282,9 @@ public class DataController : MonoBehaviour
         LoadNode(office.officePoint, node, "OfficePoint");
         LoadNode(office.OfficeGage, node, "OfficeGage");
         
-        if(isNew) CreateData();
-        else LoadDataProcess(2);
+        //N. End
+        ConnectData();
     }
-
-    #endregion
-
-
-
-    bool[] IntAsBool(int[] _arr)
-    {
-        bool[] arr = new bool[_arr.Length];
-
-        for(int i = 0; i<_arr.Length; i++)
-        {
-            arr[i] = _arr[i] == 0 ? false : true;
-        }
-        return arr;
-    }
-
-    public void Save()
-    {
-        
-    }
-    public void SaveOverlapXml()
-    {
-
-
-        Debug.Log("전체데이터 저장.");
-        if(platform == "pc")
-        {
-            xmlDoc.Save("./Assets/StreamingAssets/PlayerData.xml");
-        }
-        else if(platform == "android")
-        {
-            string filePath = Application.persistentDataPath + "/PlayerData.xml";
-            
-            File.WriteAllText( filePath, xmlDoc.OuterXml, Encoding.Default);
-        }
-    }
-    
-    public void SaveXml()
-    {
-        StartCoroutine("SaveXml_");
-    }
-
-    IEnumerator SaveXml_()
-    {
-        ObjectController.Instance.saveObj.SetActive(true);
-        
-        if(platform == "pc")
-        {
-            xmlDoc.Save("./Assets/StreamingAssets/PlayerData.xml");
-        }
-        else if(platform == "android")
-        {
-            string filePath = Application.persistentDataPath + "/PlayerData.xml";
-            
-            File.WriteAllText( filePath, xmlDoc.OuterXml, Encoding.Default);
-        }
-        
-        ObjectController.Instance.saveObj.SetActive(false);
-        yield return null;
-    }
-    
-
-    public void SaveDungeon(int[] array)
-    {
-        XmlNode main = xmlDoc.SelectSingleNode("PlayerData");
-        
-        XmlNode root = xmlDoc.CreateNode(XmlNodeType.Element, "DungeonInfo", string.Empty);
-        main.AppendChild(root);
-
-        for(int i = 0 ; i < 8 ; i ++)
-        {
-            XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Dungeon", string.Empty);
-            root.AppendChild(child);
-
-            XmlElement num = xmlDoc.CreateElement("Num");
-            num.InnerText = System.Convert.ToString(array[i]);
-            child.AppendChild(num);
-
-            XmlElement isClear = xmlDoc.CreateElement("IsClear");
-            isClear.InnerText = "false";
-            child.AppendChild(isClear);
-
-            XmlElement saturation = xmlDoc.CreateElement("Saturation");
-            saturation.InnerText = "50";
-            child.AppendChild(saturation);
-
-            XmlElement search = xmlDoc.CreateElement("SearchP");
-            search.InnerText = "0";
-            child.AppendChild(search);
-
-            XmlElement type = xmlDoc.CreateElement("Type");
-            type.InnerText = "0";
-            child.AppendChild(type);
-
-            CreateNode("Info", child, "0");
-            CreateNode("Reward", child, "0");
-            CreateNode("ExperPoint", child, "0");
-        }
-
-        SaveOverlapXml("던전생성");
-    }
-
-    public void AddRandomKnight(RandomKnight[] k)
-    {
-        XmlNode root = xmlDoc.SelectSingleNode("PlayerData/Info/RandomKnightInfo");
-        
-        XmlNodeList list =  root.SelectNodes("Knight");
-        if(list != null)
-        {
-            foreach(XmlNode node in list)
-            {
-                root.RemoveChild(node);
-            }
-        }
-
-        for(int i = 0 ; i < k.Length; i ++)
-        {   
-            XmlNode child = xmlDoc.CreateNode(XmlNodeType.Element, "Knight", string.Empty);
-            root.AppendChild(child);
-
-            // * 기본적인 인포
-            XmlElement name = xmlDoc.CreateElement("Name");
-            name.InnerText = k[i].name;
-            child.AppendChild(name);
-
-            XmlElement job = xmlDoc.CreateElement("Job");
-            job.InnerText = System.Convert.ToString(k[i].job);
-            child.AppendChild(job);
-
-            XmlElement level = xmlDoc.CreateElement("Level");
-            level.InnerText = System.Convert.ToString(k[i].level);
-            child.AppendChild(level);
-            
-            XmlElement employ = xmlDoc.CreateElement("Employ");
-            employ.InnerText = "false";
-            child.AppendChild(employ);
-
-            XmlElement skin = xmlDoc.CreateElement("Skin");
-            skin.InnerText = ToStringArray<int>(k[i].skinNum);;
-            child.AppendChild(skin);
-        }
-
-        SaveOverlapXml("고용기사생성");
-    }
-
-
-    #region 시나리오 데이타
-    
-    public XmlDocument LoadStory(string fileName)
-    {
-        string filePath_Story;
-
-        XmlDocument xmlDoc_Story = new XmlDocument();
-        if(platform == "pc")
-        {
-            filePath_Story = "Assets/StreamingAssets/ExternalData/Story/" + fileName + ".xml";
-            xmlDoc_Story.Load(filePath_Story);
-        }
-        else
-        {
-            filePath_Story =  "jar:file://" + Application.dataPath + "!/assets/ExternalData/Story/" + fileName + ".xml";
-
-            WWW www = new WWW(filePath_Story);
-
-            while(!www.isDone){};
-
-            StringReader stringReader = new StringReader(www.text);
-            xmlDoc_Story.LoadXml(stringReader.ReadToEnd());
-        }
-        
-        return xmlDoc_Story;
-    }
-
-    #endregion
-    #region SYSTEM
-
     #endregion
 
     public void ResetData()
@@ -525,8 +300,9 @@ public class DataController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    #region SaveData
     
-    public void DataSave()
+    public bool SaveXml()
     {
         XmlNode playerDataNode = xmlDoc.SelectSingleNode("PlayerData");
         XmlNode node;
@@ -546,10 +322,10 @@ public class DataController : MonoBehaviour
         int index = 0;
         foreach(XmlNode node_ in playerDataNode.SelectNodes("KnightInfo/Knight"))
         {
-            if( System.Convert.ToInt32(node_.SelectSingleNode("Num").InnerText) != index ++) 
+            if( System.Convert.ToInt32(node_.SelectSingleNode("Num").InnerText) != index) 
             {
                 Debug.Log("Knight 번호 매칭 오류");
-                return;
+                return true;
             }
             Knight k = UnitData.Instance.knights[index];
             UpdateNode("Job", node_, ToString<int>(k.job));
@@ -564,8 +340,11 @@ public class DataController : MonoBehaviour
             UpdateNode("Stress", node_, ToString<int>(k.Stress));
             UpdateNode("Uni", node_, ToStringArray<int>(k.uni));
             
+            /* 수정필요
             UpdateNode("Personality", node_, string.Format( "{0},{1},{2}", k.personality.type, k.personality.despair, k.personality.positive));
             UpdateNode("MentalLevel", node_, ToString<int>(k.mentalLevel));
+            */
+            index ++;
         }
         //  2-2 신규Knight 등록
         node = playerDataNode.SelectSingleNode("KnightInfo");
@@ -589,8 +368,10 @@ public class DataController : MonoBehaviour
             CreateNode("Stress", child, ToString<int>(k.stress));
             CreateNode("Uni", child, ToStringArray<int>(k.uni));
             //  ---- 성격관련정보
+            /* 수정 필요
             CreateNode("Personality", child, string.Format("{0},{1},{2}", k.personality.type, k.personality.despair, k.personality.positive));
             CreateNode("MentalLevel", child, ToString<int>(k.mentalLevel));
+            */
         }
         
         nodes = playerDataNode.SelectNodes("PartyInfo/Party");
@@ -655,9 +436,18 @@ public class DataController : MonoBehaviour
         //6 DungeonInfo Dungeon - 여러개, Type(유동)
         index = 0;
         nodes = playerDataNode.SelectNodes("DungeonInfo/Dungeon");
+        if(nodes.Count == 0)
+        {   //6-1 Create Dungeon
+            for(int i = 0 ; i < 8 ; i ++)
+            {
+                XmlNode child = CreateNode("Dungeon", playerDataNode.SelectSingleNode("DungeonInfo"));
+                CreateNode("Num", child, ToString(DungeonData.Instance.dungeon_Progress[i].d.num));
+            }
+            nodes = playerDataNode.SelectNodes("DungeonInfo/Dungeon");
+        }
         foreach(DungeonProgress dp in DungeonData.Instance.dungeon_Progress)
         {
-            UpdateNode("IsClear",  nodes[index], ToString<bool>(dp.isClear));
+            UpdateNode("IsClear",    nodes[index], ToString<bool>(dp.isClear));
             UpdateNode("Saturation", nodes[index], ToString<double>(dp.Saturation));
             UpdateNode("SearchP", nodes[index], ToString<double>(dp.SearchP));
             UpdateNode("Type", nodes[index], ToString<int>(dp.eventType));
@@ -674,17 +464,43 @@ public class DataController : MonoBehaviour
             }
             UpdateNode("Reward", nodes[index], ToString<int>(dp.Reward));
             UpdateNode("ExperPoint", nodes[index], ToString<int>(dp.experPoint));
+
+            index ++;
         }
         //7 Office - 정책, OfficeGage, Point
         node = playerDataNode.SelectSingleNode("Office");
-        UpdateNode("OfficePoint", node.SelectSingleNode("OfficePoint"), ToString(OfficeData.Instance.officePoint));
-        UpdateNode("OfficePoint", node.SelectSingleNode("OfficeGage"), ToString(OfficeData.Instance.OfficeGage));
+        UpdateNode("OfficePoint", node, ToString(OfficeData.Instance.officePoint));
+        UpdateNode("OfficePoint", node, ToString(OfficeData.Instance.OfficeGage));
 
         //n-1 Game - Retry, Dungeon, Challenge(도전과제)
 
         //n dataSave-Done
         UpdateNode("DataSave", playerDataNode, "Done");
+
+        StartCoroutine("SaveXml_");
+
+        return true;
     }
+
+    IEnumerator SaveXml_()
+    {
+        ObjectController.Instance.saveObj.SetActive(true);
+        
+        if(platform == "pc")
+        {
+            xmlDoc.Save("./Assets/StreamingAssets/PlayerData.xml");
+        }
+        else if(platform == "android")
+        {
+            string filePath = Application.persistentDataPath + "/PlayerData.xml";
+            
+            File.WriteAllText( filePath, xmlDoc.OuterXml, Encoding.Default);
+        }
+        
+        ObjectController.Instance.saveObj.SetActive(false);
+        yield return true;
+    }
+    #endregion
 
     #region DataController 보조 함수
     //기존에 있는지 Xml 데이터 체크
@@ -719,7 +535,16 @@ public class DataController : MonoBehaviour
     //Node값 업데이트
     private void UpdateNode(string name, XmlNode node, string value)
     {
-        node.SelectSingleNode(name).InnerText = value;
+        try
+        {
+            node.SelectSingleNode(name).InnerText = value;
+        }
+        catch(NullReferenceException  e)
+        {
+            Debug.Log("UpdateNode() - NullNode -> CreateNode!! <" + name + ">");
+            CreateNode(name, node, value);
+        }
+
     }
 
     //Node삭제
@@ -766,6 +591,54 @@ public class DataController : MonoBehaviour
         text = text.Substring(0, text.Length -1);
         
         return text;
+    }
+
+    bool[] IntAsBool(int[] _arr)
+    {
+        bool[] arr = new bool[_arr.Length];
+
+        for(int i = 0; i<_arr.Length; i++)
+        {
+            arr[i] = _arr[i] == 0 ? false : true;
+        }
+        return arr;
+    }
+    #endregion
+
+    #region 기타 함수
+    public XmlDocument LoadStory(string fileName)
+    {
+        string filePath_Story;
+
+        XmlDocument xmlDoc_Story = new XmlDocument();
+        if(platform == "pc")
+        {
+            filePath_Story = "Assets/StreamingAssets/ExternalData/Story/" + fileName + ".xml";
+            xmlDoc_Story.Load(filePath_Story);
+        }
+        else
+        {
+            filePath_Story =  "jar:file://" + Application.dataPath + "!/assets/ExternalData/Story/" + fileName + ".xml";
+
+            WWW www = new WWW(filePath_Story);
+
+            while(!www.isDone){};
+
+            StringReader stringReader = new StringReader(www.text);
+            xmlDoc_Story.LoadXml(stringReader.ReadToEnd());
+        }
+        
+        return xmlDoc_Story;
+    }
+
+    public GameObject dataUpdateText;
+    public Transform TextPos;
+    public void TextViewer(string msg)
+    {
+        GameObject obj =  CodeBox.AddChildInParent(TextPos, dataUpdateText);
+        DataUpdateText dut = obj.GetComponent<DataUpdateText>();
+
+        dut.TextUpdate(msg);
     }
     #endregion
 }

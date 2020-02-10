@@ -273,7 +273,6 @@ public class UnitData : MonoBehaviour
         {
             randomKnightList[i] = new RandomKnight(true);
         }
-        DataController.Instance.AddRandomKnight(randomKnightList);
     }
     
     //용병고용. Check -> IsCheck()에서 호출됨.

@@ -63,8 +63,6 @@ public class KnightSkinPrefab : MonoBehaviour
         string path = "1.Skin/10.Clothes/" +  TextData.Instance.job_Lan_Common[job];
         clothes = Resources.LoadAll<Sprite>(path);
         
-        Debug.Log(path);
-        Debug.Log(clothes.Length);
         SetClothes(body_Clothes, "body");
         SetClothes(arm_Left1_Clothes, "arm1");
         SetClothes(arm_Right1_Clothes, "arm1");

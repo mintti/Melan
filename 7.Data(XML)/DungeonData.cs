@@ -92,7 +92,6 @@ public class DungeonProgress
         d = _d;
         Reset();
     }
-
     public DungeonProgress(Dungeon _d, bool _isClear, double _saturation, double _searchP){
         d = _d;
         isClear = _isClear;
@@ -290,9 +289,7 @@ public class DungeonData : MonoBehaviour
                 list.Remove(array[index++]);
             }
         }
-
         ConnectDungeon(array);
-        DataController.Instance.SaveDungeon(array);
     }
 
     private void ConnectDungeon(int[] array)
