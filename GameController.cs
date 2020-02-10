@@ -45,6 +45,7 @@ public class GameController : MonoBehaviour
         event_.Connect_DungeonEvent_And_Party();
 
         EventCheck();//세이브창
+        nextDay.Play();
     }
 
     #region  Player Data
@@ -107,7 +108,7 @@ public class GameController : MonoBehaviour
         turnEnd.On();
     }
 
-    
+    public NextDay nextDay;
     public void NextDay()
     {
         UnitData.Instance.NextDay();
@@ -124,6 +125,8 @@ public class GameController : MonoBehaviour
 
         //이벤트 체크 후 세이브창 표시
         EventCheck();
+
+        nextDay.Play();
     }
     
     public void ResetData()
