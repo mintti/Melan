@@ -138,8 +138,8 @@ public class Party
     public int[] k;
     public KnightState[] knightStates;
 
-    public int day{get;set;}//남은 Day
-    public int dayIndex{get;set;}//DungoenDayIndex
+    public int day;//남은 Day
+    public int dayIndex;//DungoenDayIndex
     public int Day{get{return day;}set{day = value; if(day < 0) day = 0;}}
     public Party(){}
     public Party(int _d, int[] _kNum, int _day, int _dayIndex)
@@ -160,7 +160,18 @@ public class Party
         dayIndex = _dayIndex;
         day = DungeonData.Instance.day_Array[dayIndex];
     }
+    //XML LOAD에서 사용됨.
+    public void Load()
+    {   
+        knightStates = new KnightState[k.Length];
 
+        for(int i= 0 ; i < k.Length; i++)
+        {
+            Knight knight = UnitData.Instance.knights[k[i]];
+            knight.teaming = true;
+            knightStates[i] = new KnightState(knight);
+        }
+    }
     //Day갱신.
     public void NextDay()
     {

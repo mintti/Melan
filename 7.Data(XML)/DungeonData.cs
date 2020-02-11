@@ -84,7 +84,7 @@ public class DungeonProgress
     }
     private int reward;
     public int Reward{get{return reward;} set{reward = (int)value;}}
-    public int experPoint{get;set;}
+    public int experPoint;
 
     public DungeonProgress(){}
     public DungeonProgress(Dungeon _d)

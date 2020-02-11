@@ -22,8 +22,8 @@ public class OfficeData : MonoBehaviour
         }
     }
 
-    private float officeGage;
-    public float OfficeGage{get{return officeGage;}
+    private int officeGage;
+    public int OfficeGage{get{return officeGage;}
         set{
             officeGage = value;
             if(officeGage < 0) officeGage = 0;

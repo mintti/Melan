@@ -151,9 +151,9 @@ public class DataController : MonoBehaviour
         //1. PlayerData
         XmlNode node = xmlDoc.SelectSingleNode("PlayerData/Player");
         
-        LoadNode(player.Day, node, "Day");
-        LoadNode(player.Gold, node, "Gold");
-        LoadNode(player.Stress, node, "Stress");
+        player.Day = LoadNode<int>(node, "Day");
+        player.Gold = LoadNode<int>(node, "Gold");
+        player.Stress = LoadNode<int>( node, "Stress");
 
         //2. DungeonProgress;
         XmlNodeList nodes = xmlDoc.SelectNodes("PlayerData/DungeonInfo/Dungeon");
@@ -164,22 +164,22 @@ public class DataController : MonoBehaviour
             DungeonProgress dp = new DungeonProgress();
             
             dp.d = dungeon.dungeons[LoadNode<int>(_node, "Num")];
-            LoadNode(dp.isClear, _node, "IsClear");
-            LoadNode(dp.Saturation, _node, "Saturation");
-            LoadNode(dp.SearchP, _node, "SearchP");
-            LoadNode(dp.eventType, _node, "Type");
+            LoadNode(ref dp.isClear, _node, "IsClear");
+            dp.Saturation = LoadNode<double>(_node, "Saturation");
+            dp.SearchP = LoadNode<double>(_node, "SearchP");
+            LoadNode(ref dp.eventType, _node, "Type");
             switch (dp.eventType)
             {
                 case 1 :
-                    LoadNodeArray(dp.m, _node, "Info");
+                    LoadNodeArray(ref dp.m, _node, "Info");
                     break;
                 case 3 :
-                    LoadNode(dp.choice_Event_Type, _node, "Info");
+                    LoadNode(ref dp.choice_Event_Type, _node, "Info");
                     break;
                 default:    break;
             }
-            LoadNode(dp.Reward, _node, "Reward");
-            LoadNode(dp.experPoint, _node, "ExperPoint");
+            dp.Reward = LoadNode<int>(_node, "Reward");
+            LoadNode(ref dp.experPoint, _node, "ExperPoint");
 
             dungeon.dungeon_Progress[index++] = dp;
         }
@@ -190,19 +190,19 @@ public class DataController : MonoBehaviour
         {
             Knight k = new Knight();
 
-            LoadNode(k.num, _node, "Num");
-            LoadNode(k.name, _node, "Name");
-            LoadNode(k.job, _node, "Job");
-            LoadNode(k.level, _node, "Level");
-            LoadNode(k.exper, _node, "Exper");
-            LoadNode(k.favor, _node, "Favor");
-            LoadNode(k.day, _node, "Day");
-            LoadNodeArray(k.skinArr, _node, "Skin");
+            LoadNode(ref k.num, _node, "Num");
+            LoadNode(ref k.name, _node, "Name");
+            LoadNode(ref k.job, _node, "Job");
+            LoadNode(ref k.level, _node, "Level");
+            LoadNode(ref k.exper, _node, "Exper");
+            LoadNode(ref k.favor, _node, "Favor");
+            LoadNode(ref k.day, _node, "Day");
+            LoadNodeArray(ref k.skinArr, _node, "Skin");
 
-            LoadNode(k.isAlive, _node, "IsAlive");
-            LoadNode(k.hp, _node, "Hp");
-            LoadNode(k.stress, _node, "Stress");
-            LoadNodeArray(k.uni, _node, "Uni");
+            LoadNode(ref k.isAlive, _node, "IsAlive");
+            LoadNode(ref k.hp, _node, "Hp");
+            LoadNode(ref k.stress, _node, "Stress");
+            LoadNodeArray(ref k.uni, _node, "Uni");
 
             /*
             int[] array = new int[3];
@@ -221,11 +221,12 @@ public class DataController : MonoBehaviour
         foreach (XmlNode _node in nodes)
         {
             Party p = new Party();
-            LoadNode(p.dungeonNum, _node, "Dungeon");
-            LoadNodeArray(p.k, _node, "Knight");
-            LoadNode(p.day, _node, "Day");
-            LoadNode(p.dayIndex, _node, "DayIndex");
+            LoadNode(ref p.dungeonNum, _node, "Dungeon");
+            LoadNodeArray(ref p.k, _node, "Knight");
+            LoadNode(ref p.day, _node, "Day");
+            LoadNode(ref p.dayIndex, _node, "DayIndex");
             UnitData.Instance.partys.Add(p);
+            p.Load();
         }
         //4 EventInfo(Admin, Office)
 
@@ -237,53 +238,22 @@ public class DataController : MonoBehaviour
         {
             RandomKnight rk = new RandomKnight();
             
-            LoadNode(rk.name, _node, "Name");
-            LoadNode(rk.job, _node, "Job");
-            LoadNode(rk.level, _node, "Level");
-            LoadNodeArray(rk.skinNum, _node, "Skin");
+            LoadNode(ref rk.name, _node, "Name");
+            LoadNode(ref rk.job, _node, "Job");
+            LoadNode(ref rk.level, _node, "Level");
+            LoadNodeArray(ref rk.skinNum, _node, "Skin");
 
             unit.randomKnightList[index++] = rk;
         }
 
-        //6 DungeonInfo
-        nodes = xmlDoc.SelectNodes("PlayerData/DungeonInfo/Dungeon");
-        index = 0;
-        foreach(XmlNode _node in nodes)
-        {
-            DungeonProgress dp = DungeonData.Instance.dungeon_Progress[index];
-            dp.d = DungeonData.Instance.dungeons[LoadNode<int>(_node, "Num")];
-            LoadNode(dp.isClear, _node, "IsClear");
-            LoadNode(dp.Saturation, _node, "Saturation");
-            LoadNode(dp.SearchP, _node, "SearchP");
-            LoadNode(dp.eventType, _node, "Type");
-
-            switch (dp.eventType)
-            {
-                case 0: // 로드할 이벤트가 없음. 로드안해도 되는 값들임.
-                    dp.isParty = false;
-                    index++;
-                    continue;
-                case 1: 
-                    LoadNodeArray(dp.m, _node, "Info");
-                    break;    
-                case 3:
-                    LoadNode(dp.choice_Event_Type, _node, "Info");
-                    break;            
-                default:break;
-            }
-            dp.isParty = true;
-
-            LoadNode(dp.Reward, _node, "Reward");
-            LoadNode(dp.experPoint, _node, "ExperPoint");
-            index++;
-        }
         //7 Office
         node = xmlDoc.SelectSingleNode("PlayerData/Office");
-        LoadNode(office.officePoint, node, "OfficePoint");
-        LoadNode(office.OfficeGage, node, "OfficeGage");
+        LoadNode(ref office.officePoint, node, "OfficePoint");
+        office.OfficeGage = LoadNode<int>(node, "OfficeGage");
         
         //N. End
         ConnectData();
+        Debug.Log("로드 완료");
     }
     #endregion
 
@@ -470,7 +440,7 @@ public class DataController : MonoBehaviour
         //7 Office - 정책, OfficeGage, Point
         node = playerDataNode.SelectSingleNode("Office");
         UpdateNode("OfficePoint", node, ToString(OfficeData.Instance.officePoint));
-        UpdateNode("OfficePoint", node, ToString(OfficeData.Instance.OfficeGage));
+        UpdateNode("OfficeGage", node, ToString(OfficeData.Instance.OfficeGage));
 
         //n-1 Game - Retry, Dungeon, Challenge(도전과제)
 
@@ -554,7 +524,7 @@ public class DataController : MonoBehaviour
     }
 
     //Node값 Load
-    private void LoadNode<T>(T value, XmlNode node, string name)
+    private void LoadNode<T>(ref T value, XmlNode node, string name)
     {
         value = (T)Convert.ChangeType(node.SelectSingleNode(name).InnerText, typeof(T));
     }
@@ -562,7 +532,7 @@ public class DataController : MonoBehaviour
     {
         return (T)Convert.ChangeType(node.SelectSingleNode(name).InnerText, typeof(T));
     }
-    private void LoadNodeArray<T>(T[] array, XmlNode node, string name)
+    private void LoadNodeArray<T>(ref T[] array, XmlNode node, string name)
     {
         int[] split = CodeBox.StringSplit(node.SelectSingleNode(name).InnerText);
         array = new T[split.Length];
