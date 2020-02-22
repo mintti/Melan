@@ -44,8 +44,8 @@ public class TextData : MonoBehaviour
         "test",
         "일정대로 탐색완료했습니다. 보상을 수령하세요", "파티를 강제귀환시킬 수 있습니다"};
 
-    public string[] select_Day_Ment = new string[5]{
-        "탐색률 + 5%", "탐색률 + 10%, 추가 골드 + 5%", "탐색률 + 15%, 추가골드 +8%", "탐색률 + 20%, 추가골드 15%", "탐색률 + 30%, 추가골드 + 25%"
+    public string[] select_Day_Ment = new string[6]{
+        "탐색률 + 5%", "탐색률 + 10%, 추가 골드 + 5%", "탐색률 + 15%, 추가골드 +8%", "탐색률 + 20%, 추가골드 15%", "탐색률 + 30%, 추가골드 + 25%", "5턴 후 BOSS전투"
     };
 
     public string[] choice_Event_Ment = new string[4]
@@ -86,8 +86,8 @@ public class TextData : MonoBehaviour
             "test",
             "test",
             "일정대로 탐색완료했습니다. 보상을 수령하세요", "파티를 강제귀환시킬 수 있습니다"};
-        select_Day_Ment = new string[5]{
-        "탐색률 + 5%", "탐색률 + 10%, 추가 골드 + 5%", "탐색률 + 15%, 추가골드 +8%", "탐색률 + 20%, 추가골드 15%", "탐색률 + 30%, 추가골드 + 25%"
+        select_Day_Ment = new string[6]{
+        "탐색률 + 5%", "탐색률 + 10%, 추가 골드 + 5%", "탐색률 + 15%, 추가골드 +8%", "탐색률 + 20%, 추가골드 15%", "탐색률 + 30%, 추가골드 + 25%" , "5턴 후 BOSS전투"
     };
     }
 }

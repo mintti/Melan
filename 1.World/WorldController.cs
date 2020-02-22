@@ -87,7 +87,9 @@ public class WorldController : MonoBehaviour
         }
 
         //초기화.
-        selectDayList.SetData();
+        
+        selectDayList.SetData(dungeon.GetDungeonProgress(d).SearchP == 100 ? true : false);
+
         CodeBox.ClearList(selectView);
         txrArr.Clear();
         Cnt = 0;
