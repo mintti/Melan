@@ -248,7 +248,7 @@ public class UnitData : MonoBehaviour
             Karr[i] = list[i];
             
         int dungeon = list[size];
-
+    
         int day = DungeonData.Instance.day_Array[dayIndex];
         Party p = new Party(dungeon, Karr, day, dayIndex);
         partys.Add(p);

@@ -77,7 +77,24 @@ public class KnightSkinPrefab : MonoBehaviour
     }
     #endregion
     #region 모션
+    public Transform faceDecoTr;
+    public void SetMotion(string name, bool value)
+    {
+        int num = 0;
+        switch(name)
+        {
+            case "blood":
+                num = 0;
+                break;
+            case "poison":
+                num = 1;
+                break;
+            default :
+                break;
+        }
 
+        faceDecoTr.GetChild(num).gameObject.SetActive(value);
+    }
     #endregion
 }
 

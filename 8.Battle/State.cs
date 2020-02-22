@@ -277,12 +277,13 @@ public class State
         debuffs.Add(new Buff(type, turn, factor));
     }
 
-    private void PoisonDam()
+    private void AddPoison(int cnt)
     {
-        
+                
     }
-    private void BloodDam()
+    private void AddBlood(int cnt)
     {
+        Blood += cnt;
     }
     public void Purify()
     {

@@ -58,7 +58,8 @@ public class EventData : MonoBehaviour
     }
     #endregion
     #region 던전 기반 이벤트 관리
-
+    //GameController - ConnectData()
+    //DungeonProgerss isParty값을 true 로 변경해줌.,(추가 출전을 할 수 없도록)  
     public void Connect_DungeonEvent_And_Party()
     {
         List<int> list = new List<int>();
@@ -123,18 +124,57 @@ public class EventData : MonoBehaviour
     void Create_Event_Battle()
     {
         Dungeon d = dp.d;
-        int[] cntList = new int[4]{5, 9, 13 ,17};
+        //int[] cntList = new int[4]{5, 9, 13 ,17};
         // 1~4명 / 1~8명... 1~16명, 최대 페이즈 4
-        
-        int cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, cntList[d.level-1] -1), cntList[d.level-1]); // (1 ~ cnt) ~ 4 사이의 값                    
+        int cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, 4), 5);
+        //int cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, cntList[d.level-1] -1), cntList[d.level-1]); // (1 ~ cnt) ~ 4 사이의 값                    
 
         int[] arr = new int[cnt];   
-        arr = d.GetMonster(cnt);
+        arr = GetMonster(d, cnt);
 
         //생성된 배틀데이타 저장.
         dp.Battle(arr);
     }
-
+    //Monster생성
+    private int[] GetMonster(Dungeon d, int cnt)
+    {
+        int[] array = new int[cnt];
+        DungeonProgress dp = DungeonData.Instance.GetDungeonProgress(d.num);
+        
+        int level = dp.SearchP < 25 ? 0 : dp.SearchP < 50 ? 1 : dp.SearchP < 75 ? 2 : dp.SearchP < 100 ? 3 : 4;
+        for(int i = 0 ; i < cnt ; i ++)
+        {
+            int m = 0;
+            int randomNum = UnityEngine.Random.Range(1, 11);
+            switch(level)
+            {
+                case 0 : // 0:1 = 7:3;
+                    m = randomNum <= 7 ? 0 : 1 ;
+                    break;
+                case 1 : // 0:1:2 = 2:6:2 
+                    m = randomNum <= 2 ? 0 : randomNum <= 8 ? 1 : 2;
+                    break; 
+                case 2 : // 1:2:3 = 5:4:1
+                    m = randomNum <= 5 ? 1 : randomNum <= 9 ? 2 : 3;
+                    break;
+                case 3 : //1:2:3 = 3:5:2
+                    m = randomNum <= 3 ? 1 : randomNum <= 8 ? 2 : 3;
+                    break;
+                case 4 : //2:3 = 7:3
+                    m = randomNum <= 7 ? 2 : 3;
+                    break;
+                default : break;
+            }
+            array[i] = d.monsters[m];
+        }
+        
+        return array; 
+    }
+    private int[] SetMonster_Boss(Dungeon d, int cnt)
+    {
+        int[] array = new int[5]{0,0,0,0,0};
+        return array;
+    }
     //Choice 생성
     private void Create_Event_Choice()
     {
@@ -150,7 +190,8 @@ public class EventData : MonoBehaviour
         
         //보상등록
         Dungeon_Reward dr = DungeonData.Instance.dungeon_Rewards[dp.p.dayIndex];
-        PlayerData.Instance.Gold += (int)((float)dp.Reward * (1.0f * dr.gold));
+        
+        PlayerData.Instance.Gold += dp.Get_Dungeon_Reward_Gold();    
         dp.SearchP += (int)dr.search;
 
         //파티해제

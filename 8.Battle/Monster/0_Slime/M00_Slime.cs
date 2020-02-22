@@ -19,6 +19,8 @@ public class M00_Slime : MonoBehaviour
                 targetState = BattleController.Instance.GetSingleTarget();
                 targetState.AdDam(mb.state.Power);
                 break;
+            case 2 :
+                break;
             default:
                 break;
         }

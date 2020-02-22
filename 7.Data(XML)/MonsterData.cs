@@ -91,6 +91,7 @@ public class MonsterData : MonoBehaviour
 
         //데이터 삽입
         #region 몬스터 리스트
+        //00 슬라임 숲
         monsters[0] = new Monster(0, "슬라임", 20, 3, 6, null, 5);
         monsters[1] = new Monster(1, "동물슬라임",  20, 2, 12, null, 5);
         monsters[2] = new Monster(2, "포이즌슬라임",  30, 5, 8, null, 5);

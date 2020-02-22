@@ -9,58 +9,32 @@ public class Dungeon
     public string name{get;set;}
     public int level{get;set;}
 
-    public int[] commonMonster;
-    public int eliteMonster;
+    public int[] monsters = new int[5];
     public int boss;
 
-    public Dungeon( string _name, int _level, int _boss)
+    public Dungeon( string _name, int _level)
     {
         name = _name;
         level = _level;
-        boss = _boss;
     }
 
-    public void SetData(int _num, string _name, int _level, int _boss)
+    public void SetData(int _num, string _name, int _level)
     {
         num = _num;
         name = _name;
         level = _level;
-        boss = _boss;
         
-        SetMonster();
+        int[] arr = new int[5];
+        for(int i = 0 ;i <5; i++)
+            arr[i] = 5 * num + i;
+        
+        SetMonster(arr);
     }
     
-    public void SetMonster()
+    private void SetMonster(int[] arr)
     {
-        commonMonster = new int[3]{0, 0, 0};
-        eliteMonster =0 ;
-        boss = 0;
+        monsters = arr;
     }
-    public int[] GetMonster(int size)
-    {
-        int[] array = new int[size];
-        int m = 0;
-        
-        DungeonProgress dp = DungeonData.Instance.GetDungeonProgress(num);
-        //M은 몬스터로.. dp에 의거하여 해당하는 몬스터정보를 Dungeon에서 가져옴.
-        
-        int difficulty = dp.GetDifficulty();
-        int commonPer = difficulty == 0 ? 10 : 8 ;
-        
-        if(difficulty == 2)
-        {
-            commonPer = 9;
-            array[size-1] = boss;
-            size --;
-        }
-
-        for(int i = 0; i< size; i++)
-        {
-            array[i] = Random.Range(0, 10) < commonPer ? commonMonster[Random.Range(0, commonMonster.Length)] : eliteMonster;
-        }
-        
-        return array; 
-    }    
 }
 
 public class DungeonProgress
@@ -108,10 +82,6 @@ public class DungeonProgress
         Dungeon_Reset();
     }   
 
-    public int GetDifficulty()
-    {
-        return searchP < 50 ? 0 : searchP < 90 ? 1 : 2;
-    }
     #endregion
 
     #region DungeonEvent
@@ -134,8 +104,10 @@ public class DungeonProgress
     {
         eventType = n;
     }
+    //해당 던전에 보낼떄(1일차세팅)
     public void SendDungeon(Party _p)
     {
+        Reward= 0;
         eventType = 8;
         p = _p;
         isParty = true;
@@ -211,37 +183,38 @@ public class DungeonData : MonoBehaviour
     public Dungeon[] dungeons = new Dungeon[16];
     public DungeonProgress[] dungeon_Progress = new DungeonProgress[8];
     //보상
-    public Dungeon_Reward[] dungeon_Rewards = new Dungeon_Reward[5]{new Dungeon_Reward(5, 0), new Dungeon_Reward(10, 5), new Dungeon_Reward(15, 8), new Dungeon_Reward(20, 15), new Dungeon_Reward(30, 25)};
+    public Dungeon_Reward[] dungeon_Rewards = new Dungeon_Reward[6]{new Dungeon_Reward(5, 0), new Dungeon_Reward(10, 5), new Dungeon_Reward(15, 8),
+                                            new Dungeon_Reward(20, 15), new Dungeon_Reward(30, 25),  new Dungeon_Reward(0, 0)};
     //데이
-    public int[] day_Array = new int[5]{2, 3, 4, 5, 6};//4, 8, 12, 16, 20
+    public int[] day_Array = new int[6]{1, 2, 3, 4, 5, 5};//4, 8, 12, 16, 20
 
     public void SetData()
     {
         /*   level 1  */
-        dungeons[0].SetData(0, "슬라임 군락", 1 , 0);
-        dungeons[1].SetData(1, "음험한 산지", 1, 1);
-        dungeons[2].SetData(2, "맑은 오아시스", 1, 2);
-        dungeons[3].SetData(3, "의문의 땅굴", 1, 3);
+        dungeons[0].SetData(0, "슬라임 군락", 1);
+        dungeons[1].SetData(1, "음험한 산지", 1);
+        dungeons[2].SetData(2, "맑은 오아시스", 1);
+        dungeons[3].SetData(3, "의문의 땅굴", 1);
 
         /*   level 2  */
-        dungeons[4].SetData(4, "비명의 산", 2, 4);
-        dungeons[5].SetData(5, "깊고 어두운 호수", 2, 5);
-        dungeons[6].SetData(6, "꽃피는 화원", 2, 6);
-        dungeons[7].SetData(7, "환각의 숲", 2, 7);
-        dungeons[8].SetData(8, "키큰 오두막", 2, 8);
-        dungeons[9].SetData(9, "의문의 탑", 2,  9);
+        dungeons[4].SetData(4, "비명의 산", 2);
+        dungeons[5].SetData(5, "깊고 어두운 호수", 2);
+        dungeons[6].SetData(6, "꽃피는 화원", 2);
+        dungeons[7].SetData(7, "환각의 숲", 2);
+        dungeons[8].SetData(8, "키큰 오두막", 2);
+        dungeons[9].SetData(9, "의문의 탑", 2);
         
         /*   level 3   */
-        dungeons[10].SetData(10, "황폐한 평원", 3, 10);
-        dungeons[11].SetData(11, "크로드네 령", 3, 11);
-        dungeons[12].SetData(12, "테레제바 국", 3, 12);
-        dungeons[13].SetData(13, "X의 골짜기", 3,13);
+        dungeons[10].SetData(10, "황폐한 평원", 3);
+        dungeons[11].SetData(11, "크로드네 령", 3);
+        dungeons[12].SetData(12, "테레제바 국", 3);
+        dungeons[13].SetData(13, "X의 골짜기", 3);
 
         /*   level 4   */
-        dungeons[14].SetData(14, "마왕성", 4, 0);
-        dungeons[15].SetData(15, "이형의 땅", 4, 0);
+        dungeons[14].SetData(14, "마왕성", 4);
+        dungeons[15].SetData(15, "이형의 땅", 4);
 
-        day_Array = new int[5]{2, 3, 4, 5, 6};
+        day_Array = new int[6]{1, 2, 3, 4, 5, 5};
     }
 
     //해당하는 던전NUM의 던전진행의 인덱스를 출력
@@ -267,6 +240,7 @@ public class DungeonData : MonoBehaviour
     }
 
     //DataController에서 호출됨.
+    //첫 시작시 던전 생성.
     public void DungeonMake()
     {
         int[] array = new int[8];

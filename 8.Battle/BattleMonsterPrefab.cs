@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BattleMonsterPrefab : MonoBehaviour
 {
-    public BattleController battle;
     public MonsterState ms;
     public State s;
     public SpriteRenderer img;
@@ -14,10 +13,6 @@ public class BattleMonsterPrefab : MonoBehaviour
     public int index;
     //해당스크립트 활성화 여부임. SetData()를 통해 활성화됨.
     public bool isMonster;
-    
-    private void Start() {
-        battle = BattleController.Instance;
-    }
 
     IEnumerator Die()
     {
@@ -48,7 +43,7 @@ public class BattleMonsterPrefab : MonoBehaviour
         ColController.Instance.SetSkillTarget(9);
         gameObject.SendMessage("UseSkill");
         
-        battle.NextTurn();
+        BattleController.Instance.NextTurn();
     }
     #region  UI관련
     public GameObject targetObj;
