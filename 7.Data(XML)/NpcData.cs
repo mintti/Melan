@@ -7,20 +7,29 @@ public class Npc
     public string name;
     public int favor;
     public Npc(){}
-    public Npc(string n, int f)
+    //초기화 데이타
+    public Npc(string n, List<int> h_e, List<int> k_l, List<int> k_n, List<int> k_h)
     {
-        name = n; favor = f;
+        name = n;;
     }
-    
-    //성향적 키워드
+    //PlayerData Load
+    public void SetData()
+    {
+
+    }
+
+    //<Fix>성향적 키워드
     private List<int> keyword_Like = new List<int>();
     private List<int> keyword_Nomal = new List<int>();
     private List<int> keyword_Hate = new List<int>();
-
-    //사용했던 키워드. 사용했던 경우 효과를 볼수 있음. 
-    public List<int> used_Keyword = new List<int>();
+    //<Fix>가지는 Event
+    public List<int> have_Event = new List<int>();
     
-    public List<int> use_Action = new List<int>();
+    //<Load>사용했던 키워드. 사용했던 경우 효과를 볼수 있음. 
+    public List<int> used_Keyword = new List<int>();
+    //하루하루 초기화
+    public List<int> use_Event = new List<int>();
+
     //키워드 대화시, 호감도 증가 혹은 감소
     public void Event_Keyword(int num)
     {
@@ -33,28 +42,38 @@ public class Npc
     }
     public void Event_Action(int num)
     {
-        use_Action.Add(num);        
+        use_Event.Add(num);        
     }
 
     public void NextDay()
     {
-        use_Action.Clear();    
+        use_Event.Clear();    
     }
     
 }
 
 public class NpcData : MonoBehaviour
 {
-    public Npc[] npcArray;
-
-    public void SetNpc(bool isNew)
+    private static NpcData _instance = null;
+    public static NpcData Instance
     {
-        //is new해서 로드할지 말지 설정.
-        npcArray = new Npc[5]{
-            new Npc("세레나", 0),
-            new Npc("npc2", 0),
-            new Npc("npc3", 0),
-            new Npc("npc4", 0),
-            new Npc("npc5", 0)};
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = FindObjectOfType(typeof(NpcData)) as NpcData;
+
+                if(_instance == null)
+                {
+                    Debug.LogError("There's no active NpcData object");
+                }
+            }
+            return _instance;
+        }
     }
+
+    public Npc[] npcArray;
+    public string[] npcTalk_Event;
+    public string[] npcTalk_Keyword;
+
 }
