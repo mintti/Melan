@@ -65,7 +65,7 @@ public class StoryData : MonoBehaviour
         Sprite[] sprites = Resources.LoadAll<Sprite>("4.Story/" + name);
 
         //텍스트 로드
-        XmlDocument xmlDoc = DataController.Instance.LoadStory(name);
+        XmlDocument xmlDoc = DataController.Instance.LoadXml("ExternalData/Story/" + name + ".xml");
         XmlNodeList textNodes = xmlDoc.DocumentElement.SelectNodes("text");
         string[] texts = new string[textNodes.Count];
         int[] tts = new int[textNodes.Count];

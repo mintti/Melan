@@ -6,7 +6,7 @@ using System.Xml;
 using System.IO;
 using System.Text;
 using System;
-
+using System.Linq;
 
 
 public class DataController : MonoBehaviour
@@ -38,13 +38,14 @@ public class DataController : MonoBehaviour
     public PlayerData player;
     public OfficeData office;
     public SkinData skin;
-
+    private NpcData npc;
     public TextData text;
 
     
     public string platform;
     private void Awake()
     {
+        npc = NpcData.Instance;
        LoadResource();
     }
 
@@ -63,52 +64,70 @@ public class DataController : MonoBehaviour
         SkillData.Instance.SetData();
         TextData.Instance.SetData();
 
+        //여기부터 XML LOAD
+        //Platform Check
+        CheckPlatform();
+
+        //언어에 따라 XML에서 로드하는 데이타
+        LoadXml_Npc();
+
+        //PlayerData Load
         LoadXmlDocument();
     }
+
+    private void CheckPlatform()
+    {
+        platform = Application.platform == RuntimePlatform.Android ? "android" : "pc";
+    }
+    #region Resource Detail
+    private void LoadXml_Npc()
+    {
+        XmlDocument doc = LoadXml("ExternalData/NpcInfo.xml");
+        XmlNode node = doc.SelectSingleNode("npcInfo");
+        string[] names = LoadNode<string>(node, "name").Split(',');
+        string[] events = LoadNode<string>(node, "event").Split(',');
+        string[] keywords = LoadNode<string>(node, "keyword").Split(',');
+        
+        XmlNodeList nodes = node.SelectNodes("npcList/npc");
+        npc.npcArray = new Npc[names.Length];
+        //npc가 가지는 행동, 선호 키워드 저장
+        for(int i = 0 ; i < names.Length; i++)
+        {
+            List<int> event_ = StringSplit<int>(nodes[i].Attributes["event"].Value, ',').ToList();
+
+            string[] keyword = nodes[i].Attributes["keyword"].Value.Split('/');
+            List<int> like = StringSplit<int>(keyword[0], ',').ToList();
+            List<int> nomal = StringSplit<int>(keyword[1], ',').ToList();
+            List<int> hate = StringSplit<int>(keyword[2], ',').ToList();
+
+            npc.npcArray[i] = new Npc(names[i], event_, like, nomal, hate);
+        }
+
+        //언어별 단어
+        npc.npcTalk_Event = events;
+        npc.npcTalk_Keyword = keywords;
+    }
+    #endregion
 
     public XmlDocument xmlDoc; //첫 데이터 로드 시 지정됨.
     private void LoadXmlDocument()
     {
         xmlDoc = new XmlDocument();
 
-        //Platform Check
-        string filePath;
-        if(Application.platform == RuntimePlatform.Android)
-        {
-            platform = "android";
-            filePath = Application.persistentDataPath + "/PlayerData.xml";
-        }
-        else
-        {
-            platform = "pc";
-            filePath = "Assets/StreamingAssets/PlayerData.xml";
-        }
-
+        //Platform별 경로지정
+        string filePath = platform == "android" ?
+            Application.persistentDataPath + "/PlayerData.xml" :
+            "Assets/StreamingAssets/PlayerData.xml";
+        
         //PlayerData 존재시 로드, 없을 경우 신규데이타 작성.
         if(!File.Exists(filePath))
-        {       //신규데이타 로드
-            if(platform =="pc")
-            {
-                filePath = "Assets/StreamingAssets/FirstData.xml";
-                xmlDoc.Load(filePath);
-            }
-            else
-            {   //Android
-                filePath = "jar:file://" + Application.dataPath + "!/assets/FirstData.xml";
-                WWW www = new WWW(filePath);
-
-                while(!www.isDone) {};
-
-                StringReader stringReader = new StringReader(www.text);
-                xmlDoc.LoadXml(stringReader.ReadToEnd());
-            }
+        {
+            xmlDoc = LoadXml("FirstData.xml");
             FirstData();
         }
         else
         {       //기존데이타 로드
-            Debug.Log( "PlayerData 로딩성공.");
             xmlDoc.Load(filePath);
-
             LoadXml();
         }
 
@@ -253,7 +272,6 @@ public class DataController : MonoBehaviour
         
         //N. End
         ConnectData();
-        Debug.Log("로드 완료");
     }
     #endregion
 
@@ -573,32 +591,45 @@ public class DataController : MonoBehaviour
         }
         return arr;
     }
+
+    //sysbol로 나누어 string[]으로 뱉음
+    private T[] StringSplit<T>(string text, char symbol)
+    {
+        string[] sArr = text.Split(symbol);
+        T[] Arr = new T[sArr.Length];
+
+        for(int i = 0 ; i < Arr.Length; i++)
+        {
+            Arr[i] = (T)Convert.ChangeType(sArr[i], typeof(T));
+        }
+        return Arr;
+    }
     #endregion
 
     #region 기타 함수
-    public XmlDocument LoadStory(string fileName)
+    public XmlDocument LoadXml(string root)
     {
-        string filePath_Story;
-
-        XmlDocument xmlDoc_Story = new XmlDocument();
+        XmlDocument xmlDoc_ = new XmlDocument();
+        
+        string filePath = root;
         if(platform == "pc")
         {
-            filePath_Story = "Assets/StreamingAssets/ExternalData/Story/" + fileName + ".xml";
-            xmlDoc_Story.Load(filePath_Story);
+            filePath = "Assets/StreamingAssets/" + root;
+            xmlDoc_.Load(filePath);
         }
         else
         {
-            filePath_Story =  "jar:file://" + Application.dataPath + "!/assets/ExternalData/Story/" + fileName + ".xml";
+            filePath =  "jar:file://" + Application.dataPath + "!/assets/" + root;
 
-            WWW www = new WWW(filePath_Story);
+            WWW www = new WWW(filePath);
 
             while(!www.isDone){};
 
             StringReader stringReader = new StringReader(www.text);
-            xmlDoc_Story.LoadXml(stringReader.ReadToEnd());
+            xmlDoc_.LoadXml(stringReader.ReadToEnd());
         }
-        
-        return xmlDoc_Story;
+
+        return xmlDoc_;
     }
 
     public GameObject dataUpdateText;
