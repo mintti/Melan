@@ -25,7 +25,8 @@ public class ImageData : MonoBehaviour
     }
     //직업
     public Sprite[] job = new Sprite[8];
-    
+    //NPC
+    public Sprite[] npc = new Sprite[8];  
     //스킬
     public Sprite targetSolo;
     public Sprite targetMulti;
@@ -69,5 +70,9 @@ public class ImageData : MonoBehaviour
                 return null;
         }
     }
-  
+    
+    public void SetData()
+    {
+        npc = Resources.LoadAll<Sprite>("5.NPC/npc");
+    }
 }

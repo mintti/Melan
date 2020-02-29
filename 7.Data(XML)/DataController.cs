@@ -63,6 +63,7 @@ public class DataController : MonoBehaviour
         dungeon.SetData();
         SkillData.Instance.SetData();
         TextData.Instance.SetData();
+        ImageData.Instance.SetData();
 
         //여기부터 XML LOAD
         //Platform Check
@@ -90,6 +91,7 @@ public class DataController : MonoBehaviour
         
         XmlNodeList nodes = node.SelectNodes("npcList/npc");
         npc.npcArray = new Npc[names.Length];
+        
         //npc가 가지는 행동, 선호 키워드 저장
         for(int i = 0 ; i < names.Length; i++)
         {
@@ -99,7 +101,7 @@ public class DataController : MonoBehaviour
             List<int> like = StringSplit<int>(keyword[0], ',').ToList();
             List<int> nomal = StringSplit<int>(keyword[1], ',').ToList();
             List<int> hate = StringSplit<int>(keyword[2], ',').ToList();
-
+    
             npc.npcArray[i] = new Npc(names[i], event_, like, nomal, hate);
         }
 
