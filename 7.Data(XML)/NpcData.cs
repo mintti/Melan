@@ -10,7 +10,11 @@ public class Npc
     //초기화 데이타
     public Npc(string n, List<int> h_e, List<int> k_l, List<int> k_n, List<int> k_h)
     {
-        name = n;;
+        name = n;
+        have_Event = h_e;
+        keyword_Like = k_l;
+        keyword_Nomal = k_n;
+        keyword_Hate = k_h;
     }
     //PlayerData Load
     public void SetData()
@@ -72,8 +76,8 @@ public class NpcData : MonoBehaviour
         }
     }
 
-    public Npc[] npcArray;
-    public string[] npcTalk_Event;
-    public string[] npcTalk_Keyword;
+    public Npc[] npcArray{get;set;}
+    public string[] npcTalk_Event{get;set;}
+    public string[] npcTalk_Keyword{get;set;}
 
 }
