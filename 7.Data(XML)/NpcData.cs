@@ -6,6 +6,7 @@ public class Npc
 {
     public string name;
     public int favor;
+    
     public Npc(){}
     //초기화 데이타
     public Npc(string n, List<int> h_e, List<int> k_l, List<int> k_n, List<int> k_h)
@@ -35,25 +36,64 @@ public class Npc
     public List<int> use_Event = new List<int>();
 
     //키워드 대화시, 호감도 증가 혹은 감소
-    public void Event_Keyword(int num)
+    public int Event_Keyword(int num)
     {
-        if(keyword_Like.Contains(num));
-        else if(keyword_Nomal.Contains(num));
-        else if(keyword_Hate.Contains(num));
-        else;
-
-        if(!used_Keyword.Contains(num)) used_Keyword.Add(num);
+        int type = KeywordType(num);
+        switch(type)
+        {
+            case 0 : 
+                used_Keyword.Add(num);
+                Event_Keyword(num);
+                break;
+            case 1 : //Like
+                favor += 3;
+                break;
+            case 2 : //Nomal
+                favor += 1;
+                break;
+            case 3 : //hate
+                favor -= 3;
+                break;
+            default ://none?
+                break;    
+        }
+        Debug.Log(type + "실행");
+        return type;
     }
+    //0 : 성향비교
+    public int KeywordType(int num)
+    {
+        if(!used_Keyword.Contains(num)) return 0;
+
+        if(keyword_Like.Contains(num))  return 1;
+        if(keyword_Nomal.Contains(num)) return 2;
+        if(keyword_Hate.Contains(num)) return 3;
+        return 4;
+    }
+    // 1_0 : 사용 이벤트에 추가 후 재비교
     public void Event_Action(int num)
     {
         use_Event.Add(num);        
     }
+
+    
 
     public void NextDay()
     {
         use_Event.Clear();    
     }
     
+}
+public class Keyword
+{
+    public string name;
+    public bool unlock;
+
+    public Keyword(){}
+    public Keyword(string n, bool u)
+    {
+        name = n; unlock = u;
+    }
 }
 
 public class NpcData : MonoBehaviour
@@ -78,6 +118,7 @@ public class NpcData : MonoBehaviour
 
     public Npc[] npcArray{get;set;}
     public string[] npcTalk_Event{get;set;}
-    public string[] npcTalk_Keyword{get;set;}
 
+    public Keyword[] npcTalk_Keyword;
+    
 }

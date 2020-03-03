@@ -107,7 +107,11 @@ public class DataController : MonoBehaviour
 
         //언어별 단어
         npc.npcTalk_Event = events;
-        npc.npcTalk_Keyword = keywords;
+        
+        int index = 0;
+        npc.npcTalk_Keyword = new Keyword[keywords.Length];
+        foreach(string k in keywords)
+            npc.npcTalk_Keyword[index] = new Keyword(keywords[index++], true);
     }
     #endregion
 

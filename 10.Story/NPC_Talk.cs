@@ -27,6 +27,8 @@ public class NPC_Talk : MonoBehaviour
         gameObject.SetActive(true);
         who = num;
         npc = NpcData.Instance.npcArray[who];
+        npcImg.sprite = ImageData.Instance.npc[who];
+        npcNameText.text = npc.name;
 
         answerType = TalkBox.EVENT;
         SetData();
@@ -36,11 +38,11 @@ public class NPC_Talk : MonoBehaviour
     public Transform boxTr;
     public GameObject box;
     public Image npcImg;
+    public Text npcNameText;
     private void SetData()
     {
         //기본세팅
         page = 0;
-        npcImg.sprite = ImageData.Instance.npc[who];
         //선택지 세팅
         CodeBox.ClearList(boxTr);
         if(answerType == TalkBox.EVENT)
@@ -54,7 +56,11 @@ public class NPC_Talk : MonoBehaviour
         }
         else//키워드 나열
         {
-            
+            for(int i =0 ; i< NpcData.Instance.npcTalk_Keyword.Length; i++)
+            {
+                if(!NpcData.Instance.npcTalk_Keyword[i].unlock) continue;
+                CodeBox.AddChildInParent(boxTr, box).GetComponent<Npc_Talk_Box>().SetBox(transform, i, npc.KeywordType(i));
+            }
         }
     }
     
@@ -67,11 +73,44 @@ public class NPC_Talk : MonoBehaviour
     {
         if(answerType == TalkBox.EVENT)//이벤트시 이벤트 실행
         {
-
+            switch(num)
+            {
+                case 0 :
+                    answerType = TalkBox.KEYWORD;
+                    SetData();
+                    break;
+                case 1 :
+                    break;
+                case 2 :
+                    break;
+                case 3 :
+                    break;
+                case 4 :
+                    break;
+                default :
+                    break;
+            }
         }
         else //키워드 대화 시 키워드 선택
         {
+            int type = npc.Event_Keyword(num);
 
+            //키워드에 따른 이펙트
+            switch(type)
+            {
+                case 0 :
+                    break;
+                case 1 :
+                    break;
+                case 2 :
+                    break;
+                case 3 :
+                    break;
+                case 4 :
+                    break;
+                default :
+                    break;
+            }
         }
     }
 }
