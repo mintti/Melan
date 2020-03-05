@@ -64,7 +64,8 @@ public class DataController : MonoBehaviour
         SkillData.Instance.SetData();
         TextData.Instance.SetData();
         ImageData.Instance.SetData();
-
+        NpcData.Instance.SetData();
+        
         //여기부터 XML LOAD
         //Platform Check
         CheckPlatform();
@@ -102,7 +103,7 @@ public class DataController : MonoBehaviour
             List<int> nomal = StringSplit<int>(keyword[1], ',').ToList();
             List<int> hate = StringSplit<int>(keyword[2], ',').ToList();
     
-            npc.npcArray[i] = new Npc(names[i], event_, like, nomal, hate);
+            npc.npcArray[i] = new Npc(i, names[i], event_, like, nomal, hate);
         }
 
         //언어별 단어
@@ -113,6 +114,77 @@ public class DataController : MonoBehaviour
         foreach(string k in keywords)
             npc.npcTalk_Keyword[index] = new Keyword(keywords[index++], true);
     }
+
+    public MentList LoadXml_Npc_Ment(string name)
+    {
+        MentList mentList = new MentList();
+        XmlDocument doc = LoadXml("ExternalData/Npc/" + name + ".xml");
+        XmlNode node = doc.SelectSingleNode("greeting");
+        XmlNodeList nodes = node.SelectNodes("desc");
+        
+        mentList.greeting = LoadMent(nodes[0], "ment");
+        mentList.greeting_Front_Favor_0 = LoadMentArray(nodes[1]);
+        mentList.greeting_Front_Favor_1 = LoadMentArray(nodes[2]);
+
+        node = doc.SelectSingleNode("keyword");
+        nodes = node.SelectNodes("key");
+
+        for(int i = 0 ; i < nodes.Count; i++)
+        {
+            string value = nodes[i].Attributes["id"].Value;
+            switch(value)
+            {
+                case "like" :
+                    mentList.keyword_Like = LoadMent(nodes[i]);
+                    break;
+                case "nomal" :
+                    mentList.keyword_Nomal = LoadMent(nodes[i]);
+                    break;
+                case "hate" :
+                    mentList.keyword_Hate = LoadMent(nodes[i]);
+                    break;
+                case "none" :
+                    mentList.keyword_None = LoadMentArray(nodes[i]);
+                    break;
+                default :
+                    int num = Convert.ToInt32(value);
+                    break;
+            }
+        }
+
+        return mentList;
+    }
+
+    private Ment LoadMent(XmlNode node, string name)
+    {
+        return LoadMent(node.SelectSingleNode(name));
+    }
+    private Ment LoadMent(XmlNode node)
+    {//node == ment
+        Ment ment = new Ment(
+            node.InnerText,
+            LoadAttributes<int>(node, "face"),
+            LoadAttributes<int>(node, "deco"),
+            LoadAttributes<bool>(node, "mouse")
+        );
+        
+        return ment;
+    }
+    //대게 Keyword 
+    private MentArray LoadMentArray(XmlNode node)
+    {
+        XmlNodeList nodes = node.SelectNodes("ment");
+        Ment[] ments = new Ment[nodes.Count];
+
+        for(int i = 0 ;i  < nodes.Count; i++)
+        {
+            ments[i] = LoadMent(nodes[i]);
+        }
+        MentArray mentArray = new MentArray(ments);
+
+        return mentArray; 
+    }
+
     #endregion
 
     public XmlDocument xmlDoc; //첫 데이터 로드 시 지정됨.
@@ -566,7 +638,10 @@ public class DataController : MonoBehaviour
             array[index] = (T)Convert.ChangeType(split[index], typeof(T));
         }
     }
-    
+    private T LoadAttributes<T>(XmlNode node, string name)
+    {
+        return (T)Convert.ChangeType(node.Attributes[name].Value, typeof(T));
+    }
     //ToString
     private string ToString<T>(T value)
     {

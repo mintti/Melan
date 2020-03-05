@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Npc
 {
+    public int num;
     public string name;
     public int favor;
-    
+    private bool unlock;
+    public bool Unlock{get{return unlock;}set{unlock = value; if(unlock)LoadMent();}}
+
     public Npc(){}
     //초기화 데이타
-    public Npc(string n, List<int> h_e, List<int> k_l, List<int> k_n, List<int> k_h)
+    public Npc(int _num, string n, List<int> h_e, List<int> k_l, List<int> k_n, List<int> k_h)
     {
+        num = _num;
         name = n;
         have_Event = h_e;
         keyword_Like = k_l;
@@ -83,6 +88,12 @@ public class Npc
         use_Event.Clear();    
     }
     
+
+    public MentList mentList;
+    public void LoadMent()
+    {
+        DataController.Instance.LoadXml_Npc_Ment(NpcData.Instance.npcName[num]);
+    }
 }
 public class Keyword
 {
@@ -93,6 +104,41 @@ public class Keyword
     public Keyword(string n, bool u)
     {
         name = n; unlock = u;
+    }
+}
+
+public class MentList
+{
+    public Ment greeting;
+    public MentArray greeting_Front_Favor_0;
+    public MentArray greeting_Front_Favor_1;
+    
+    public MentArray keyword_None;
+    public Ment keyword_Like;
+    public Ment keyword_Nomal;
+    public Ment keyword_Hate;
+    public List<MentArray> keyword = new List<MentArray>();
+}
+
+public class MentArray
+{
+    public Ment[] ment;
+    
+    public MentArray(Ment[] m)
+    {
+        ment = m;
+    }
+}
+public class Ment
+{
+    public string ment;
+    public int face;
+    public bool mouseMove;
+    public int deco;
+
+    public Ment(string m, int f, int d, bool mou)
+    {
+        ment = m; face = f; deco = d; mouseMove = mou;
     }
 }
 
@@ -120,5 +166,10 @@ public class NpcData : MonoBehaviour
     public string[] npcTalk_Event{get;set;}
 
     public Keyword[] npcTalk_Keyword;
-    
+    public string[] npcName;
+
+    public void SetData()
+    {
+        npcName = new string[8]{"heizle", "sonia", "trista", "alger", "cuchi", "usol" , "samuel", "vianke"};
+    }
 }
