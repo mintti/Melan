@@ -48,7 +48,7 @@ public class DataController : MonoBehaviour
         npc = NpcData.Instance;
        LoadResource();
     }
-
+    
     private void LoadResource()
     {
         if(_instance != null)
@@ -73,6 +73,7 @@ public class DataController : MonoBehaviour
         //언어에 따라 XML에서 로드하는 데이타
         LoadXml_Npc();
 
+        Test();
         //PlayerData Load
         LoadXmlDocument();
     }
@@ -119,14 +120,19 @@ public class DataController : MonoBehaviour
     {
         MentList mentList = new MentList();
         XmlDocument doc = LoadXml("ExternalData/Npc/" + name + ".xml");
-        XmlNode node = doc.SelectSingleNode("greeting");
+        XmlNode node = doc.SelectSingleNode("npc/greeting");
         XmlNodeList nodes = node.SelectNodes("desc");
         
         mentList.greeting = LoadMent(nodes[0], "ment");
-        mentList.greeting_Front_Favor_0 = LoadMentArray(nodes[1]);
-        mentList.greeting_Front_Favor_1 = LoadMentArray(nodes[2]);
+        
+        MentArray[] greeting_Front = new MentArray[2];
+        for(int i = 0 ; i < 2; i ++)
+        {
+            greeting_Front[i] = LoadMentArray(nodes[i + 1]);
+        }
+        mentList.greeting_Front_Favor = greeting_Front;
 
-        node = doc.SelectSingleNode("keyword");
+        node = doc.SelectSingleNode("npc/keyword");
         nodes = node.SelectNodes("key");
 
         for(int i = 0 ; i < nodes.Count; i++)
@@ -144,10 +150,11 @@ public class DataController : MonoBehaviour
                     mentList.keyword_Hate = LoadMent(nodes[i]);
                     break;
                 case "none" :
-                    mentList.keyword_None = LoadMentArray(nodes[i]);
+                    mentList.keyword_None = LoadMent(nodes[i]);
                     break;
                 default :
                     int num = Convert.ToInt32(value);
+                    mentList.keyword.Add(new MentArray_Keyword(num, LoadMentArray(nodes[i])));
                     break;
             }
         }
@@ -640,7 +647,14 @@ public class DataController : MonoBehaviour
     }
     private T LoadAttributes<T>(XmlNode node, string name)
     {
-        return (T)Convert.ChangeType(node.Attributes[name].Value, typeof(T));
+        try
+        {
+            return (T)Convert.ChangeType(node.Attributes[name].Value, typeof(T));
+        }
+        catch(NullReferenceException e)
+        {
+            return  default;
+        }
     }
     //ToString
     private string ToString<T>(T value)
@@ -723,4 +737,10 @@ public class DataController : MonoBehaviour
         dut.TextUpdate(msg);
     }
     #endregion
+
+    public void Test()
+    {
+        npc.npcArray[2].Unlock = true;
+        npc.npcArray[2].Favor = 0;
+    }
 }
