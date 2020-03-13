@@ -9,8 +9,13 @@ public enum TalkBox
     KEYWORD
 }
 
+delegate void MentDelegate();
 public class NPC_Talk : MonoBehaviour
 {
+    private void Awake() {
+        SetMentDelegate();
+    }
+
     private TalkBox answerType;
     private int who;
     private Npc npc;
@@ -29,6 +34,7 @@ public class NPC_Talk : MonoBehaviour
         npc = NpcData.Instance.npcArray[who];
         npcImg.sprite = ImageData.Instance.npc[who];
         npcNameText.text = npc.name;
+        npcLevelText.text = string.Format("LV.{0}", npc.level);
 
         answerType = TalkBox.EVENT;
         SetData();
@@ -40,7 +46,7 @@ public class NPC_Talk : MonoBehaviour
     public GameObject box;
     public Image npcImg;
     public Text npcNameText;
-    
+    public Text npcLevelText;
     private void SetData()
     {
         //기본세팅
@@ -61,7 +67,7 @@ public class NPC_Talk : MonoBehaviour
             for(int i =0 ; i< NpcData.Instance.npcTalk_Keyword.Length; i++)
             {
                 if(!NpcData.Instance.npcTalk_Keyword[i].unlock) continue;
-                CodeBox.AddChildInParent(boxTr, box).GetComponent<Npc_Talk_Box>().SetBox(transform, i, npc.Use_Keyword(i));
+                CodeBox.AddChildInParent(boxTr, box).GetComponent<Npc_Talk_Box>().SetBox(transform, i, npc.Used_Keyword_Icon(i));
             }
         }
     }
@@ -101,15 +107,14 @@ public class NPC_Talk : MonoBehaviour
         }
     }
     
+    #region Ment 지정영역
     public Text talkBox;
-    /*
-    해당부분 구현되도록 수정하기.
-    */
     private TypingText typingText;
     private string mentType; //ment or mentarray
-    
+    public GameObject talkingObj;//
+
     private int keywordNum;
-    private int KeywordNum{get{return npc.KeywordType(keywordNum) != 0 ? keywordNum : 9999;} set{keywordNum = value;}}
+    private int KeywordNum{get{return npc.KeywordType(keywordNum) == 4 ? 9999 : keywordNum;} set{keywordNum = value;}}
     private int mentNum;
     public int MentNum{get{return mentNum;}
         set{
@@ -137,8 +142,7 @@ public class NPC_Talk : MonoBehaviour
         SetMent();
     }
     
-    
-    private Ment before;
+    private Ment before;//추 후 비교문
     private void Ment()
     {
         talkingObj.SetActive(true);
@@ -147,38 +151,53 @@ public class NPC_Talk : MonoBehaviour
         typingText.SetData(transform, CheckMent(main.ment));
     }
 
-    private void SetMent()
+    Delegate[] MentDelegate; //Awake에서 아래 설정댐
+
+    private void SetMentDelegate()
     {
-        switch(page)
-        {
-            case 0 :
-                mentType = "mentArray";
-                mentArray = npc.mentList.greeting_Front_Favor[npc.level];
-                break;
-            case 1 :
-                mentType = "ment";
-                ment = npc.mentList.greeting;
-                break;
-            case 2 : //Keyword
-                mentType = "mentArray";
-                mentArray = npc.mentList.keyword.Find(k => k.num == KeywordNum).mentArray;
-                break;
-            case 3 : //Keyword Reaction
-                mentType = "ment";
-                npc.Event_Keyword(keywordNum);//호감도 증감
-                int type = npc.KeywordType(keywordNum);//리액션 넘버
-                ment = type == 0 ? npc.mentList.keyword_None :
-                       type == 1 ? npc.mentList.keyword_Like :
-                       type == 2 ? npc.mentList.keyword_Nomal :
-                                   npc.mentList.keyword_Hate;
-                break;
-            default :
-                break;
-        }
-        MentNum = 0;
+        MentDelegate = new Delegate[4];
+        MentDelegate[0] = Greeting_Front_Favor;
+        MentDelegate[1] = Greeting;
+        MentDelegate[2] = Keyword_Answer;
+        MentDelegate[3] = Keyword_Reaction;
     }
     
-
+    private void SetMent()
+    {
+        MentDelegate[page]();
+        MentNum = 0;
+    }
+    //호감도에 따른 첫 안내인사
+    private void Greeting_Front_Favor()
+    {
+        mentType = "mentArray";
+        mentArray = npc.mentList.greeting_Front_Favor[npc.level];
+    }
+    //목적을 묻는 안내인사
+    private void Greeting()
+    {
+        mentType = "ment";
+        ment = npc.mentList.greeting;
+    }
+    //키워드에 따른 대답
+    private void Keyword_Answer()
+    {
+        mentType = "mentArray";
+        mentArray = npc.mentList.keyword.Find(k => k.num == KeywordNum).mentArray;
+    }
+    //키워드에 따른 반응
+    private void Keyword_Reaction()
+    {
+        mentType = "ment";
+        npc.Event_Keyword(keywordNum);//호감도 증감
+        
+        int type = npc.KeywordType(keywordNum);//리액션 넘버
+        ment = type == 1 ? npc.mentList.keyword_Like :
+               type == 2 ? npc.mentList.keyword_Nomal :
+               type == 3 ? npc.mentList.keyword_Hate :
+                           npc.mentList.keyword_None;
+    }
+    
     public void Next()
     {
         MentNum++;
@@ -199,10 +218,6 @@ public class NPC_Talk : MonoBehaviour
         SetMent();
     }
 
-    public GameObject talkingObj;
-    private bool isTalking;
-
-
     private string CheckMent(string text)
     {
         //본인의 이름
@@ -214,4 +229,5 @@ public class NPC_Talk : MonoBehaviour
 
         return correctMent;
     }
+    #endregion
 }

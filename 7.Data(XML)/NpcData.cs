@@ -53,39 +53,29 @@ public class Npc
     //키워드 대화시, 호감도 증가 혹은 감소
     public void Event_Keyword(int num)
     {
-        int type = KeywordType(num);
-        switch(type)
+        int type = Used_Keyword_Icon(num);
+        int[] array = new int[4]{3, 1, -3, 0};
+        if(type == 0)
         {
-            case 0 : 
-                used_Keyword.Add(num);
-                Event_Keyword(num);
-                break;
-            case 1 : //Like
-                favor += 3;
-                break;
-            case 2 : //Nomal
-                favor += 1;
-                break;
-            case 3 : //hate
-                favor -= 3;
-                break;
-            default ://none?
-                break;    
+            used_Keyword.Add(num);
+            Event_Keyword(num);
+            return;
         }
+        favor += array[type - 1];   
     }
-    //0 : 성향비교
+    //0 : 성향비교 
     public int KeywordType(int num)
     {
         if(keyword_Like.Contains(num))  return 1;
         if(keyword_Nomal.Contains(num)) return 2;
         if(keyword_Hate.Contains(num)) return 3;
-        return 0;
+        return 4;
     }
-    public int Use_Keyword(int num)
+    //아이콘 출력용
+    public int Used_Keyword_Icon(int num)
     {
-        int result = KeywordType(num);
-        
-        return used_Keyword.Contains(num) ? result : 0;
+        if(!used_Keyword.Contains(num)) return 0;
+        return KeywordType(num);
     }
     // 1_0 : 사용 이벤트에 추가 후 재비교
     public void Event_Action(int num)
