@@ -27,7 +27,7 @@ public class SkillInfo
     
 }
 #endregion
-
+delegate void Delegate();
 public class SkillData : MonoBehaviour
 {
 
@@ -58,6 +58,8 @@ public class SkillData : MonoBehaviour
     #region 스킬정보
     public void SetData()
     {
+        SetSkillDelegate();
+        
         string path = "3.Skills/warrior";
         Sprite[] sprites = Resources.LoadAll<Sprite>(path);
         int i = 0;
@@ -93,131 +95,146 @@ public class SkillData : MonoBehaviour
         skillInfos[3, 2] = new SkillInfo(3, 2, Target.WE, "치유S", "전체 아군을 체력을 회복시킨다.", sprites[i++]);
         skillInfos[3, 3] = new SkillInfo(3, 3, Target.MINE, "정화", "아군의 모든 상태이상을 없앤다", sprites[i++]);
         skillInfos[3, 4] = new SkillInfo(3, 4, Target.MINE, "부활", "죽은 아군을 부활시킨다.", sprites[i++]);
-        
+
     }
     #endregion
-    #region 스킬 사용
-    public void UseSkill(int job, int num, State playerS, State[] targetsS)
+
+    private State playerS;
+    private State targetS;
+    public void UseSkill(int job, int num, State _playerS, State[] targetsS)
     {
-        foreach(State targetS in targetsS)
+        playerS  = _playerS;
+        foreach(State _targetS in targetsS)
         {
-            switch (job)
-            {
-                case 0 : //전사
-                    switch (num)
-                    {
-                        case 0 :
-                            targetS.AdDam(playerS.Power);
-                            break;
-                        case 1 :
-                            targetS.AdDam((float)playerS.Power * 0.3f);
-                            break;
-                        case 2 :
-                            playerS.AddBuff(BuffType.SHILD, 2, 0.5f);
-                            break;
-                        case 3 :
-                            playerS.AddBuff(BuffType.POWER, 3, 1.5f);
-                            break;
-                        case 4 :
-                            if(targetS.Hp <= targetS.maxHp)
-                                targetS.DeathDam();
-                            break;
-                        default:
-                        break;
-                    }
-                    break;
-                case 1 : //법사
-                    switch (num)
-                    {
-                        case 0 :
-                            targetS.ApDam(playerS.Power);
-                            break;
-                        case 1 :
-                            targetS.ApDam((float)playerS.Power * 0.3f);
-                            break;
-                        case 2 :
-                            playerS.AddBuff(BuffType.SHILD, 2, 0.7f);
-                            break;
-                        case 3 :
-                            targetS.AddDebuff(BuffType.SPEED, 3, 0.5f);
-                            break;
-                        case 4 :
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case 2 : //방랑가
-                    switch (num)
-                    {
-                        case 0 :
-                            targetS.AdDam(playerS.Power);
-                            break;
-                        case 1 :
-                            targetS.Heal((float)playerS.Power * 0.2f);
-                            targetS.Blood = 0;
-                            break;
-                        case 2 :
-                            playerS.AddBuff(BuffType.SPEED, 2, 1.5f);
-                            break;
-                        case 3 :
-                            playerS.Special_Skill_Up++;
-                            break;
-                        case 4 :
-                            playerS.RunBattle();
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case 3 : //힐러
-                    switch (num)
-                    {
-                        case 0 :
-                            targetS.AdDam(playerS.Power);
-                            break;
-                        case 1 :
-                            targetS.Heal(playerS.Power);
-                            break;
-                        case 2 :
-                            targetS.Heal((float)playerS.Power * 0.3f);
-                            break;
-                        case 3 :
-                            targetS.Purify();
-                            break;
-                        case 4 :
-                            targetS.Resurrection();
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    break;
-            }
+            targetS = _targetS;
+            SkillDelegate[job, num]();
         }
         playerS.Action("SlashHand");
         ColController.Instance.TurnEnd();
     }
-    #endregion
 
-    public bool Check(int job, Knight k)
+    Delegate[,] SkillDelegate;
+    private void SetSkillDelegate()
     {
-        bool value = false;
-        switch (job)
-        {
-            case 0 :
-                break;
-            case 1 :
-                break;
-            case 2 : 
-                break;
-            case 3 : 
-                break;
-            default:
-                break;
-        }
+        SkillDelegate = new Delegate[12, 5];
+        SkillDelegate[0, 0] = Warrior_0;
+        SkillDelegate[0, 1] = Warrior_1;
+        SkillDelegate[0, 2] = Warrior_2;
+        SkillDelegate[0, 3] = Warrior_3;
+        SkillDelegate[0, 4] = Warrior_4;
 
-        return value;
+        SkillDelegate[1, 0] = Wizard_0;
+        SkillDelegate[1, 1] = Wizard_1;
+        SkillDelegate[1, 2] = Wizard_2;
+        SkillDelegate[1, 3] = Wizard_3;
+        SkillDelegate[1, 4] = Wizard_4;
+
+        SkillDelegate[2, 0] = Thief_0;
+        SkillDelegate[2, 1] = Thief_1;
+        SkillDelegate[2, 2] = Thief_2;
+        SkillDelegate[2, 3] = Thief_3;
+        SkillDelegate[2, 4] = Thief_4;
+
+        SkillDelegate[3, 0] = Healer_0;
+        SkillDelegate[3, 1] = Healer_1;
+        SkillDelegate[3, 2] = Healer_2;
+        SkillDelegate[3, 3] = Healer_3;
+        SkillDelegate[3, 4] = Healer_4;
+
     }
+    
+    #region SKill 전사계열
+    private void Warrior_0()
+    {
+        targetS.AdDam(playerS.Power);
+    }
+    private void Warrior_1()
+    {
+        targetS.AdDam((float)playerS.Power * 0.3f);
+    }
+    private void Warrior_2()
+    {
+        playerS.AddBuff(BuffType.SHILD, 2, 0.5f);
+    }
+    private void Warrior_3()
+    {
+        playerS.AddBuff(BuffType.POWER, 3, 1.5f);
+    }
+    private void Warrior_4()
+    {
+        if(targetS.Hp <= targetS.maxHp)
+            targetS.DeathDam();
+    }
+    #endregion
+    
+    #region SKill 마법사계열
+    private void Wizard_0()
+    {
+        targetS.ApDam(playerS.Power);
+    }
+    private void Wizard_1()
+    {
+        targetS.ApDam((float)playerS.Power * 0.3f);
+    }
+    private void Wizard_2()
+    {
+        playerS.AddBuff(BuffType.SHILD, 2, 0.7f);
+    }
+    private void Wizard_3()
+    {
+        targetS.AddDebuff(BuffType.SPEED, 3, 0.5f);
+    }
+    private void Wizard_4()
+    {
+        
+    }
+    
+    #endregion
+    
+    #region SKill 도적계열
+    private void Thief_0()
+    {
+        targetS.AdDam(playerS.Power);
+    }
+    private void Thief_1()
+    {
+        targetS.Heal((float)playerS.Power * 0.2f);
+        targetS.Blood = 0;
+    }
+    private void Thief_2()
+    {
+        playerS.AddBuff(BuffType.SPEED, 2, 1.5f);
+    }
+    private void Thief_3()
+    {
+        playerS.Special_Skill_Up++;
+    }
+    private void Thief_4()
+    {
+        playerS.RunBattle();
+    }
+    #endregion
+    
+    #region SKill 치유사계열
+    private void Healer_0()
+    {
+        targetS.AdDam(playerS.Power);
+    }
+    private void Healer_1()
+    {
+        targetS.Heal(playerS.Power);
+    }
+    private void Healer_2()
+    {
+        targetS.Heal((float)playerS.Power * 0.3f);
+    }
+    private void Healer_3()
+    {
+        targetS.Purify();
+    }
+    private void Healer_4()
+    {
+        targetS.Resurrection();
+    }
+    #endregion
 }

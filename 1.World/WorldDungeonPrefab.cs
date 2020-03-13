@@ -9,9 +9,6 @@ public class WorldDungeonPrefab : MonoBehaviour
     public int index;
 
     public Text nameText;
-    public Text saturationText; //포화도 텍스트
-    public Text searchPText; //탐색률 텍스트
-
     public void SetData(DungeonProgress _dp, int _index)
     {
         dp = _dp;
@@ -36,8 +33,6 @@ public class WorldDungeonPrefab : MonoBehaviour
     public void UpdateText()
     {
         nameText.text = dp.d.name;
-        saturationText.text = string.Format("{0}%", dp.Saturation);
-        searchPText.text =  string.Format("{0}%",dp.SearchP );
     
         cloude10.SetActive(dp.SearchP < 10 ? true : false);
         if(cloude10.active) cloude10.GetComponent<Image>().color =  DungeonData.Instance.CanGo(DungeonData.Instance.GetDungeonProgressIndex(dp)) ? new Color32(123, 115,115 ,255) : new Color32(0, 0,0 ,255);
