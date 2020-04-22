@@ -34,6 +34,7 @@ public class BattleKnightPrefab : MonoBehaviour
     {
         myTurnObj.SetActive(true);
         transform.SendMessage("SendBubble", "나의 턴이군~");
+        skin.OrderMotion("MyTurn"); 
     }
 
     public void TurnEnd()

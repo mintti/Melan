@@ -95,6 +95,11 @@ public class KnightSkinPrefab : MonoBehaviour
 
         faceDecoTr.GetChild(num).gameObject.SetActive(value);
     }
+
+    public void OrderMotion(string name)
+    {
+        motion.OrderAction(name);
+    }
     #endregion
 }
 
