@@ -83,6 +83,7 @@ public class DataController : MonoBehaviour
         platform = Application.platform == RuntimePlatform.Android ? "android" : "pc";
     }
     #region Resource Detail
+    //NPC의 정보를 입력한다.
     private void LoadXml_Npc()
     {
         XmlDocument doc = LoadXml("ExternalData/NpcInfo.xml");
@@ -97,14 +98,16 @@ public class DataController : MonoBehaviour
         //npc가 가지는 행동, 선호 키워드 저장
         for(int i = 0 ; i < names.Length; i++)
         {
+            int num = LoadAttributes<int>(nodes[i], "num");
             List<int> event_ = StringSplit<int>(nodes[i].Attributes["event"].Value, ',').ToList();
 
             string[] keyword = nodes[i].Attributes["keyword"].Value.Split('/');
             List<int> like = StringSplit<int>(keyword[0], ',').ToList();
             List<int> nomal = StringSplit<int>(keyword[1], ',').ToList();
             List<int> hate = StringSplit<int>(keyword[2], ',').ToList();
-    
-            npc.npcArray[i] = new Npc(i, names[i], event_, like, nomal, hate);
+
+            npc.npcArray[i] = new Npc(num, names[i], event_, like, nomal, hate);
+            npc.npcArray[i].SetData(0, false);
         }
 
         //언어별 단어
@@ -114,8 +117,9 @@ public class DataController : MonoBehaviour
         npc.npcTalk_Keyword = new Keyword[keywords.Length];
         foreach(string k in keywords)
             npc.npcTalk_Keyword[index] = new Keyword(keywords[index++], true);
-    }
 
+    }
+    //Unlock이 True인 NPc의 Ment들을 로드한다. 
     public MentList LoadXml_Npc_Ment(string name)
     {
         MentList mentList = new MentList();
@@ -235,6 +239,7 @@ public class DataController : MonoBehaviour
         unit.CreateRandomKnight(3);
         dungeon.DungeonMake();
 
+        NpcData.Instance.npcArray[2].SetData(10, true);
         //생성후 한번 저장
         while(!SaveXml());
 
@@ -355,6 +360,16 @@ public class DataController : MonoBehaviour
         LoadNode(ref office.officePoint, node, "OfficePoint");
         office.OfficeGage = LoadNode<int>(node, "OfficeGage");
         
+        //8 NPC
+        nodes = xmlDoc.SelectNodes("PlayerData/NpcInfo/Npc");
+        index = 0;
+        foreach(XmlNode _node in nodes)
+        {
+            NpcData.Instance.npcArray[index++].SetData(
+                LoadNode<int>(_node, "Favor"),
+                LoadNode<bool>(_node, "Unlock")
+            );
+        }
         //N. End
         ConnectData();
     }
@@ -545,6 +560,24 @@ public class DataController : MonoBehaviour
         UpdateNode("OfficePoint", node, ToString(OfficeData.Instance.officePoint));
         UpdateNode("OfficeGage", node, ToString(OfficeData.Instance.OfficeGage));
 
+        //8 NPC - Favor 과 unlock정보만..
+        node = playerDataNode.SelectSingleNode("NpcInfo");
+        nodes = playerDataNode.SelectNodes("NpcInfo/Npc");
+        if(nodes.Count == 0)
+        {
+            for(int i = 0 ; i < 8 ; i ++)
+            {
+                XmlNode child = CreateNode("Npc", node);
+            }
+            nodes = playerDataNode.SelectNodes("NpcInfo/Npc");
+        }
+        index = 0;
+        foreach(Npc npc in NpcData.Instance.npcArray)
+        {
+            UpdateNode("Unlock", nodes[index], ToString(npc.Unlock));
+            UpdateNode("Favor", nodes[index++], ToString(npc.Favor));
+        }
+        
         //n-1 Game - Retry, Dungeon, Challenge(도전과제)
 
         //n dataSave-Done

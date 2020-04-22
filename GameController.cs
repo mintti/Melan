@@ -28,6 +28,7 @@ public class GameController : MonoBehaviour
     public DataController data;
     public WorldController world;
     public AdminController admin;
+    public TownController town;
 
     public EventData event_;
     public PlayerData player;
