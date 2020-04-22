@@ -85,7 +85,7 @@ public class Knight
     public void Lucky_Lake()
     {
         hp = maxHp;
-        stress -= 30;
+        Stress -= 30;
     }
 }
 [System.Serializable]

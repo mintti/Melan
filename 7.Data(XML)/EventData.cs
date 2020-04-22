@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +24,10 @@ public class EventData : MonoBehaviour
         }
     }
 
+    private void Awake() {
+        Create_Dungeon_Event = new Delegate[4];
+        //Create_Dungeon_Event[0];
+    }
     public void CreateEvent()
     {
         CreateDungeonEvents();
@@ -42,6 +46,7 @@ public class EventData : MonoBehaviour
     }
 
     #region 전투관련
+    private Delegate[] Create_Dungeon_Event;
     public DungeonProgress battle_dp;//이멘트 보내기 전투 데이타.
 
     public void SetBattleData(int index)
@@ -124,10 +129,7 @@ public class EventData : MonoBehaviour
     void Create_Event_Battle()
     {
         Dungeon d = dp.d;
-        //int[] cntList = new int[4]{5, 9, 13 ,17};
-        // 1~4명 / 1~8명... 1~16명, 최대 페이즈 4
-        int cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, 4), 5);
-        //int cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, cntList[d.level-1] -1), cntList[d.level-1]); // (1 ~ cnt) ~ 4 사이의 값                    
+        int cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, 3), 5);                    
 
         int[] arr = new int[cnt];   
         arr = GetMonster(d, cnt);
@@ -204,6 +206,12 @@ public class EventData : MonoBehaviour
         GameController.Instance.world.WorkList_Update();//화면 업뎃
 
         GameController.Instance.EventCheck();
+    }
+
+    public DungeonEventMaker dungeonEventMaker;
+    public void Create_Event_Dungeon_0_Boss()
+    {
+        
     }
     #endregion
 

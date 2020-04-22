@@ -32,10 +32,12 @@ public class Skill : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDra
 
 
     //Lock의 여부
+    /*
     public void SetLock(int knightLevel)
     {
         Lock(SkillData.Instance.Check(skillInfo.job, ks.k));  
     }
+    */
     public void SetLock(bool value)
     {
         Lock(value);

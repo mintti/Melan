@@ -9,7 +9,8 @@ public class ChoiceEvent : MonoBehaviour
     public Image image;
     public GameObject bt1;
     public GameObject bt2;
-
+    public GameObject bt3;
+    
     //결과찰
     public GameObject result_Obj;
 

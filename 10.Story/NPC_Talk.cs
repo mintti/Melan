@@ -9,7 +9,6 @@ public enum TalkBox
     KEYWORD
 }
 
-delegate void MentDelegate();
 public class NPC_Talk : MonoBehaviour
 {
     private void Awake() {
