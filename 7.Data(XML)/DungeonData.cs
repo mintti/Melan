@@ -122,6 +122,11 @@ public class DungeonProgress
         eventType = 3;
         choice_Event_Type = n;
     }
+    public void Battle_Boss(int[] arr)
+    {
+        eventType = 4;
+        m = arr;
+    }
 
     //ClearReset. WorldCon - Dungeon_Clear()
     public void Dungeon_Reset()
