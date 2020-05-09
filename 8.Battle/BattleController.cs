@@ -499,6 +499,11 @@ public class BattleController : MonoBehaviour
     public void EndBattle()
     {
         dp.SetData(8);
+        
+        //HP정보  Knight 에 저장
+        foreach(KnightState ks in dp.p.knightStates)
+            ks.UpdateState();
+            
         sceneController.MoveToMain();
     }
     

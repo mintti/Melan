@@ -87,6 +87,23 @@ public class Knight
         hp = maxHp;
         Stress -= 30;
     }
+
+    //다음 날// 출전중이 아닐경우 스텟 회복
+    public void NextDay()
+    {
+        if(!teaming)
+        {
+            Hp += (int)(maxHp * 0.1f);
+            Stress -= 10;
+        }
+    }
+
+    public void BattleEnd(State s)
+    {
+        Hp = s.Hp;
+        Stress = s.Stress;
+    }
+
 }
 [System.Serializable]
 public class RandomKnight
@@ -177,7 +194,6 @@ public class Party
     {
         day--;
     }
-
 }
 
 //전투 시 Knight정보
@@ -190,6 +206,12 @@ public class KnightState
     {
         k = _k;
         s.SetData(this);
+    }
+
+    //BattleController - BattleEnd()에서 호출 _ Knight에저장
+    public void UpdateState()
+    {
+        k.BattleEnd(s);
     }
 }
 #endregion
@@ -269,8 +291,12 @@ public class UnitData : MonoBehaviour
 
     public void NextDay()
     {
+        //파티정보업데이트
         foreach(Party p in partys)
             p.NextDay();
+        //유닛 스테이트 회복
+        foreach(Knight k in knights)
+            k.NextDay();
     }
 
     #region 용병 고용 관련
