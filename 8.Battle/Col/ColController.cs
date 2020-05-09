@@ -77,8 +77,7 @@ public class ColController : MonoBehaviour
     public void TurnEnd()
     {
         formObj[who].SetActive(false);
-        foreach(BattleKnightPrefab kp in battle.kps)
-            kp.TurnEnd();
+        battle.kps[who].StartCoroutine("TurnEnd");
         
         BattleController.Instance.NextTurn();
     }
@@ -86,7 +85,7 @@ public class ColController : MonoBehaviour
     {
         formObj[who].SetActive(false);
         foreach(BattleKnightPrefab kp in battle.kps)
-            kp.TurnEnd();
+            kp.StartCoroutine("TurnEnd");
     }
     
     #endregion

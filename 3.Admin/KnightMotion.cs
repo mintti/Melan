@@ -33,6 +33,6 @@ public class KnightMotion : MonoBehaviour
 
     public void OrderAction(string name)
     {
-        animator.Play("Action." + name);
+        animator.Play(name);
     }
 }
