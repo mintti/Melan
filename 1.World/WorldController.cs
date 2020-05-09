@@ -50,6 +50,13 @@ public class WorldController : MonoBehaviour
 
         DungeonUpdate();
     }
+    //WorkListController - Click(7) 에서 호출. 귀환 후 
+    public void UpdateDungeonInWorld() 
+    {
+        foreach(Transform tr in dungeonPos)
+            CodeBox.ClearList(tr);
+        CreateDungeonInWorld();
+    }
 
     #region 1-3. 던전 선택 후, 출전 용병 List 생성 : 코드
     public GameObject knightList;

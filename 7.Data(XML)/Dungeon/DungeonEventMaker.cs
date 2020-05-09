@@ -18,7 +18,6 @@ public class DungeonEventMaker : MonoBehaviour
     private void SetDelegate()
     {
 
-        
     }
     
     private DungeonProgress dp;
@@ -35,9 +34,7 @@ public class DungeonEventMaker : MonoBehaviour
         }
         //아닐경우, 이벤트 List설정
         int[] array = EventIndexList[dungeonNum];
-        
 
-        
     }
     
     #region 랜덤지정자

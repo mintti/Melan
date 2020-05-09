@@ -115,6 +115,7 @@ public class WorkListController : MonoBehaviour
                 break;
             case 7 :
                 EventData.Instance.Dungeon_Clear(index);
+                GameController.Instance.world.UpdateDungeonInWorld();
                 break;
             default:
                 break;
@@ -160,7 +161,6 @@ public class WorkListController : MonoBehaviour
 
             Knight k = UnitData.Instance.knights[kNum];
             obj.GetComponent<KnightInfo_Simple>().SetData(k);
-            
             obj.GetComponent<KnightInfo_Simple>().SetCharacter(world.TextureFinder(k));//<<-- 텍스쳐
         }
     }
