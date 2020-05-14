@@ -79,7 +79,8 @@ public class ColController : MonoBehaviour
         formObj[who].SetActive(false);
         battle.kps[who].StartCoroutine("TurnEnd");
         
-        BattleController.Instance.NextTurn();
+
+        BattleController.Instance.StartCoroutine("NextTurn");
     }
     public void BattleEnd()
     {
@@ -327,4 +328,9 @@ public class ColController : MonoBehaviour
     }
     */
     #endregion
+
+    IEnumerator WaitCoroutine(float time)
+    {
+        yield return new WaitForSeconds(time);
+    }
 }

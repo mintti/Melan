@@ -338,7 +338,7 @@ public class BattleController : MonoBehaviour
         {
             if(mps[n-knightCount].s.alive == AliveType.죽음)
             {
-                NextTurn();
+                StartCoroutine("NextTurn");
                 return;
             }
             int num = thingTarget[sequence[who]];
@@ -363,10 +363,18 @@ public class BattleController : MonoBehaviour
     }
     
     //턴을 넘긴 상태.
-    public void NextTurn()
+    public GameObject waitObj;
+    IEnumerator NextTurn()
     {
-        StartCoroutine("Wait1Sec");
+        yield return new WaitForSeconds(0.2f);
+        waitObj.SetActive(true);
+        yield return new WaitForSeconds(0.2f);
+        
+        waitObj.SetActive(false);
+        who++;
+        State = BattleState.전투;
     }
+
     private void FastNextTurn()
     {
         who++;
@@ -475,15 +483,9 @@ public class BattleController : MonoBehaviour
     }
 
     //대기 코루틴
-    public GameObject waitObj;
-    IEnumerator Wait1Sec()
+    IEnumerator WaitCoroutine(float time)
     {
-        waitObj.SetActive(true);
-        yield return new WaitForSeconds(0.2f);
-        
-        waitObj.SetActive(false);
-        who++;
-        State = BattleState.전투;
+        yield return new WaitForSeconds(time);
     }
 
     private int GetReward()

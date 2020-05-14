@@ -25,6 +25,6 @@ public class Form : MonoBehaviour
     
     public void NextTurn()
     {
-        BattleController.Instance.NextTurn();
+        BattleController.Instance.StartCoroutine("NextTurn");
     }
 }
