@@ -8,7 +8,7 @@ public class BattleMonsterPrefab : MonoBehaviour
     public State s;
     public SpriteRenderer img;
     public MonsterStateViewer msv;
-
+    public MonsterMotion motion;
 
     public int index;
     //해당스크립트 활성화 여부임. SetData()를 통해 활성화됨.
@@ -30,7 +30,7 @@ public class BattleMonsterPrefab : MonoBehaviour
         msv = _msv;
         s.SetBMP(this);
         index = n;
-        
+
         isMonster = true;
         gameObject.SetActive(true);
         msv.gameObject.SetActive(true);
@@ -43,7 +43,7 @@ public class BattleMonsterPrefab : MonoBehaviour
         ColController.Instance.SetSkillTarget(9);
         gameObject.SendMessage("UseSkill");
         
-        BattleController.Instance.NextTurn();
+        BattleController.Instance.StartCoroutine("NextTurn");
     }
     #region  UI관련
     public GameObject targetObj;
@@ -56,6 +56,16 @@ public class BattleMonsterPrefab : MonoBehaviour
         targetObj.SetActive(false);
 
     }
+    #endregion
+
+
+    #region MOTION
+    private Delegate motions;
+    public void Motion(string command)
+    {
+        motion.OrderMotion(command);
+    }
+
     #endregion
 
 }

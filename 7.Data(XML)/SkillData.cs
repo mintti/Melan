@@ -109,7 +109,7 @@ public class SkillData : MonoBehaviour
             targetS = _targetS;
             SkillDelegate[job, num]();
         }
-        playerS.Action("SlashHand");
+        playerS.Motion("SlashHand");
         ColController.Instance.TurnEnd();
     }
 

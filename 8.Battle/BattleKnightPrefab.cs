@@ -32,9 +32,9 @@ public class BattleKnightPrefab : MonoBehaviour
     #region  게임 진행
     public void TurnStart()
     {
-        transform.SendMessage("SendBubble", "나의 턴이군~");
-        skin.OrderMotion("Action.MyTurn");
-        skin.OrderMotion("Tr.ScaleUp");
+        Bubble("나의 턴이군~");
+        Motion("Action.MyTurn");
+        Motion("Tr.ScaleUp");
         
     }
 
@@ -43,9 +43,21 @@ public class BattleKnightPrefab : MonoBehaviour
         Debug.Log("이게 왜 실행 되는데?");
         TargetOff();
         yield return new WaitForSeconds(0.5f);
-        skin.OrderMotion("Tr.TransformReset");
+        Motion("Tr.TransformReset");
     }
 
+    #endregion
+
+    #region 모션
+
+    public void Motion(string motion)
+    {
+        skin.OrderMotion(motion);
+    }
+    public void Bubble(string bubble)
+    {
+        transform.SendMessage("SendBubble", bubble);
+    }
     #endregion
     #region 효과(UI)
     //정보로드

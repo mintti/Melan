@@ -233,7 +233,10 @@ public class State
 
         Hp += (int)value;
         bubble.SendHpText((int)value);
+
+        Motion_Dam();
     }
+
     private void SetStress(int value)
     {
         if(alive == AliveType.죽음) return;
@@ -242,16 +245,6 @@ public class State
         bubble.SendStressText((int)value);
     }
 
-    public void Action(string text)
-    {
-        if(lifeType == LifeType.K)
-        {
-            bkp.skin.transform.SendMessage("OrderAction" ,text);
-        }
-        else
-        {
-        }
-    }
     #endregion
     
     #region 스킬 사용 관련
@@ -328,5 +321,26 @@ public class State
     }
 
     
+    #endregion
+    #region 모션
+
+    public void Motion(string command)
+    {
+        if(lifeType == LifeType.K)
+        {
+            bkp.Motion(command);
+        }
+        else
+        {
+            bmp.Motion(command);
+        }
+    } 
+
+    public void Motion_Dam()
+    {
+        Motion("Dam");
+        Motion("Tr.MyTurn");
+    }
+
     #endregion
 }

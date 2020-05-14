@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class MonsterMotion : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private Animator animator;
+    
+    private void Awake()
     {
-        
+        animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OrderMotion(string name)
     {
-        
+        animator.Play(name);
     }
 }
