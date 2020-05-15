@@ -90,10 +90,14 @@ public class EventData : MonoBehaviour
             dp = dp_;
             if(dp.isParty == true)
             {
-                if(dp.p.day >= 0)
+                if(dp.p.dayIndex == 5) //보스일 경우 지정된 특별한 이벤트들 생성함.
+                {
+                    BattleEventDelegate[3]();
+                }
+                else if(dp.p.day >= 0) //보스가 아닌 일반..
                 {
                     value = UnityEngine.Random.Range(0, dp.SearchP < 30 ? 3 : 4);
-                    Create_Event(value);
+                    BattleEventDelegate[value]();
                 }
                 else//Day가 -1 이니 탐색완료.
                     dp.SetData(7);
@@ -101,82 +105,33 @@ public class EventData : MonoBehaviour
         }
     }
 
-
-    private void Create_Event(int value)
+    private Delegate[] BattleEventDelegate;
+    private void SetEventDelegate()
     {
-        switch (value)
-        {
-            case 0 ://NON Event
-                dp.SetData(2);
-                break;
-            case 1 : //Battle Event
-                Create_Event_Battle();
-                break;
-            case 2 ://Choice Event
-                Create_Event_Choice();
-                break;
-            case 3 ://Boss Event?
-                break;
-            case 4 :
-                break;
-            default:
-                Debug.Log("예외발생");
-                break;
-        }
+        BattleEventDelegate = new Delegate[4]{
+            Create_Event_None,
+            Create_Event_Battle,
+            Create_Event_Choice,
+            Create_Event_Battle_Boss
+        };
     }
-
+    
+    private void Create_Event_None()
+    {
+        dp.SetData(2);
+    }
     //Battle 생성
-    void Create_Event_Battle()
+    private void Create_Event_Battle()
     {
-        Dungeon d = dp.d;
-        int cnt = UnityEngine.Random.Range(UnityEngine.Random.Range(1, 3), 5);                    
+        dungeonEventMaker.GetRandomMonster(dp.d);
+    }
 
-        int[] arr = new int[cnt];   
-        arr = GetMonster(d, cnt);
+    //Boss 이벤트 생성 : 지정된 값을 가져옴.
+    private void Create_Event_Battle_Boss()
+    {
+        dungeonEventMaker.SetDungeonEvent(dp.d.num);
+    }
 
-        //생성된 배틀데이타 저장.
-        dp.Battle(arr);
-    }
-    //Monster생성
-    private int[] GetMonster(Dungeon d, int cnt)
-    {
-        int[] array = new int[cnt];
-        DungeonProgress dp = DungeonData.Instance.GetDungeonProgress(d.num);
-        
-        int level = dp.SearchP < 25 ? 0 : dp.SearchP < 50 ? 1 : dp.SearchP < 75 ? 2 : dp.SearchP < 100 ? 3 : 4;
-        for(int i = 0 ; i < cnt ; i ++)
-        {
-            int m = 0;
-            int randomNum = UnityEngine.Random.Range(1, 11);
-            switch(level)
-            {
-                case 0 : // 0:1 = 7:3;
-                    m = randomNum <= 7 ? 0 : 1 ;
-                    break;
-                case 1 : // 0:1:2 = 2:6:2 
-                    m = randomNum <= 2 ? 0 : randomNum <= 8 ? 1 : 2;
-                    break; 
-                case 2 : // 1:2:3 = 5:4:1
-                    m = randomNum <= 5 ? 1 : randomNum <= 9 ? 2 : 3;
-                    break;
-                case 3 : //1:2:3 = 3:5:2
-                    m = randomNum <= 3 ? 1 : randomNum <= 8 ? 2 : 3;
-                    break;
-                case 4 : //2:3 = 7:3
-                    m = randomNum <= 7 ? 2 : 3;
-                    break;
-                default : break;
-            }
-            array[i] = d.monsters[m];
-        }
-        
-        return array; 
-    }
-    private int[] SetMonster_Boss(Dungeon d, int cnt)
-    {
-        int[] array = new int[5]{0,0,0,0,0};
-        return array;
-    }
     //Choice 생성
     private void Create_Event_Choice()
     {
