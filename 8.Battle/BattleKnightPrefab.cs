@@ -120,13 +120,14 @@ public class BattleKnightPrefab : MonoBehaviour
     public Text hpTotalText;
     public RectTransform hpTr;
     public void HpText()
-    {   hpText.text = string.Format("{0}/{1}", ks.s.Hp, ks.k.hp);
-        hpNowText.text  = System.Convert.ToString(ks.s.Hp); hpTotalText.text =  string.Format("/{0}", ks.k.hp);
+    {   
+        hpText.text = string.Format("{0}/{1}", ks.s.Hp, ks.k.maxHp);
+        hpNowText.text  = System.Convert.ToString(ks.s.Hp); hpTotalText.text =  string.Format("/{0}", ks.k.maxHp);
         hpTr.sizeDelta = new Vector2(GetHpWidthSize() , hpTr.rect.height);
     }
     private float GetHpWidthSize()
     {
-        float value = 160 * ((float)ks.s.Hp/(float)ks.k.hp);
+        float value = 160 * ((float)ks.s.Hp/(float)ks.k.maxHp);
         return value;
     }
     
