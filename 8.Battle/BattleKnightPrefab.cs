@@ -40,7 +40,6 @@ public class BattleKnightPrefab : MonoBehaviour
 
     IEnumerator TurnEnd()
     {
-        Debug.Log("이게 왜 실행 되는데?");
         TargetOff();
         yield return new WaitForSeconds(0.5f);
         Motion("Tr.TransformReset");
