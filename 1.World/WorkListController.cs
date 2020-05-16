@@ -32,6 +32,12 @@ public class WorkListController : MonoBehaviour
 
     public void SelectDungeon()
     { SelectDungeon(index);}
+    
+    public void Awake()
+    {
+        SetWorkListDel();
+    }
+   
     public void SelectDungeon(int _index)
     {
         //기본 던전 정보
@@ -94,34 +100,61 @@ public class WorkListController : MonoBehaviour
         if(type!=0 && type !=7) PartyInfoViewer();
     }
     
-
-
+    //Click Event 델리게이트
+    Delegate[] WorkLis_ClickEvent_Del;
+    private void SetWorkListDel()
+    {
+        WorkLis_ClickEvent_Del = new Delegate[9]
+        {
+            Click_00_X,
+            Click_01_Battle,
+            Click_02_None,
+            Click_03_Choice,
+            Click_04_Boss,
+            Click_02_None,
+            Click_02_None,
+            Click_07_Clear,
+            Click_02_None
+        };
+    }
     public void Click()
     {
-        switch (type)
-        {
-            case 0 ://x 
-                GameController.Instance.world.MakeKnightList();
-                break;
-            case 1 : //battle
-                EventData.Instance.SetBattleData(index);
-                GameController.Instance.LoadScene(2);
-                break;
-            case 2 ://non
-                gameObject.SetActive(false);
-                break;
-            case 3 ://Choice
-                choiceEvent.SetData(index);
-                break;
-            case 7 :
-                EventData.Instance.Dungeon_Clear(index);
-                GameController.Instance.world.UpdateDungeonInWorld();
-                break;
-            default:
-                break;
-        }
+        WorkLis_ClickEvent_Del[type]();
     }
 
+    //출전시킬수있음
+    private void Click_00_X()
+    {
+        GameController.Instance.world.MakeKnightList();
+    }
+    private void Click_01_Battle()
+    {
+        EventData.Instance.SetBattleData(index);
+        GameController.Instance.LoadScene(2);
+    }
+    private void Click_02_None()
+    {
+        gameObject.SetActive(false);
+    }
+    private void Click_03_Choice()
+    {
+        choiceEvent.SetData(index);
+    }
+    private void Click_04_Boss()
+    {
+        EventData.Instance.SetBattleData(index);
+        GameController.Instance.LoadScene(2);
+    }
+    private void Click_07_Clear()
+    {
+        EventData.Instance.Dungeon_Clear(index);
+        GameController.Instance.world.UpdateDungeonInWorld();
+    }
+    private void Click_08_CallBack()
+    {
+        //귀환
+    }
+    
     private void ReturnParty()
     {//파티가 존재 -> 이벤트 수행 완료 -> 귀환가능상태(8)
 

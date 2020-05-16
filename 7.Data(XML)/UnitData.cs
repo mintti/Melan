@@ -156,6 +156,8 @@ public class Party
     public KnightState[] knightStates;
 
     public int day;//남은 Day
+    private int prefaceDay;
+    public int PrefaceDay{get{return prefaceDay;} set{prefaceDay = value;}}
     public int dayIndex;//DungoenDayIndex
     public int Day{get{return day;}set{day = value; if(day < 0) day = 0;}}
     public Party(){}
@@ -176,6 +178,7 @@ public class Party
         }
         dayIndex = _dayIndex;
         day = DungeonData.Instance.day_Array[dayIndex];
+        PrefaceDay = 0;
     }
     //XML LOAD에서 사용됨.
     public void Load()
@@ -193,6 +196,7 @@ public class Party
     public void NextDay()
     {
         day--;
+        PrefaceDay++;
     }
 }
 

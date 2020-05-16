@@ -9,7 +9,7 @@ public class DungeonEventMaker : MonoBehaviour
     private void Awake()
     {
         DungeonEvent_Del = new Delegate[1][];
-
+        SetDelegate();
 
         //Evnet List // 순서는 0~16던전
         EventIndexList.Add(new int[5]{0,1,2,3,4});
@@ -27,7 +27,7 @@ public class DungeonEventMaker : MonoBehaviour
         dp  = DungeonData.Instance.dungeon_Progress[num];
         int dungeonNum = dp.d.num;
 
-        DungeonEvent_Del[dungeonNum][dp.p.Day]();
+        DungeonEvent_Del[dungeonNum][dp.p.PrefaceDay - 1]();
     }
 
     private void SetBattle(int[] arr)
@@ -105,7 +105,8 @@ public class DungeonEventMaker : MonoBehaviour
     }
     private void D00_05()
     {
-        SetBoss(new int[5]{0, 2, 3, 3, 4});
+        SetBattle(new int[5]{0, 2, 3, 3, 4});
+        Debug.Log("실행");
     }
     #endregion
 

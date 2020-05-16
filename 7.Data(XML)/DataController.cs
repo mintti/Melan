@@ -285,6 +285,9 @@ public class DataController : MonoBehaviour
                 case 3 :
                     LoadNode(ref dp.choice_Event_Type, _node, "Info");
                     break;
+                case 4 :
+                    LoadNodeArray(ref dp.m, _node, "Info");
+                    break;
                 default:    break;
             }
             dp.Reward = LoadNode<int>(_node, "Reward");
@@ -333,6 +336,7 @@ public class DataController : MonoBehaviour
             LoadNode(ref p.dungeonNum, _node, "Dungeon");
             LoadNodeArray(ref p.k, _node, "Knight");
             LoadNode(ref p.day, _node, "Day");
+            p.PrefaceDay = LoadNode<int>(_node, "PDay");
             LoadNode(ref p.dayIndex, _node, "DayIndex");
             UnitData.Instance.partys.Add(p);
             p.Load();
@@ -478,6 +482,7 @@ public class DataController : MonoBehaviour
                     CreateNode("Dungeon", child, ToString<int>(dp.p.dungeonNum));
                     CreateNode("Knight", child, ToStringArray<int>(dp.p.k));
                     CreateNode("Day", child, ToString<int>(dp.p.day));
+                    CreateNode("PDay", child, ToString<int>(dp.p.PrefaceDay));
                     CreateNode("DayIndex", child, ToString<int>(dp.p.dayIndex));
 
                 }
@@ -485,6 +490,7 @@ public class DataController : MonoBehaviour
                 else
                 {
                     UpdateNode("Day", nodes[value], ToString<int>(dp.p.day));
+                    UpdateNode("PDay", nodes[value], ToString<int>(dp.p.PrefaceDay));
                     UpdateNode("DayIndex", nodes[value], ToString<int>(dp.p.dayIndex));
                     UpdateNode("Knight", nodes[value], ToStringArray<int>(dp.p.k));
                 }
@@ -546,6 +552,9 @@ public class DataController : MonoBehaviour
                     break;
                 case 3 ://선택이벤트
                     UpdateNode("Info", nodes[index], ToString<int>(dp.choice_Event_Type));
+                    break;
+                case 4 ://보스
+                    UpdateNode("Info", nodes[index], ToStringArray(dp.m));
                     break;
                 default:
                     break;

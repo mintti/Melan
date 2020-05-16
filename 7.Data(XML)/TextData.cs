@@ -33,13 +33,13 @@ public class TextData : MonoBehaviour
                                             "미정", "미정", "미정"};
     public string[] job_Lan_Common = new string[11]{"warrior", "wizard" , "thief", "healer", "a", "a", "a", "a", "a", "a", "a"};
     #region WORLD
-    public string[] workList_Button_Ment_Text = new string[9]{"탐색", "전투", "확인", "확인", "test", "test", "test", "수령", "귀환"};
+    public string[] workList_Button_Ment_Text = new string[9]{"탐색", "전투", "확인", "확인", "전투", "test", "test", "수령", "귀환"};
     public string[] workList_Info_Ment_Text = new string[9]{
         "원하는 기사들로 파티를 이뤄 던전으로 탐색을 보냅니다",
         "전투가 발생했습니다",
         "별다른 문제없이 탐색을 하고 있습니다",
         "문제가 발생했습니다",
-        "test",
+        "거대한 위협이 느껴집니다.",
         "test",
         "test",
         "일정대로 탐색완료했습니다. 보상을 수령하세요", "파티를 강제귀환시킬 수 있습니다"};

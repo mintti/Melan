@@ -26,6 +26,7 @@ public class EventData : MonoBehaviour
 
     private void Awake() {
         Create_Dungeon_Event = new Delegate[4];
+        SetEventDelegate();
         //Create_Dungeon_Event[0];
     }
     public void CreateEvent()
@@ -96,7 +97,7 @@ public class EventData : MonoBehaviour
                 }
                 else if(dp.p.day >= 0) //보스가 아닌 일반..
                 {
-                    value = UnityEngine.Random.Range(0, dp.SearchP < 30 ? 3 : 4);
+                    value = UnityEngine.Random.Range(0, 3);
                     BattleEventDelegate[value]();
                 }
                 else//Day가 -1 이니 탐색완료.
