@@ -137,6 +137,9 @@ public class BattleController : MonoBehaviour
     public List<State> thing = new List<State>();
     public List<int> thingTarget = new List<int>();
     public int knightCount;
+
+    //보스일 경우
+    BattleController_Boss boss;
     private void LoadBattleData()
     {
         //1-1 . 데이타 로드.
