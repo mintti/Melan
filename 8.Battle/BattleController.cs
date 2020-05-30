@@ -442,8 +442,22 @@ public class BattleController : MonoBehaviour
     {
 
     }
+
+    //99. 배틀 종료. 
+    public SceneController sceneController; 
+    public void EndBattle()
+    {
+        dp.SetData(8);
+        
+        //HP정보  Knight 에 저장
+        foreach(KnightState ks in dp.p.knightStates)
+            ks.UpdateState();
+            
+        sceneController.MoveToMain();
+    }
     #endregion
 
+    #region 기타 보조함수
     private void GetPrefabState(int _n)
     {
         int num = thingTarget[_n];
@@ -499,17 +513,6 @@ public class BattleController : MonoBehaviour
 
         return gold;
     }
-
-    public SceneController sceneController; 
-    public void EndBattle()
-    {
-        dp.SetData(8);
-        
-        //HP정보  Knight 에 저장
-        foreach(KnightState ks in dp.p.knightStates)
-            ks.UpdateState();
-            
-        sceneController.MoveToMain();
-    }
-    
+ 
+    #endregion
 }
