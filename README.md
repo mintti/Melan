@@ -1,12 +1,9 @@
-눈물의 README   
-## Unity C# 게임   
-경영 시뮬레이션 + 로그라이크 + 턴제 RPG 게임   
-
+## Unity C# 게임
 ### 기능   
 >Prefab작성   
 >턴제 전투(BattleController참조)    
 >animator/animation 사용   
->Array 형식의 Resource를 코드만으로 불러올 수 있음   
+>Resource 코드로 사용
 >Android XML save/load(DataConroller참조)   
 >UGUI사용   
 
